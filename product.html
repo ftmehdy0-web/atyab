@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>عطور أطياب الملكية | المتجر الرسمي بالمملكة العربية السعودية</title>
+  <meta name="description" content="تسوق أفخم العطور الشرقية ودهن العود الملكي من أطياب للعطور بالمملكة العربية السعودية. مكونات طبيعية نقية وثبات يدوم طويلاً." />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="أطياب للعطور | عطورٌ تدوم طويلاً في كل قطرة" />
+  <meta property="og:description" content="اكتشف تشكيلة أطياب الملكية المصممة بعناية فائقة من أجود أنواع العود والورد والعنبر." />
+  <meta property="og:type" content="product" />
+  <meta property="og:locale" content="ar_SA" />
+
+  <!-- Google Fonts: Tajawal, Cairo, Amiri & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,400&family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Critical Anti-Flicker Guard (Prevents drawer flash during navigation/page load) -->
+  <style>
+    .cart-drawer:not(.active),
+    .drawer-backdrop:not(.active),
+    .mobile-nav-drawer:not(.active),
+    .mobile-nav-backdrop:not(.active),
+    .modal-overlay:not(.active) {
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================================================================
+       1. شريط الإعلانات والعملة العلوي (TOP ANNOUNCEMENT BAR)
+       =================================================================== -->
+  <div class="announcement-bar">
+    <div class="announcement-inner container">
+      <div class="announcement-text" id="announcement-text-container">
+        <span>✨</span>
+        <span data-i18n="announcement_text">شحن مجاني لجميع مناطق المملكة للطلبات فوق <strong>150 ر.س</strong> 🇸🇦 | خصم إضافي <strong>10%</strong> كود:</span>
+        <span class="accent">ATYAB10</span>
+      </div>
+
+      <div class="header-top-selectors">
+        <div class="currency-selector">
+          <label for="currency-select" data-i18n="currency_label">العملة:</label>
+          <select id="currency-select">
+            <option value="SAR" selected>ريال سعودي (ر.س)</option>
+            <option value="AED">درهم إماراتي (د.إ)</option>
+            <option value="USD">دولار أمريكي ($)</option>
+          </select>
+        </div>
+        <div class="top-lang-switch">
+          <button class="top-lang-btn" onclick="switchLanguage(state.language === 'ar' ? 'en' : 'ar')" title="Switch Language / تغيير اللغة">
+            <span class="top-lang-globe">🌐</span>
+            <span id="top-lang-text">English</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       2. الترويسة الرئيسية الرسمية (MAIN LUXURY HEADER)
+       =================================================================== -->
+  <header class="main-header">
+    <div class="header-container container">
+      <!-- زر قائمة الجوال الملكية (HAMBURGER MENU) -->
+      <button class="menu-toggle" onclick="openMobileNav()" title="القائمة الرئيسية" aria-label="القائمة الرئيسية">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- شعار أطياب للعطور -->
+      <a href="index.html" class="brand-logo">
+        <span class="brand-arabic">أطـيـاب للعـطـور</span>
+        <span class="brand-title">ATYAB PERFUME</span>
+        <span class="brand-tagline">ROYAL ARABIAN LUXURY • EST. 1988</span>
+      </a>
+
+      <!-- القائمة الرئيسية -->
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link" data-i18n="nav_home">الرئيسية</a></li>
+          <li><a href="index.html#best-sellers" class="nav-link" data-i18n="nav_bestsellers">الأكثر مبيعاً</a></li>
+          <li><a href="index.html#catalog" class="nav-link active" data-i18n="nav_catalog">جميع العطور</a></li>
+          <li><a href="index.html#bakhoor" class="nav-link" data-i18n="nav_bakhoor">بخور ودخون</a></li>
+          <li><a href="index.html#scent-quiz" class="nav-link" onclick="openScentQuiz(); return false;"><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot" data-i18n="nav_quiz_badge">اختبار</span></a></li>
+          <li><a href="index.html#reviews" class="nav-link" data-i18n="nav_reviews">آراء العملاء</a></li>
+        </ul>
+      </nav>
+
+      <!-- أدوات الترويسة (زر اختيار اللغة، بحث، مفضلة، سلة) -->
+      <div class="header-actions">
+        <!-- زر اختيار وتبديل لغة الموقع -->
+        <div class="lang-selector-dropdown" id="lang-selector-dropdown">
+          <button class="lang-toggle-btn" id="lang-toggle-btn" onclick="toggleLangDropdown(event)" aria-label="Language / اللغة" title="اللغة / Language">
+            <svg class="lang-globe-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span class="current-lang-text" id="current-lang-label" data-i18n="lang_btn_text">العربية</span>
+            <svg class="lang-chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="lang-dropdown-menu" id="lang-dropdown-menu">
+            <button class="lang-option active" data-lang="ar" onclick="switchLanguage('ar')">
+              <span class="lang-flag">🇸🇦</span>
+              <span class="lang-name">العربية (Arabic)</span>
+              <span class="lang-check">✓</span>
+            </button>
+            <button class="lang-option" data-lang="en" onclick="switchLanguage('en')">
+              <span class="lang-flag">🇬🇧</span>
+              <span class="lang-name">English</span>
+              <span class="lang-check">✓</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- حساب العميل: تسجيل الدخول أو إنشاء حساب محلي -->
+        <button class="action-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()" title="تسجيل الدخول أو إنشاء حساب" aria-label="تسجيل الدخول أو إنشاء حساب" data-i18n-title="account_tooltip">
+          <svg id="account-action-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M20 21a8 8 0 0 0-16 0"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
+        </button>
+
+        <!-- البحث السريع -->
+        <button class="action-btn" onclick="openSearchModal()" title="البحث في العطور" aria-label="البحث" data-i18n-title="search_tooltip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- قائمة المفضلة -->
+        <button class="action-btn" onclick="openWishlistModal()" title="قائمة المفضلة" aria-label="المفضلة" data-i18n-title="wishlist_tooltip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="badge-count wishlist-count-badge">0</span>
+        </button>
+
+        <!-- سلة المشتريات -->
+        <button class="action-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية" aria-label="السلة" data-i18n-title="cart_tooltip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="badge-count cart-count-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       3. شريط مسار التنقل (BREADCRUMB NAVIGATION)
+       =================================================================== -->
+  <nav class="pdp-breadcrumb-nav">
+    <div class="container" id="pdp-breadcrumb-container"></div>
+  </nav>
+
+  <!-- ===================================================================
+       4. القسم الرئيسي لصفحة العطر (MAIN PRODUCT SHOWCASE & BUY BOX)
+       =================================================================== -->
+  <section class="pdp-main-section">
+    <div class="container">
+      <div class="pdp-product-grid">
+        
+        <!-- العمود الأيمن: معرض زوايا العطر الأصلي المتعددة -->
+        <div class="pdp-gallery-col">
+          <div class="pdp-main-viewport" id="pdp-main-viewport"></div>
+          <div class="pdp-thumbnails-strip" id="pdp-thumbnails-strip"></div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 10px;" data-i18n="pdp_gallery_zoom_tip">
+            مرر المؤشر للتكبير أو انقر لعرض زوايا الزجاجة بدقة فائقة
+          </div>
+        </div>
+
+        <!-- العمود الأيسر: خيارات الشراء، السعة، والسعر الديناميكي -->
+        <div class="pdp-info-col">
+          <div id="pdp-info-meta"></div>
+          <div id="pdp-price-container"></div>
+          <div id="pdp-size-selector-container"></div>
+          <div id="pdp-stock-container"></div>
+          <div id="pdp-actions-container"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       5. قسم الهرم العطري والمكونات النقية (FRAGRANCE PYRAMID SECTION)
+       =================================================================== -->
+  <section class="pdp-pyramid-section" id="fragrance-pyramid">
+    <div class="container">
+      <div class="pdp-pyramid-grid">
+        <div id="pdp-pyramid-container"></div>
+        <div id="pdp-accords-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       6. قصة الصياغة وإلهام الصانع (STORY & RITUAL SECTION)
+       =================================================================== -->
+  <section class="pdp-story-section">
+    <div class="container" id="pdp-story-container"></div>
+  </section>
+
+  <!-- ===================================================================
+       7. تقييمات وتجارب العملاء الموثقة بالمملكة (REVIEWS SECTION)
+       =================================================================== -->
+  <section class="pdp-reviews-section" id="reviews-section">
+    <div class="container" id="pdp-reviews-container"></div>
+  </section>
+
+  <!-- ===================================================================
+       8. عطور أخرى قد تنال إعجابك (YOU MAY ALSO CHERISH)
+       =================================================================== -->
+  <section class="showcase-section" style="background: var(--bg-primary); border-top: 1px solid var(--border-light);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle" data-i18n="pdp_related_title">عطور أخرى تناسب ذوقك الرفيع</span>
+        <h2 class="section-title" data-i18n="pdp_related_title">تشكيلات ملكية مختارة</h2>
+        <div class="gold-line"></div>
+      </div>
+      <div class="products-grid" id="pdp-related-container"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       9. التذييل الرسمي (OFFICIAL FOOTER)
+       =================================================================== -->
+  <footer class="main-footer">
+    <div class="footer-grid container">
+      <div class="footer-brand">
+        <h3 data-i18n="footer_brand_title">أطياب للعطور الفاخرة</h3>
+        <div class="sub" data-i18n="footer_brand_sub">ATYAB ROYAL PERFUMES • KSA</div>
+        <p style="font-size: 0.88rem; color: #AAA; line-height: 1.7; margin-bottom: 20px;" data-i18n="footer_brand_desc">
+          دار عطور عربية تأسست عام 1988، تكرس خبرتها في استخلاص أندر أنواع العود والزيوت العطرية النقية لتقديم تجارب حسية ملكية تدوم طويلاً وتليق بأصحاب الفخامة في المملكة.
+        </p>
+        <div style="font-size: 0.8rem; color: #888;" data-i18n="footer_cr">
+          السجل التجاري بالمملكة: 1010894210 | الرقم الضريبي: 30098471200003
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_sections">أقسام المتجر</h4>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav_home">الرئيسية</a></li>
+          <li><a href="index.html#best-sellers" data-i18n="nav_bestsellers">الأكثر مبيعاً بالمملكة</a></li>
+          <li><a href="index.html#catalog" data-i18n="nav_catalog">كتالوج العطور الستة</a></li>
+          <li><a href="index.html#bakhoor" data-i18n="nav_bakhoor">بخور ودخون المجالس</a></li>
+          <li><a href="index.html#scent-quiz" onclick="openScentQuiz(); return false;" data-i18n="nav_quiz">مستشار العطور التفاعلي</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_services">خدمة العملاء</h4>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="footer_link_ship">سياسة الشحن والتوصيل</a></li>
+          <li><a href="index.html" data-i18n="footer_link_warranty">الضمان الذهبي والاسترجاع</a></li>
+          <li><a href="#" onclick="openCartDrawer(); return false;" data-i18n="footer_link_cart">متابعة حالة سلة المشتريات</a></li>
+          <li><a href="#" onclick="openSearchModal(); return false;" data-i18n="footer_link_search">البحث في الكتالوج</a></li>
+          <li><a href="https://wa.me/966500000000" target="_blank" data-i18n="footer_link_whatsapp">التواصل عبر الواتساب</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_boutiques">بوتيكاتنا بالمملكة</h4>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span>📍</span>
+            <span data-i18n="boutique_riyadh"><strong>الرياض:</strong> أبراج العليا، طريق الملك فهد، الطابق الأرضي</span>
+          </div>
+          <div class="contact-item">
+            <span>📍</span>
+            <span data-i18n="boutique_jeddah"><strong>جدة:</strong> رد سي مول، بوابة 4، طريق الملك عبدالعزيز</span>
+          </div>
+          <div class="contact-item">
+            <span>📞</span>
+            <span dir="ltr">+966 50 000 0000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="footer-bottom">
+        <div data-i18n="footer_rights">
+          جميع الحقوق محفوظة © 2026 <strong>أطياب للعطور الفاخرة | ATYAB PERFUME KSA</strong>
+        </div>
+        <div class="payment-badges">
+          <span data-i18n="payment_methods_title">طرق الدفع المعتمدة بالمملكة:</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">مدى Mada</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">Apple Pay</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">Visa</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;" data-i18n="payment_cod">الدفع عند الاستلام</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       9.5 قائمة الجوال الجانبية الملكية (SLIDE-OUT LUXURY MOBILE NAV DRAWER)
+       =================================================================== -->
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" onclick="closeMobileNav()" style="visibility: hidden;"></div>
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" style="visibility: hidden;">
+    <div class="mobile-nav-header">
+      <div class="mobile-nav-brand">
+        <span class="mobile-nav-brand-ar">أطـيـاب للعـطـور</span>
+        <span class="mobile-nav-brand-en">ATYAB PERFUME</span>
+      </div>
+      <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="إغلاق">&times;</button>
+    </div>
+
+    <div class="mobile-nav-body">
+      <ul class="mobile-nav-list">
+        <li><a href="index.html#hero" onclick="closeMobileNav()"><span class="nav-icon">🏰</span><span data-i18n="nav_home">الرئيسية</span></a></li>
+        <li><a href="index.html#showcase" onclick="closeMobileNav()"><span class="nav-icon">✨</span><span data-i18n="nav_showcase">مقدَّر من الجميع</span></a></li>
+        <li><a href="index.html#best-sellers" onclick="closeMobileNav()"><span class="nav-icon">🔥</span><span data-i18n="nav_bestsellers">الأكثر مبيعاً</span></a></li>
+        <li><a href="index.html#catalog" onclick="closeMobileNav()"><span class="nav-icon">💎</span><span data-i18n="nav_catalog">جميع العطور</span></a></li>
+        <li><a href="index.html#bakhoor" onclick="closeMobileNav()"><span class="nav-icon">💨</span><span data-i18n="nav_bakhoor">بخور ودخون</span></a></li>
+        <li><a href="index.html#scent-quiz" onclick="closeMobileNav(); openScentQuiz(); return false;"><span class="nav-icon">🔮</span><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot">اختبار</span></a></li>
+        <li><a href="index.html#reviews" onclick="closeMobileNav()"><span class="nav-icon">⭐</span><span data-i18n="nav_reviews">آراء العملاء</span></a></li>
+      </ul>
+
+      <div class="mobile-nav-divider"></div>
+
+      <!-- تبديل العملة واللغة داخل القائمة -->
+      <div class="mobile-nav-settings">
+        <div class="mobile-setting-item">
+          <span class="setting-label">🌐 اللغة / Language</span>
+          <div class="mobile-lang-switch-btns">
+            <button class="mobile-lang-btn" onclick="switchLanguage('ar'); closeMobileNav();">🇸🇦 العربية</button>
+            <button class="mobile-lang-btn" onclick="switchLanguage('en'); closeMobileNav();">🇬🇧 English</button>
+          </div>
+        </div>
+
+        <div class="mobile-setting-item">
+          <span class="setting-label">💵 العملة / Currency</span>
+          <div class="mobile-currency-btns">
+            <button class="mobile-curr-btn" onclick="setCurrency('SAR'); closeMobileNav();">ر.س (SAR)</button>
+            <button class="mobile-curr-btn" onclick="setCurrency('AED'); closeMobileNav();">د.إ (AED)</button>
+            <button class="mobile-curr-btn" onclick="setCurrency('USD'); closeMobileNav();">$ (USD)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- زر التواصل المباشر عبر واتساب -->
+      <div class="mobile-nav-whatsapp">
+        <a href="https://wa.me/966500000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D9%84%D9%83%D9%8A%D8%A9" target="_blank" rel="noopener noreferrer" class="mobile-wa-btn">
+          <span>💬</span>
+          <span>خدمة العملاء الملكية (واتساب)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       10. سلة التسوق الجانبية (SLIDE-OUT CART DRAWER)
+       =================================================================== -->
+  <div class="drawer-backdrop" id="drawer-backdrop" style="visibility: hidden;"></div>
+
+  <div class="cart-drawer" id="cart-drawer" style="visibility: hidden;">
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span>⚜️</span>
+        <h3 data-i18n="cart_drawer_title">سلة المشتريات الملكية</h3>
+      </div>
+      <button class="drawer-close" onclick="closeCartDrawer()" aria-label="إغلاق">&times;</button>
+    </div>
+
+    <div class="shipping-meter-box" id="shipping-meter-box">
+      <div class="shipping-meter-label" id="shipping-meter-text">
+        أضف بقيمة <strong class="gold">150 ر.س</strong> للحصول على <strong>شحن مجاني</strong> 🚚
+      </div>
+      <div class="meter-track">
+        <div class="meter-progress" id="shipping-meter-progress"></div>
+      </div>
+    </div>
+
+    <div class="drawer-body" id="cart-drawer-items"></div>
+
+    <div class="drawer-footer">
+      <div class="coupon-box">
+        <input type="text" id="coupon-input" class="coupon-input" placeholder="كود الخصم (جرب ATYAB10)" data-i18n-placeholder="coupon_placeholder" />
+        <button class="btn-coupon" onclick="applyCoupon()" data-i18n="coupon_btn">تطبيق</button>
+      </div>
+
+      <div class="cart-summary-line">
+        <span data-i18n="subtotal_label">المجموع الفرعي:</span>
+        <strong id="cart-subtotal">0 ر.س</strong>
+      </div>
+      <div class="cart-summary-line">
+        <span data-i18n="discount_label">الخصم الترويجي:</span>
+        <span id="cart-discount" style="color: #27AE60; font-weight: 700;">0 ر.س</span>
+      </div>
+      <div class="cart-summary-line total">
+        <span data-i18n="total_label">المجموع الإجمالي:</span>
+        <strong class="gold" id="cart-total">0 ر.س</strong>
+      </div>
+
+      <button class="btn btn-primary btn-checkout-drawer" onclick="openCheckoutModal()">
+        <span data-i18n="checkout_drawer_btn">المتابعة لإتمام الطلب الملكي</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       11. النوافذ المنبثقة (MODALS)
+       =================================================================== -->
+  
+  <!-- نافذة تكبير زوايا العطر (Lightbox Modal) -->
+  <div class="pdp-lightbox-modal" id="pdp-lightbox-modal" onclick="closeLightbox()">
+    <div class="pdp-lightbox-content" onclick="event.stopPropagation()">
+      <button class="pdp-lightbox-close" onclick="closeLightbox()">&times;</button>
+      <img src="" alt="زاوية العطر الموسعة" class="pdp-lightbox-img" id="pdp-lightbox-img" />
+    </div>
+  </div>
+
+  <!-- نافذة كتابة تقييم جديد (Review Modal) -->
+  <div class="modal-overlay" id="pdp-review-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeReviewModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span>⭐</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="pdp_review_modal_title">تقييم عطر أطياب</h3>
+      </div>
+      <form onsubmit="handleReviewSubmit(event)">
+        <div class="form-group">
+          <label for="rev-name" data-i18n="pdp_review_name_label">اسمك الكريم:</label>
+          <input type="text" id="rev-name" class="form-control" required placeholder="مثال: تركي السديري" />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label for="rev-city" data-i18n="pdp_review_city_label">المدينة بالمملكة:</label>
+            <input type="text" id="rev-city" class="form-control" required placeholder="مثال: الرياض" />
+          </div>
+          <div class="form-group">
+            <label for="rev-rating" data-i18n="pdp_review_rating_label">التقييم:</label>
+            <select id="rev-rating" class="form-control" required>
+              <option value="5" selected>★★★★★ (5 من 5) ممتاز جداً</option>
+              <option value="4">★★★★☆ (4 من 5) رائع</option>
+              <option value="3">★★★☆☆ (3 من 5) جيد</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rev-comment" data-i18n="pdp_review_comment_label">انطباعك ورأيك في ثبات وفوحان العطر:</label>
+          <textarea id="rev-comment" class="form-control" rows="3" required placeholder="اكتب تجربتك مع العطر وثباته على الملابس والمناسبات التي استخدمته فيها..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;" data-i18n="pdp_review_submit_btn">
+          إرسال التقييم الملكي ⭐
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة قائمة المفضلة -->
+  <div class="modal-overlay" id="wishlist-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeWishlistModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+        <span style="font-size: 1.4rem;">❤️</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="wishlist_title">قائمة عطورك المفضلة</h3>
+      </div>
+      <div id="wishlist-items-container"></div>
+    </div>
+  </div>
+
+  <!-- نافذة الحساب: دخول أو إنشاء حساب -->
+  <div class="modal-overlay" id="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title">
+    <div class="modal-card account-modal-card">
+      <button class="modal-close-btn" onclick="closeAccountModal()" aria-label="إغلاق">&times;</button>
+      <div class="account-modal-intro">
+        <span class="account-modal-icon">⚜️</span>
+        <div>
+          <span class="section-subtitle" data-i18n="account_eyebrow">بوابتك الملكية</span>
+          <h3 id="account-modal-title" data-i18n="account_title">حساب أطياب</h3>
+          <p data-i18n="account_intro">سجّل دخولك لمتابعة اختياراتك ومشترياتك المفضلة.</p>
+        </div>
+      </div>
+
+      <div class="account-tabs" id="account-tabs" role="tablist">
+        <button class="account-tab active" type="button" role="tab" aria-selected="true" data-account-mode="login" onclick="setAccountMode('login')" data-i18n="account_login_tab">تسجيل الدخول</button>
+        <button class="account-tab" type="button" role="tab" aria-selected="false" data-account-mode="signup" onclick="setAccountMode('signup')" data-i18n="account_signup_tab">إنشاء حساب</button>
+      </div>
+
+      <p class="account-form-message" id="account-form-message" role="status" aria-live="polite"></p>
+
+      <form class="account-panel active" id="account-login-form" data-account-panel="login" onsubmit="handleAccountLogin(event)">
+        <div class="form-group">
+          <label for="account-login-email" data-i18n="account_email_label">البريد الإلكتروني</label>
+          <input type="email" id="account-login-email" class="form-control" required autocomplete="email" data-i18n-placeholder="account_email_placeholder" placeholder="name@example.com" dir="ltr" />
+        </div>
+        <div class="form-group">
+          <label for="account-login-password" data-i18n="account_password_label">كلمة المرور</label>
+          <input type="password" id="account-login-password" class="form-control" required minlength="6" autocomplete="current-password" data-i18n-placeholder="account_password_placeholder" placeholder="6 أحرف على الأقل" />
+        </div>
+        <button type="submit" class="btn btn-primary account-submit" data-i18n="account_login_submit">دخول إلى حسابي</button>
+        <p class="account-switch-copy"><span data-i18n="account_no_account">ليس لديك حساب؟</span> <button type="button" onclick="setAccountMode('signup')" data-i18n="account_signup_tab">إنشاء حساب</button></p>
+      </form>
+
+      <form class="account-panel" id="account-signup-form" data-account-panel="signup" hidden onsubmit="handleAccountSignup(event)">
+        <div class="form-group">
+          <label for="account-signup-name" data-i18n="account_name_label">الاسم الكريم</label>
+          <input type="text" id="account-signup-name" class="form-control" required autocomplete="name" data-i18n-placeholder="account_name_placeholder" placeholder="مثال: محمد بن عبدالله" />
+        </div>
+        <div class="form-group">
+          <label for="account-signup-email" data-i18n="account_email_label">البريد الإلكتروني</label>
+          <input type="email" id="account-signup-email" class="form-control" required autocomplete="email" data-i18n-placeholder="account_email_placeholder" placeholder="name@example.com" dir="ltr" />
+        </div>
+        <div class="account-password-grid">
+          <div class="form-group">
+            <label for="account-signup-password" data-i18n="account_password_label">كلمة المرور</label>
+            <input type="password" id="account-signup-password" class="form-control" required minlength="6" autocomplete="new-password" data-i18n-placeholder="account_password_placeholder" placeholder="6 أحرف على الأقل" />
+          </div>
+          <div class="form-group">
+            <label for="account-signup-confirm-password" data-i18n="account_confirm_password_label">تأكيد كلمة المرور</label>
+            <input type="password" id="account-signup-confirm-password" class="form-control" required minlength="6" autocomplete="new-password" data-i18n-placeholder="account_confirm_password_placeholder" placeholder="أعد كتابة كلمة المرور" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary account-submit" data-i18n="account_signup_submit">إنشاء حسابي</button>
+        <p class="account-switch-copy"><span data-i18n="account_have_account">لديك حساب بالفعل؟</span> <button type="button" onclick="setAccountMode('login')" data-i18n="account_login_tab">تسجيل الدخول</button></p>
+      </form>
+
+      <section class="account-panel account-signed-in" id="account-signed-in-panel" data-account-panel="signed-in" hidden>
+        <span class="account-signed-icon">👑</span>
+        <h4><span data-i18n="account_welcome">أهلاً بك،</span> <span class="account-signed-name"></span></h4>
+        <p data-i18n="account_signed_in_message">تم تسجيل دخولك إلى حساب أطياب.</p>
+        <span class="account-signed-email" dir="ltr"></span>
+        <button type="button" class="btn btn-secondary account-logout" onclick="logoutAccount()" data-i18n="account_logout">تسجيل الخروج</button>
+      </section>
+    </div>
+  </div>
+
+  <!-- نافذة البحث المباشر -->
+  <div class="modal-overlay" id="search-modal">
+    <div class="modal-card search-modal-card">
+      <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="إغلاق">&times;</button>
+      <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; margin-bottom: 16px; font-weight: 800;" data-i18n="search_title">
+        البحث في عطور أطياب
+      </h3>
+      <div class="search-input-wrapper">
+        <input type="text" id="search-input-box" class="search-input-field" placeholder="ابحث باسم العطر أو المكونات..." data-i18n-placeholder="search_placeholder" />
+        <span class="search-icon-inside">🔍</span>
+      </div>
+      <div id="live-search-results" style="max-height: 380px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- نافذة إتمام الطلب -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card checkout-modal-card">
+      <button class="modal-close-btn" onclick="closeCheckoutModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span>👑</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800;" data-i18n="checkout_modal_title">إتمام الطلب الملكي والشحن</h3>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="checkout_modal_desc">
+        يرجى إدخال بيانات التوصيل بدقة لضمان وصول شحنتك سريعاً.
+      </p>
+      <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+        <div class="checkout-grid">
+          <div>
+            <div class="form-group">
+              <label for="co-name" data-i18n="co_name_label">الاسم الكريم بالكامل *</label>
+              <input type="text" id="co-name" class="form-control" required placeholder="محمد بن عبدالله" />
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label for="co-phone" data-i18n="co_phone_label">رقم الجوال *</label>
+                <input type="tel" id="co-phone" class="form-control" required placeholder="05XXXXXXXX" dir="ltr" />
+              </div>
+              <div class="form-group">
+                <label for="co-email" data-i18n="co_email_label">البريد الإلكتروني *</label>
+                <input type="email" id="co-email" class="form-control" required placeholder="name@example.com" dir="ltr" />
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label for="co-city" data-i18n="co_city_label">المدينة *</label>
+                <select id="co-city" class="form-control" required>
+                  <option value="الرياض" selected>الرياض / Riyadh</option>
+                  <option value="جدة">جدة / Jeddah</option>
+                  <option value="الدمام">الدمام / Dammam</option>
+                  <option value="مكة المكرمة">مكة المكرمة / Makkah</option>
+                  <option value="المدينة المنورة">المدينة المنورة / Madinah</option>
+                  <option value="الخبر">الخبر / Khobar</option>
+                  <option value="مدينة أخرى">مدينة أخرى بالمملكة</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="co-payment" data-i18n="co_payment_label">طريقة الدفع *</label>
+                <select id="co-payment" class="form-control" required>
+                  <option value="mada">مدى (Mada)</option>
+                  <option value="applepay">آبل باي (Apple Pay)</option>
+                  <option value="credit">فيزا / ماستركارد</option>
+                  <option value="cod">الدفع عند الاستلام</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="co-address" data-i18n="co_address_label">عنوان الحي والشارع *</label>
+              <textarea id="co-address" class="form-control" rows="2" required placeholder="اسم الحي، الشارع، رقم المبنى..."></textarea>
+            </div>
+          </div>
+          <div>
+            <div id="checkout-summary-box"></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 14px;" data-i18n="co_submit_btn">
+              تأكيد الطلب الملكي 🚀
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة نجاح الطلب -->
+  <div class="modal-overlay" id="confirmation-modal">
+    <div class="modal-card">
+      <div id="confirmation-body"></div>
+    </div>
+  </div>
+
+  <!-- حاوية التنبيهات -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- زر الواتساب العائم -->
+  <a href="https://wa.me/966500000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8" 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     title="محادثة واتساب مباشرة">
+    <span class="whatsapp-tooltip" data-i18n="whatsapp_tooltip">مستشار أطياب عبر الواتساب 💬</span>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.991 0-9.05 4.058-9.05 9.05 0 1.602.42 3.109 1.156 4.417l-1.226 4.478 4.606-1.208c1.261.688 2.709 1.081 4.249 1.081 4.991 0 9.05-4.058 9.05-9.05 0-4.992-4.059-9.05-9.05-9.05z"></path>
+    </svg>
+  </a>
+
+  <!-- الشريط العائم للشراء السريع بالجوال -->
+  <div class="pdp-mobile-sticky-bar" id="pdp-mobile-sticky-bar"></div>
+
+  <!-- Scripts: الترجمة، بيانات المنتجات، منطق المتجر العام، ثم منطق صفحة المنتج -->
+  <script src="js/translations.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/product-page.js"></script>
+</body>
+</html>
