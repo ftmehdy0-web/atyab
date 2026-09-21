@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATYAB Perfumes — Executive Order Management & Live Analytics</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <!-- Top Executive Header -->
+  <header class="admin-header">
+    <div class="admin-header-container">
+      <div class="brand-wrapper">
+        <div class="brand-crest">👑</div>
+        <div class="brand-info">
+          <h1>ATYAB PERFUMES</h1>
+          <span>
+            <span class="live-indicator-dot"></span>
+            Royal Executive Hub • Live
+          </span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Live Saudi Arabia Clock -->
+        <div class="live-clock-pill" title="Current Saudi Arabia Standard Time">
+          <span>🕒</span>
+          <span id="live-ksa-clock">--:--:--</span>
+          <span style="font-size: 0.7rem; color: var(--gold-primary); font-weight: 700;">KSA</span>
+        </div>
+
+        <!-- Super Admin Profile Chip -->
+        <div class="admin-badge-pill">
+          <div class="admin-avatar">👑</div>
+          <div class="admin-meta">
+            <div class="admin-email-text">ftmehdy0@gmail.com</div>
+            <div class="admin-role-text">Authorized Super Admin</div>
+          </div>
+        </div>
+
+        <!-- Quick Storefront Link -->
+        <a href="index.html" target="_blank" class="btn-header-action" title="Open Storefront in New Tab">
+          <span>🛍️</span>
+          <span>View Store</span>
+        </a>
+
+        <!-- Clear Orders -->
+        <button type="button" class="btn-header-action" onclick="clearAllOrders()" title="Clear all orders from dashboard">
+          <span>🗑️</span>
+          <span>Clear Orders</span>
+        </button>
+
+        <!-- Logout -->
+        <button type="button" class="btn-header-action btn-logout" onclick="logoutAdmin()" title="Log out from Executive Session">
+          <span>🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="admin-main">
+
+    <!-- Live Real-Time Sync Status Banner -->
+    <div class="live-sync-banner">
+      <div class="live-sync-left">
+        <span style="font-size: 1.1rem;">⚡</span>
+        <span><strong>Live Sync Active:</strong> Any order submitted on the customer storefront will reflect here in real-time.</span>
+      </div>
+      <div style="font-size: 0.78rem; opacity: 0.9;">
+        <span>Real-time polling: <strong>Active (1.5s)</strong></span>
+      </div>
+    </div>
+
+    <!-- Executive KPI Metrics Row -->
+    <section class="kpi-grid">
+      <!-- Total Gross Revenue -->
+      <div class="kpi-card revenue-kpi">
+        <div class="kpi-top">
+          <span class="kpi-title">Gross Sales Revenue</span>
+          <div class="kpi-icon" style="color: var(--gold-vibrant); border-color: var(--gold-border);">💰</div>
+        </div>
+        <div class="kpi-value" id="kpi-total-revenue">0 SAR</div>
+        <div class="kpi-meta">
+          <span id="kpi-usd-sub" style="color: var(--gold-pale); font-weight: 600;">~$0 USD</span>
+          <span>• Net confirmed store sales</span>
+        </div>
+      </div>
+
+      <!-- Total Orders Registered -->
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Total Orders</span>
+          <div class="kpi-icon" style="color: #60A5FA;">📦</div>
+        </div>
+        <div class="kpi-value" id="kpi-total-orders">0</div>
+        <div class="kpi-meta">
+          <span>All store orders logged</span>
+        </div>
+      </div>
+
+      <!-- Pending Approval -->
+      <div class="kpi-card pending-kpi">
+        <div class="kpi-top">
+          <span class="kpi-title">Pending Approvals</span>
+          <div class="kpi-icon" style="color: #FBBF24; border-color: rgba(245, 158, 11, 0.4);">⏳</div>
+        </div>
+        <div class="kpi-value" id="kpi-pending-count">0</div>
+        <div class="kpi-meta">
+          <span style="color: #FBBF24; font-weight: 700;">Action Required: Pending Confirmation</span>
+        </div>
+      </div>
+
+      <!-- Active Shipments -->
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Active Dispatches</span>
+          <div class="kpi-icon" style="color: #C084FC;">🚚</div>
+        </div>
+        <div class="kpi-value" id="kpi-active-count">0</div>
+        <div class="kpi-meta">
+          <span>In packaging or en route with courier</span>
+        </div>
+      </div>
+
+      <!-- Average Order Value (AOV) -->
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Avg. Order Value (AOV)</span>
+          <div class="kpi-icon" style="color: #34D399;">💎</div>
+        </div>
+        <div class="kpi-value" id="kpi-aov-val">0 SAR</div>
+        <div class="kpi-meta">
+          <span>Average customer basket spend</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Business Intelligence & Analytics Section -->
+    <section class="analytics-section">
+      <!-- Order Lifecycle Distribution -->
+      <div class="analytics-card">
+        <div class="analytics-header">
+          <div>
+            <div class="analytics-title">
+              <span>📊</span>
+              <span>Order Lifecycle Breakdown</span>
+            </div>
+            <div class="analytics-subtitle">Current status proportion across active orders</div>
+          </div>
+        </div>
+
+        <!-- Progress Distribution Bar -->
+        <div class="status-bar-container">
+          <div class="status-bar-segment" id="bar-seg-pending" style="width: 20%; background: #FBBF24;" title="Pending"></div>
+          <div class="status-bar-segment" id="bar-seg-confirmed" style="width: 20%; background: #34D399;" title="Confirmed"></div>
+          <div class="status-bar-segment" id="bar-seg-processing" style="width: 20%; background: #60A5FA;" title="Processing"></div>
+          <div class="status-bar-segment" id="bar-seg-shipped" style="width: 20%; background: #C084FC;" title="Shipped"></div>
+          <div class="status-bar-segment" id="bar-seg-delivered" style="width: 20%; background: #10B981;" title="Delivered"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="status-legend-grid">
+          <div class="status-legend-item">
+            <span class="status-legend-label">
+              <span class="status-legend-dot" style="background: #FBBF24;"></span>
+              <span>Pending</span>
+            </span>
+            <span class="status-legend-val" id="leg-val-pending">0</span>
+          </div>
+          <div class="status-legend-item">
+            <span class="status-legend-label">
+              <span class="status-legend-dot" style="background: #34D399;"></span>
+              <span>Confirmed</span>
+            </span>
+            <span class="status-legend-val" id="leg-val-confirmed">0</span>
+          </div>
+          <div class="status-legend-item">
+            <span class="status-legend-label">
+              <span class="status-legend-dot" style="background: #60A5FA;"></span>
+              <span>Processing</span>
+            </span>
+            <span class="status-legend-val" id="leg-val-processing">0</span>
+          </div>
+          <div class="status-legend-item">
+            <span class="status-legend-label">
+              <span class="status-legend-dot" style="background: #C084FC;"></span>
+              <span>Shipped</span>
+            </span>
+            <span class="status-legend-val" id="leg-val-shipped">0</span>
+          </div>
+          <div class="status-legend-item" style="grid-column: span 2;">
+            <span class="status-legend-label">
+              <span class="status-legend-dot" style="background: #10B981;"></span>
+              <span>Delivered to Customer</span>
+            </span>
+            <span class="status-legend-val" id="leg-val-delivered">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Selling Fragrance Flacons -->
+      <div class="analytics-card">
+        <div class="analytics-header">
+          <div>
+            <div class="analytics-title">
+              <span>🧴</span>
+              <span>Top-Selling Fragrances</span>
+            </div>
+            <div class="analytics-subtitle">Ranked by units and gross revenue generated</div>
+          </div>
+        </div>
+        <div class="perfumes-ranking-list" id="analytics-perfumes-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Regional Distribution Across KSA -->
+      <div class="analytics-card">
+        <div class="analytics-header">
+          <div>
+            <div class="analytics-title">
+              <span>🇸🇦</span>
+              <span>Regional Order Volume</span>
+            </div>
+            <div class="analytics-subtitle">Top delivery destinations across Saudi Arabia</div>
+          </div>
+        </div>
+        <div class="regional-list" id="analytics-regional-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders Filter & Toolbar -->
+    <section class="toolbar-card">
+      <div class="toolbar-upper">
+        <!-- Live Search Field -->
+        <div class="search-box-wrapper">
+          <span class="search-icon-inside">🔍</span>
+          <input type="text" id="admin-order-search" class="search-input-field" placeholder="Search by Order ID (ATY-KSA-...), Customer Name, Phone, City..." />
+        </div>
+
+        <!-- Actions & Region Filter -->
+        <div class="toolbar-buttons">
+          <select id="admin-city-filter" class="select-filter">
+            <option value="all">All Saudi Regions</option>
+          </select>
+
+          <button type="button" class="btn-primary-action" onclick="openNewOrderModal()">
+            <span>➕</span>
+            <span>Create Manual Order</span>
+          </button>
+
+          <button type="button" class="btn-secondary-action" onclick="exportOrdersCSV()" title="Export all orders to CSV">
+            <span>📥</span>
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Filter Tabs -->
+      <div class="status-tabs-row">
+        <button type="button" class="tab-pill active" data-status-filter="all">
+          <span>All Orders</span>
+          <span class="pill-count" data-filter-key="all">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="pending" style="border-color: rgba(245, 158, 11, 0.4);">
+          <span>🟡 Pending Approval</span>
+          <span class="pill-count" data-filter-key="pending">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="confirmed" style="border-color: rgba(16, 185, 129, 0.4);">
+          <span>🟢 Confirmed</span>
+          <span class="pill-count" data-filter-key="confirmed">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="processing">
+          <span>🔵 Processing</span>
+          <span class="pill-count" data-filter-key="processing">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="shipped">
+          <span>🚚 Shipped</span>
+          <span class="pill-count" data-filter-key="shipped">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="delivered">
+          <span>🏁 Delivered</span>
+          <span class="pill-count" data-filter-key="delivered">0</span>
+        </button>
+        <button type="button" class="tab-pill" data-status-filter="cancelled">
+          <span>🔴 Cancelled</span>
+          <span class="pill-count" data-filter-key="cancelled">0</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Orders Master Table -->
+    <section class="table-card">
+      <div class="table-responsive">
+        <table class="orders-data-table">
+          <thead>
+            <tr>
+              <th>Order ID & Date</th>
+              <th>Customer & Destination</th>
+              <th>Fragrance Line Items</th>
+              <th>Total & Payment</th>
+              <th>Live Status</th>
+              <th style="min-width: 250px;">Management Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body">
+            <!-- Dynamically populated by js/admin.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================
+       MODAL 1: ORDER DETAILS MODAL
+       =================================================================== -->
+  <div class="modal-overlay-bg" id="order-details-modal">
+    <div class="modal-window">
+      <div class="modal-header-bar">
+        <div class="modal-title-text">
+          <span>👑</span>
+          <span>Royal Order Details & Tracking</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeOrderModal()">&times;</button>
+      </div>
+
+      <div class="modal-body-scrollable" id="order-details-body">
+        <!-- Injected dynamically -->
+      </div>
+
+      <div class="modal-footer-bar" id="order-details-footer">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 2: MANUAL ORDER CREATION MODAL
+       =================================================================== -->
+  <div class="modal-overlay-bg" id="new-order-modal">
+    <div class="modal-window" style="max-width: 600px;">
+      <div class="modal-header-bar">
+        <div class="modal-title-text">
+          <span>➕</span>
+          <span>Create Manual Order</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeNewOrderModal()">&times;</button>
+      </div>
+
+      <form onsubmit="handleManualOrderSubmit(event)">
+        <div class="modal-body-scrollable">
+          <div class="form-group-item">
+            <label for="manual-name">Customer Full Name *</label>
+            <input type="text" id="manual-name" required placeholder="e.g. Sultan Al-Mohammed" />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group-item">
+              <label for="manual-phone">Phone Number *</label>
+              <input type="tel" id="manual-phone" required placeholder="05XXXXXXXX" dir="ltr" />
+            </div>
+            <div class="form-group-item">
+              <label for="manual-city">Destination City (KSA) *</label>
+              <select id="manual-city" required>
+                <option value="Riyadh">Riyadh</option>
+                <option value="Jeddah">Jeddah</option>
+                <option value="Makkah">Makkah</option>
+                <option value="Madinah">Madinah</option>
+                <option value="Dammam">Dammam</option>
+                <option value="Khobar">Khobar</option>
+                <option value="Qassim">Qassim</option>
+                <option value="Abha">Abha</option>
+                <option value="Tabuk">Tabuk</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-item">
+            <label for="manual-address">Delivery Address & District *</label>
+            <input type="text" id="manual-address" required placeholder="District, Street Name, Villa / Bldg No..." />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+            <div class="form-group-item">
+              <label for="manual-product-select">Select Perfume Product *</label>
+              <select id="manual-product-select" required></select>
+            </div>
+            <div class="form-group-item">
+              <label for="manual-product-qty">Quantity *</label>
+              <input type="number" id="manual-product-qty" min="1" max="50" value="1" required />
+            </div>
+          </div>
+
+          <div class="form-group-item">
+            <label for="manual-payment">Payment Method *</label>
+            <select id="manual-payment" required>
+              <option value="mada">Mada Debit Card</option>
+              <option value="applepay">Apple Pay</option>
+              <option value="credit">Visa / MasterCard</option>
+              <option value="cod">Cash on Delivery (COD)</option>
+            </select>
+          </div>
+
+          <div style="background: rgba(197, 155, 39, 0.1); border: 1px dashed var(--gold-border); border-radius: var(--radius-sm); padding: 14px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: var(--gold-pale); font-size: 0.88rem;">Calculated Total:</span>
+            <span id="manual-total-preview" style="font-weight: 900; color: var(--gold-vibrant); font-size: 1.15rem;">40 SAR</span>
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-secondary-action" onclick="closeNewOrderModal()">Cancel</button>
+          <button type="submit" class="btn-primary-action">✨ Submit & Approve Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Container for Printable Invoice -->
+  <div id="printable-invoice"></div>
+
+  <!-- Toast Notifications Container -->
+  <div class="admin-toast-hub" id="admin-toast-hub"></div>
+
+  <!-- JavaScript Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

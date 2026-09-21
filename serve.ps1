@@ -36,12 +36,16 @@ while ($listener.IsListening) {
             $response.ContentType = $mime
             $bytes = [IO.File]::ReadAllBytes($fullPath)
             $response.ContentLength64 = $bytes.Length
-            $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            if ($request.HttpMethod -ne "HEAD") {
+                $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            }
         } else {
             $response.StatusCode = 404
             $errBytes = [Text.Encoding]::UTF8.GetBytes("404 Not Found")
             $response.ContentLength64 = $errBytes.Length
-            $response.OutputStream.Write($errBytes, 0, $errBytes.Length)
+            if ($request.HttpMethod -ne "HEAD") {
+                $response.OutputStream.Write($errBytes, 0, $errBytes.Length)
+            }
         }
         $response.OutputStream.Close()
     } catch {
