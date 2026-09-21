@@ -831,6 +831,11 @@ function updateAccountUI() {
     element.textContent = state.account?.email || "";
   });
 
+  const isAdmin = Boolean(localStorage.getItem("atyab_admin_session") || (state.account && state.account.email === "admin@gmail.com"));
+  document.querySelectorAll(".account-admin-link-box").forEach((box) => {
+    box.hidden = !isAdmin;
+  });
+
   if (!state.account && signedInPanel?.classList.contains("active")) {
     setAccountMode("login");
   }
@@ -893,6 +898,44 @@ function handleAccountLogin(event) {
   const email = document.getElementById("account-login-email")?.value.trim().toLowerCase();
   const password = document.getElementById("account-login-password")?.value;
 
+  // فحص تسجيل دخول المشرف / الأدمن المخصص
+  if (email === "admin@gmail.com") {
+    if (password === "123456") {
+      const adminSession = {
+        email: "admin@gmail.com",
+        name: "مدير المتجر الملكي (Super Admin)",
+        role: "admin",
+        token: "atyab_adm_" + Date.now(),
+        loggedInAt: new Date().toISOString()
+      };
+      localStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+      sessionStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+      saveAccount({ name: "Super Admin (إدارة أطياب)", email: "admin@gmail.com", role: "admin" });
+
+      showAccountMessage(
+        state.language === "en" ? "👑 Admin verified! Redirecting to Royal Admin..." : "👑 تم التحقق من حساب الإدارة الملكية! جاري توجيهك...",
+        "success"
+      );
+      showToast(
+        state.language === "en" ? "👑 Welcome Super Admin" : "👑 مرحباً بمدير النظام",
+        state.language === "en" ? "Access granted. Launching Royal Admin Panel..." : "تم التحقق بنجاح! جاري فتح لوحة التحكم الملكية...",
+        "👑"
+      );
+
+      setTimeout(() => {
+        closeAccountModal();
+        window.location.href = "admin.html";
+      }, 700);
+      return;
+    } else {
+      showAccountMessage(
+        state.language === "en" ? "Incorrect password for admin account (admin@gmail.com)." : "كلمة المرور غير صحيحة لحساب الإدارة (admin@gmail.com)."
+      );
+      return;
+    }
+  }
+
+  // تسجيل دخول المستخدم العادي
   if (!email || !password || !state.account || state.account.email.toLowerCase() !== email) {
     showAccountMessage(t("account_login_error"));
     return;
@@ -928,6 +971,8 @@ function logoutAccount() {
   state.account = null;
   localStorage.removeItem("atyab_account");
   localStorage.removeItem("aytyab_account");
+  localStorage.removeItem("atyab_admin_session");
+  sessionStorage.removeItem("atyab_admin_session");
   updateAccountUI();
   setAccountMode("login");
 }
@@ -1245,9 +1290,86 @@ function closeCheckoutModal() {
 
 function handleCheckoutSubmit(e) {
   e.preventDefault();
-  const name = document.getElementById("co-name").value;
-  const email = document.getElementById("co-email").value;
+  const name = document.getElementById("co-name")?.value.trim() || (state.language === "en" ? "Royal Customer" : "عميل أطياب الملكي");
+  const email = document.getElementById("co-email")?.value.trim() || "";
+  const phone = document.getElementById("co-phone")?.value.trim() || "";
+  const city = document.getElementById("co-city")?.value || (state.language === "en" ? "Riyadh" : "الرياض");
+  const paymentMethod = document.getElementById("co-payment")?.value || "mada";
+  const address = document.getElementById("co-address")?.value.trim() || "";
   const orderId = "ATY-KSA-" + Math.floor(100000 + Math.random() * 900000);
+
+  const subtotalSAR = state.cart.reduce((sum, item) => sum + (item.priceSAR || 0) * item.quantity, 0);
+  const discountSAR = (state.appliedCoupon === "ATYAB10" || state.appliedCoupon === "AYTYAB10") ? Math.round(subtotalSAR * 0.1) : 0;
+  const shippingSAR = subtotalSAR >= 150 ? 0 : 25;
+  const totalSAR = Math.max(0, subtotalSAR - discountSAR) + shippingSAR;
+
+  const paymentLabels = {
+    mada: "مدى (Mada Debit)",
+    applepay: "آبل باي (Apple Pay)",
+    credit: "بطاقة ائتمانية (Visa / MasterCard)",
+    cod: "الدفع عند الاستلام (COD)"
+  };
+
+  // تجهيز سجل الطلب الكامل لحفظه في لوحة الإدارة
+  const orderRecord = {
+    id: orderId,
+    createdAt: new Date().toISOString(),
+    status: "pending", // pending, confirmed, processing, shipped, delivered, cancelled
+    customer: {
+      name,
+      email,
+      phone,
+      city,
+      address,
+      paymentMethod,
+      paymentLabel: paymentLabels[paymentMethod] || paymentMethod,
+      paymentStatus: paymentMethod === "cod" ? "عند الاستلام (Pending COD)" : "مدفوع إلكترونياً (Paid)"
+    },
+    items: state.cart.map((item) => ({
+      id: item.id,
+      name: item.name,
+      nameEn: item.nameEn || item.name,
+      size: item.size,
+      priceSAR: item.priceSAR,
+      quantity: item.quantity,
+      image: item.image
+    })),
+    financials: {
+      subtotalSAR,
+      discountSAR,
+      shippingSAR,
+      totalSAR
+    },
+    tracking: {
+      carrier: "أرامكس السعودية (Aramex)",
+      trackingNumber: "ATY" + Math.floor(10000000 + Math.random() * 90000000)
+    },
+    notes: [
+      {
+        author: "النظام الملكي",
+        text: "تم إنشاء الطلب بنجاح عبر المتجر الإلكتروني بانتظار التأكيد",
+        date: new Date().toISOString()
+      }
+    ],
+    timeline: [
+      {
+        status: "pending",
+        title: "تم استلام الطلب",
+        titleEn: "Order Received",
+        time: new Date().toISOString(),
+        note: "تم تسجيل الطلب في قائمة الانتظار للمراجعة والتأكيد"
+      }
+    ]
+  };
+
+  try {
+    const stored = localStorage.getItem("atyab_orders");
+    const orders = stored ? JSON.parse(stored) : [];
+    orders.unshift(orderRecord);
+    localStorage.setItem("atyab_orders", JSON.stringify(orders));
+  } catch (err) {
+    console.error("Error saving order to localStorage:", err);
+  }
 
   closeCheckoutModal();
 
