@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 705" width="100%" height="100%">
+  <defs>
+    <linearGradient id="atyabGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="30%" stop-color="#B88A28"/>
+      <stop offset="70%" stop-color="#C59B3F"/>
+      <stop offset="100%" stop-color="#9E7422"/>
+    </linearGradient>
+    <style>
+      .gold-elem { fill: url(#atyabGoldGrad); }
+      .gold-stroke { stroke: url(#atyabGoldGrad); fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .brand-title-en {
+        font-family: 'Times New Roman', 'Amiri', 'Cinzel', serif;
+        font-size: 80px;
+        font-weight: 800;
+        letter-spacing: 0.30em;
+        fill: url(#atyabGoldGrad);
+        text-anchor: middle;
+      }
+      .brand-sub-en {
+        font-family: 'Times New Roman', 'Amiri', 'Cinzel', serif;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: 0.36em;
+        fill: url(#atyabGoldGrad);
+        text-anchor: middle;
+      }
+    </style>
+  </defs>
+
+  <!-- ===================================================================
+       ATYAB ROYAL CALLIGRAPHIC CREST / MONOGRAM (أطـيـاب للعـطـور)
+       Symmetrical Arabesque Heraldic Insignia in Ahmed Al Maghribi Luxury Style
+       =================================================================== -->
+  <g class="gold-elem" transform="translate(350, 275)">
+    <!-- Central Symmetrical Crown / Finial (Alif Tops) -->
+    <path d="M0, -210 C14,-190 28,-160 28,-130 C28,-100 16,-85 0,-70 C-16,-85 -28,-100 -28,-130 C-28,-160 -14,-190 0,-210 Z" />
+    <circle cx="0" cy="-228" r="8" />
+
+    <!-- Twin Central Scepters / Royal Alif Pillars -->
+    <path d="M-12,-110 L-6,70 L-14,70 L-14,-110 Z" />
+    <path d="M12,-110 L6,70 L14,70 L14,-110 Z" />
+
+    <!-- Center Diamond Nuqta / Jewel -->
+    <polygon points="0,-30 20,-10 0,10 -20,-10" />
+
+    <!-- Right Ornate Calligraphic Wing (Letter "ط" & "ي" Flourishes) -->
+    <path d="M24,-140 C55,-160 110,-175 160,-145 C205,-118 220,-60 195,-15 C175,22 130,48 85,55 C125,58 175,75 190,115 C205,158 175,200 125,208 C80,215 35,185 20,150 C12,132 10,100 24,78 C38,55 72,50 95,68 C115,84 118,114 102,132 C88,148 62,150 48,138 C42,133 40,125 45,120 C50,115 58,118 64,124 C72,130 84,126 90,118 C98,106 95,88 82,78 C65,65 38,72 26,90 C12,110 14,142 25,162 C42,192 85,202 118,194 C158,184 180,150 168,115 C156,82 115,68 76,64 C120,54 162,30 178,-5 C198,-48 182,-96 145,-122 C105,-150 60,-138 32,-120 Z" />
+
+    <!-- Left Ornate Calligraphic Wing (Mirrored Symmetrical Arabesque) -->
+    <path d="M-24,-140 C-55,-160 -110,-175 -160,-145 C-205,-118 -220,-60 -195,-15 C-175,22 -130,48 -85,55 C-125,58 -175,75 -190,115 C-205,158 -175,200 -125,208 C-80,215 -35,185 -20,150 C-12,132 -10,100 -24,78 C-38,55 -72,50 -95,68 C-115,84 -118,114 -102,132 C-88,148 -62,150 -48,138 C-42,133 -40,125 -45,120 C-50,115 -58,118 -64,124 C-72,130 -84,126 -90,118 C-98,106 -95,88 -82,78 C-65,65 -38,72 -26,90 C-12,110 -14,142 -25,162 C-42,192 -85,202 -118,194 C-158,184 -180,150 -168,115 C-156,82 -115,68 -76,64 C-120,54 -162,30 -178,-5 C-198,-48 -182,-96 -145,-122 C-105,-150 -60,-138 -32,-120 Z" />
+
+    <!-- Top Outer Flares (Crown Horns) -->
+    <path d="M-135,-140 C-160,-190 -210,-215 -245,-210 C-240,-190 -220,-175 -190,-165 C-160,-155 -142,-145 -135,-140 Z" />
+    <path d="M135,-140 C160,-190 210,-215 245,-210 C240,-190 220,-175 190,-165 C160,-155 142,-145 135,-140 Z" />
+
+    <!-- Bottom Base Bow (Letter "ب" Cradle) -->
+    <path d="M-150,180 C-100,225 -50,245 0,246 C50,245 100,225 150,180 C110,215 60,232 0,233 C-60,232 -110,215 -150,180 Z" />
+
+    <!-- Lower Royal Drop Jewels (Nuqta Dots) -->
+    <circle cx="-65" cy="225" r="7" />
+    <circle cx="0" cy="262" r="9" />
+    <circle cx="65" cy="225" r="7" />
+  </g>
+
+  <!-- ===================================================================
+       ATYAB PERFUME TYPOGRAPHY (ONLY ATYAB PERFUME)
+       =================================================================== -->
+  <text x="350" y="615" class="brand-title-en">ATYAB</text>
+  <text x="350" y="675" class="brand-sub-en">PERFUME</text>
+</svg>

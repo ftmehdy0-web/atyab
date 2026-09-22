@@ -62,8 +62,109 @@ function t(key, replacements = {}) {
 }
 
 // ===================================================================
-// دوال تبديل اللغة (LANGUAGE TOGGLE & SWITCHING)
 // ===================================================================
+// دوال تبديل اللغة ومحددات الترويسة الفاخرة (HEADER CONTROLS & I18N)
+// ===================================================================
+function toggleHdrLang(event) {
+  if (event) event.stopPropagation();
+  const dropdown = document.getElementById("hdr-lang-dropdown");
+  const countryDropdown = document.getElementById("hdr-country-dropdown");
+  countryDropdown?.classList.remove("open");
+  dropdown?.classList.toggle("open");
+}
+
+function toggleHdrCountry(event) {
+  if (event) event.stopPropagation();
+  const dropdown = document.getElementById("hdr-country-dropdown");
+  const langDropdown = document.getElementById("hdr-lang-dropdown");
+  langDropdown?.classList.remove("open");
+  dropdown?.classList.toggle("open");
+}
+
+function selectHdrCountry(countryCode, currency) {
+  state.country = countryCode;
+  localStorage.setItem("atyab_country", countryCode);
+  
+  const currentLabel = document.getElementById("hdr-country-current");
+  if (currentLabel) currentLabel.textContent = countryCode;
+
+  document.querySelectorAll("#hdr-country-dropdown .hdr-dropdown-item").forEach(item => {
+    item.classList.toggle("active", item.dataset.country === countryCode);
+  });
+
+  const dropdown = document.getElementById("hdr-country-dropdown");
+  dropdown?.classList.remove("open");
+
+  if (currency && state.currency !== currency) {
+    state.currency = currency;
+    localStorage.setItem("atyab_currency", currency);
+    renderProducts();
+    renderShowcase();
+    updateCartUI();
+    showToast(state.language === "ar" ? `تم تحديث الدولة إلى ${countryCode}` : `Region set to ${countryCode}`);
+  }
+}
+
+function handleHeaderSearch() {
+  const input = document.getElementById("hdr-search-input");
+  const query = input?.value?.trim() || "";
+  openSearchModal();
+  const modalInput = document.getElementById("search-input-box");
+  if (modalInput) {
+    modalInput.value = query;
+    handleLiveSearch(query);
+    modalInput.focus();
+  }
+}
+
+function openTrackOrderModal() {
+  const modal = document.getElementById("track-order-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+    const input = document.getElementById("track-order-input");
+    if (input) input.focus();
+  }
+}
+
+function closeTrackOrderModal() {
+  const modal = document.getElementById("track-order-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+}
+
+function submitTrackOrder() {
+  const input = document.getElementById("track-order-input");
+  const val = input?.value?.trim();
+  const resultBox = document.getElementById("track-order-result");
+  if (!val) {
+    showToast(state.language === "ar" ? "يرجى إدخال رقم الطلب أو رقم الجوال" : "Please enter an order or mobile number", "error");
+    return;
+  }
+  if (resultBox) {
+    resultBox.style.display = "block";
+    showToast(state.language === "ar" ? `جاري تتبع الشحنة: ${val}` : `Tracking shipment: ${val}`);
+  }
+}
+
+function openStoreLocatorModal() {
+  const modal = document.getElementById("store-locator-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeStoreLocatorModal() {
+  const modal = document.getElementById("store-locator-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+}
+
 function toggleLangDropdown(event) {
   if (event) event.stopPropagation();
   const dropdown = document.getElementById("lang-selector-dropdown");
@@ -80,11 +181,17 @@ function switchLanguage(lang, notify = true) {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
-  // إغلاق القائمة المنسدلة
-  const dropdown = document.getElementById("lang-selector-dropdown");
-  dropdown?.classList.remove("open");
+  // إغلاق القوائم المنسدلة
+  document.getElementById("lang-selector-dropdown")?.classList.remove("open");
+  document.getElementById("hdr-lang-dropdown")?.classList.remove("open");
+  document.getElementById("hdr-country-dropdown")?.classList.remove("open");
 
-  // تحديث تسمية الزر وحالة الاختيار
+  // تحديث تسمية الزر وحالة الاختيار في الترويسة الجديدة
+  const hdrLangCurrent = document.getElementById("hdr-lang-current");
+  if (hdrLangCurrent) {
+    hdrLangCurrent.textContent = lang === "en" ? "English" : "عربي";
+  }
+
   const label = document.getElementById("current-lang-label");
   if (label) {
     label.textContent = lang === "en" ? "English" : "العربية";
@@ -94,6 +201,10 @@ function switchLanguage(lang, notify = true) {
   if (topLangText) {
     topLangText.textContent = lang === "ar" ? "English" : "العربية";
   }
+
+  document.querySelectorAll("#hdr-lang-dropdown .hdr-dropdown-item").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
 
   document.querySelectorAll(".lang-option").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.lang === lang);
@@ -238,11 +349,19 @@ function initHeader() {
     currSelect.addEventListener("change", (e) => setCurrency(e.target.value));
   }
 
-  // إغلاق قائمة اللغة عند النقر خارجها
+  // إغلاق قوائم اللغة والدولة عند النقر خارجها
   document.addEventListener("click", (e) => {
     const dropdown = document.getElementById("lang-selector-dropdown");
     if (dropdown && !dropdown.contains(e.target)) {
       dropdown.classList.remove("open");
+    }
+    const hdrLang = document.getElementById("hdr-lang-dropdown");
+    if (hdrLang && !hdrLang.contains(e.target)) {
+      hdrLang.classList.remove("open");
+    }
+    const hdrCountry = document.getElementById("hdr-country-dropdown");
+    if (hdrCountry && !hdrCountry.contains(e.target)) {
+      hdrCountry.classList.remove("open");
     }
   });
 }
@@ -345,11 +464,14 @@ function initHeroSlider() {
   }
 }
 
-// التصفية السريعة عبر دوائر التصنيفات
+// التصفية السريعة عبر دوائر وتصنيفات الترويسة
 function filterByCategory(category) {
   state.filter = category;
   document.querySelectorAll(".filter-tab").forEach((t) => {
     t.classList.toggle("active", t.dataset.filter === category);
+  });
+  document.querySelectorAll(".cat-nav-link").forEach((link) => {
+    link.classList.toggle("active", link.dataset.cat === category);
   });
   renderProducts();
   const catalogEl = document.getElementById("catalog");
@@ -665,10 +787,12 @@ function openCartDrawer() {
   const drawer = document.getElementById("cart-drawer");
   const backdrop = document.getElementById("drawer-backdrop");
   if (drawer) {
+    drawer.style.display = "flex";
     drawer.style.visibility = "visible";
     drawer.classList.add("active");
   }
   if (backdrop) {
+    backdrop.style.display = "block";
     backdrop.style.visibility = "visible";
     backdrop.classList.add("active");
   }
@@ -682,9 +806,11 @@ function closeCartDrawer() {
   setTimeout(() => {
     if (drawer && !drawer.classList.contains("active")) {
       drawer.style.visibility = "hidden";
+      drawer.style.display = "none";
     }
     if (backdrop && !backdrop.classList.contains("active")) {
       backdrop.style.visibility = "hidden";
+      backdrop.style.display = "none";
     }
   }, 460);
 }
@@ -693,10 +819,12 @@ function openMobileNav() {
   const drawer = document.getElementById("mobile-nav-drawer");
   const backdrop = document.getElementById("mobile-nav-backdrop");
   if (drawer) {
+    drawer.style.display = "flex";
     drawer.style.visibility = "visible";
     drawer.classList.add("active");
   }
   if (backdrop) {
+    backdrop.style.display = "block";
     backdrop.style.visibility = "visible";
     backdrop.classList.add("active");
   }
@@ -710,9 +838,11 @@ function closeMobileNav() {
   setTimeout(() => {
     if (drawer && !drawer.classList.contains("active")) {
       drawer.style.visibility = "hidden";
+      drawer.style.display = "none";
     }
     if (backdrop && !backdrop.classList.contains("active")) {
       backdrop.style.visibility = "hidden";
+      backdrop.style.display = "none";
     }
   }, 460);
 }

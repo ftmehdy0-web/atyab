@@ -211,6 +211,13 @@ html {
   }
 }
 
+html {
+  overflow-x: clip !important;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+}
+
 body {
   font-family: var(--font-main);
   background-color: var(--bg-primary);
@@ -218,7 +225,11 @@ body {
   direction: rtl;
   text-align: right;
   line-height: 1.65;
-  overflow-x: hidden;
+  overflow-x: clip !important;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  position: relative;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -252,17 +263,16 @@ button {
 }
 
 /* ===================================================================
-   1. شريط الإعلانات العلوي (TOP ANNOUNCEMENT BAR)
+   1. شريط الإعلانات العلوي (TOP UTILITY & ANNOUNCEMENT BAR)
    =================================================================== */
 .announcement-bar {
   background-color: #000000;
   color: #FFFFFF;
-  padding: 10px 0;
-  font-size: 0.82rem;
-  letter-spacing: 0.02em;
-  border-bottom: 1px solid rgba(166, 123, 48, 0.35);
+  padding: 7px 0;
   position: relative;
   z-index: 100;
+  font-size: 0.80rem;
+  border-bottom: 1px solid rgba(184, 138, 40, 0.35);
 }
 
 .announcement-inner {
@@ -270,13 +280,13 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
 .announcement-text {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  font-size: 0.80rem;
   font-weight: 500;
 }
 
@@ -285,255 +295,380 @@ button {
 }
 
 .announcement-text .accent {
-  color: var(--gold-light);
-  font-weight: 600;
-  margin-right: 8px;
+  color: #E2BA62;
+  font-weight: 700;
+  background: rgba(184, 138, 40, 0.22);
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(184, 138, 40, 0.45);
+  letter-spacing: 0.06em;
 }
 
-.header-top-selectors {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.currency-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #CCC;
-}
-
-.currency-selector select {
-  background: #1A1A1A;
-  color: #FFF;
-  border: 1px solid rgba(166, 123, 48, 0.5);
-  border-radius: var(--radius-xs);
-  padding: 4px 10px;
-  font-size: 0.78rem;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.top-lang-switch {
-  display: flex;
-  align-items: center;
-  margin-right: 12px;
-  padding-right: 12px;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-html[dir="ltr"] .top-lang-switch {
-  margin-right: 0;
-  margin-left: 12px;
-  padding-right: 0;
-  padding-left: 12px;
-  border-right: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.top-lang-btn {
+.track-order-top-link {
+  color: #FFFFFF;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
-  border: 1px solid rgba(166, 123, 48, 0.45);
-  padding: 3px 10px;
-  border-radius: var(--radius-xs);
-  font-size: 0.78rem;
-  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.top-lang-btn:hover {
-  background: var(--gold-primary);
+.track-order-top-link:hover {
+  background: #B88A28;
+  border-color: #B88A28;
   color: #000000;
-  border-color: var(--gold-primary);
 }
 
 /* ===================================================================
-   2. الترويسة الفاخرة (MAIN LUXURY HEADER)
+   2. الترويسة الرئيسية الفاخرة (ATYAB PERFUME LUXURY HEADER)
    =================================================================== */
 .main-header {
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
+  background: #FFFFFF;
+  border-bottom: 1px solid #ECECEC;
   z-index: 99;
-  transition: var(--transition-fast);
+  transition: box-shadow 0.25s ease;
 }
 
 .main-header.scrolled {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
-.header-container {
+/* توسيع ترويسة الموقع وشريط الإعلانات لعرض فاخر وعريض مثل موقع أحمد المغربي (EXPANDED FLUID LUXURY WIDTH) */
+.main-header .container,
+.announcement-bar .container {
+  width: 100%;
+  max-width: 1720px;
+  padding-left: clamp(20px, 3.5vw, 64px);
+  padding-right: clamp(20px, 3.5vw, 64px);
+}
+
+/* المستوى الأول: الشعار والأدوات والبحث */
+.header-main-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 86px;
-  padding: 6px 0;
-  gap: clamp(10px, 1.8vw, 24px);
+  min-height: 110px;
+  padding: 10px 0 8px;
+  gap: clamp(16px, 2.5vw, 40px);
 }
 
-/* شعار أطياب للعطور */
-.brand-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-decoration: none;
-  flex-shrink: 0;
-  padding: 2px 0;
-}
-
-.brand-arabic {
-  font-family: var(--font-calligraphy);
-  font-size: 1.55rem;
-  font-weight: 700;
-  color: #000000;
-  line-height: 1.15;
-  letter-spacing: 0.02em;
-}
-
-.brand-title {
-  font-family: var(--font-arabic-title);
-  font-size: 0.84rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  color: var(--gold-primary);
-  text-transform: uppercase;
-  line-height: 1.2;
-}
-
-.brand-tagline {
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-/* القائمة الرئيسية */
-.nav-menu {
-  display: flex;
-  list-style: none;
-  gap: clamp(10px, 1.4vw, 20px);
-  align-items: center;
-  flex-wrap: nowrap;
-}
-
-.nav-link {
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: #1A1A1A;
-  padding: 6px 0;
-  position: relative;
-  white-space: nowrap;
-  transition: var(--transition-fast);
-}
-
-.nav-link:hover,
-.nav-link.active {
-  color: var(--gold-primary);
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  right: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gold-primary);
-  transition: width 0.25s ease;
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
-}
-
-.nav-badge-hot {
-  background: var(--gold-primary);
-  color: #FFF;
-  font-size: 0.62rem;
-  padding: 1px 6px;
-  border-radius: var(--radius-full);
-  margin-right: 4px;
-  font-weight: 700;
-}
-
-/* أدوات الترويسة */
-.header-actions {
+/* الجانب الأيسر: الأيقونات (السلة، الفروع، الحساب) + مربع البحث */
+.header-left-tools {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  gap: clamp(14px, 2vw, 24px);
+  flex: 1 1 0%;
+  justify-content: flex-start;
 }
 
-.action-btn {
+.header-icons-cluster {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.5vw, 18px);
+}
+
+.hdr-icon-btn {
   position: relative;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
   color: #111111;
-  width: 38px;
-  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--border-light);
-  background: #FFFFFF;
-  transition: var(--transition-fast);
-}
-
-.action-btn:hover {
-  border-color: var(--gold-primary);
-  color: var(--gold-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(166, 123, 48, 0.15);
-}
-
-.account-initial {
-  font-family: var(--font-arabic-title);
-  font-size: 0.9rem;
-  font-weight: 900;
+  transition: color 0.2s ease, transform 0.2s ease;
   line-height: 1;
 }
 
-.account-action-btn.signed-in {
-  background: #000000;
-  border-color: #000000;
-  color: #FFFFFF;
+.hdr-icon-btn:hover {
+  color: #B88A28;
 }
 
-.account-action-btn.signed-in:hover {
-  color: #FFFFFF;
+.hdr-cart-btn {
+  position: relative;
 }
 
-.badge-count {
+/* شارة السلة الدائرية الذهبية في أسفل يمين الأيقونة كما في الصورة المرجعية */
+.cart-badge-subtle {
   position: absolute;
-  top: -3px;
-  left: -3px;
-  background: #000000;
-  color: #FFF;
-  font-size: 0.65rem;
+  bottom: 0;
+  right: 0;
+  background: #B88A28;
+  color: #FFFFFF;
+  font-size: 0.62rem;
   font-weight: 700;
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--gold-primary);
+  border: 1.5px solid #FFFFFF;
+  line-height: 1;
+  font-family: 'Outfit', sans-serif;
+}
+
+html[dir="rtl"] .cart-badge-subtle {
+  right: auto;
+  left: 0;
+}
+
+/* مربع البحث: مستطيل ذو حدود أنيقة، نص SEARCH، أيقونة العدسة */
+.hdr-search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #767676;
+  background: #FFFFFF;
+  width: clamp(160px, 14vw, 220px);
+  height: 38px;
+  padding: 0 12px;
+  transition: border-color 0.2s ease;
+}
+
+.hdr-search-box:focus-within {
+  border-color: #000000;
+}
+
+.hdr-search-input {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.hdr-search-input::placeholder {
+  color: #8C8C8C;
+}
+
+.hdr-search-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.hdr-search-btn:hover {
+  color: #B88A28;
+}
+
+/* القسم الأوسط: الشعار الرسمي لأطياب للعطور بحجم أكبر وأوضح */
+.header-center-branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex: 0 0 auto;
+  padding: 4px 16px;
+}
+
+.brand-emblem-logo-img {
+  height: clamp(96px, 7.5vw, 120px);
+  width: auto;
+  max-width: 260px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.brand-emblem-logo-img:hover {
+  transform: scale(1.03);
+}
+
+/* الجانب الأيمن: قوائم اختيار اللغة (عربي ∨) والدولة (KSA ∨) */
+.header-right-tools {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2vw, 32px);
+  flex: 1 1 0%;
+  justify-content: flex-end;
+}
+
+.hdr-dropdown-wrapper {
+  position: relative;
+}
+
+.hdr-dropdown-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1A1A1A;
+  padding: 6px 2px;
+  transition: color 0.2s ease;
+}
+
+.hdr-dropdown-trigger:hover {
+  color: #B88A28;
+}
+
+.hdr-dropdown-trigger .dropdown-chevron {
+  transition: transform 0.2s ease;
+}
+
+.hdr-dropdown-wrapper.open .hdr-dropdown-trigger .dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.hdr-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid #EBEBEB;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  min-width: 170px;
+  padding: 6px 0;
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[dir="rtl"] .hdr-dropdown-menu {
+  right: auto;
+  left: 0;
+}
+
+.hdr-dropdown-wrapper.open .hdr-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.hdr-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 16px;
+  background: none;
+  border: none;
+  text-align: inherit;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #222222;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hdr-dropdown-item:hover,
+.hdr-dropdown-item.active {
+  background: #F8F6F2;
+  color: #B88A28;
+}
+
+.hdr-dropdown-item .check-icon {
+  font-size: 0.8rem;
+  color: #B88A28;
+  opacity: 0;
+}
+
+.hdr-dropdown-item.active .check-icon {
+  opacity: 1;
+}
+
+/* المستوى الثاني: شريط تصنيفات العطور الملكية */
+.header-category-row {
+  border-top: 1px solid #F0F0F0;
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  contain: paint;
+}
+
+.category-nav-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  gap: clamp(18px, 2.8vw, 44px);
+  margin: 0;
+  padding: 12px 0 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-nav-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-nav-link {
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1A1A1A;
+  text-decoration: none;
+  padding: 4px 2px;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.cat-nav-link:hover,
+.cat-nav-link.active {
+  color: #B88A28;
+}
+
+.cat-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #B88A28;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+
+.cat-nav-link:hover::after,
+.cat-nav-link.active::after {
+  transform: scaleX(1);
 }
 
 .menu-toggle {
   display: none;
+  background: none;
+  border: none;
   color: #111;
+  padding: 6px;
+  cursor: pointer;
 }
 
 /* ===================================================================
@@ -653,6 +788,7 @@ html[dir="ltr"] .top-lang-switch {
   min-height: 620px;
   height: 75vh;
   max-height: 820px;
+  overflow: hidden;
 }
 
 .hero-slide {
@@ -661,6 +797,7 @@ html[dir="ltr"] .top-lang-switch {
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.9s;
@@ -917,6 +1054,10 @@ html[dir="ltr"] .top-lang-switch {
   padding: 36px 0 24px;
   background: #FFFFFF;
   border-bottom: 1px solid var(--border-light);
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
+  contain: paint;
 }
 
 .category-bubbles-grid {
@@ -1713,6 +1854,13 @@ html[dir="ltr"] .top-lang-switch {
   gap: 28px;
 }
 
+@media (max-width: 992px) {
+  .reviews-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
 .review-card {
   background: #FFFFFF;
   border: 1px solid var(--border-light);
@@ -2498,6 +2646,186 @@ html[dir="ltr"] .top-lang-switch {
   color: #888;
 }
 
+/* نافذة تتبع الطلب (TRACK YOUR ORDER MODAL) */
+.track-modal-card {
+  max-width: 580px;
+}
+
+.track-input-group {
+  display: flex;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.track-input-field {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
+}
+
+.track-input-field:focus {
+  border-color: #B88A28;
+}
+
+.track-submit-btn {
+  background: #000000;
+  color: #FFFFFF;
+  border: 1px solid #000000;
+  padding: 12px 24px;
+  border-radius: var(--radius-xs);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-submit-btn:hover {
+  background: #B88A28;
+  border-color: #B88A28;
+}
+
+.track-status-box {
+  background: #FDFBF7;
+  border: 1px solid rgba(184, 138, 40, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-top: 16px;
+}
+
+.track-steps-timeline {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  position: relative;
+}
+
+.track-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.track-step-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  right: 10px;
+  width: 2px;
+  height: calc(100% - 22px);
+  background: #E5E5E5;
+}
+
+html[dir="ltr"] .track-step-item:not(:last-child)::before {
+  right: auto;
+  left: 10px;
+}
+
+.track-step-item.completed:not(:last-child)::before {
+  background: #B88A28;
+}
+
+.track-step-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #E5E5E5;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.track-step-item.completed .track-step-icon {
+  background: #B88A28;
+}
+
+.track-step-item.active .track-step-icon {
+  background: #111111;
+  box-shadow: 0 0 0 3px rgba(184, 138, 40, 0.3);
+}
+
+.track-step-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 2px;
+}
+
+.track-step-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* نافذة فروع المملكة (STORE LOCATOR MODAL) */
+.stores-modal-card {
+  max-width: 680px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.stores-branches-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.branch-card-item {
+  border: 1px solid #ECECEC;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease;
+  background: #FAFAFA;
+}
+
+.branch-card-item:hover {
+  border-color: #B88A28;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(184, 138, 40, 0.08);
+}
+
+.branch-city-badge {
+  background: #B88A28;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.branch-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 3px;
+}
+
+.branch-address {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.branch-hours {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 2px;
+}
+
 /* نافذة النظرة السريعة (QUICK VIEW) */
 .quickview-grid {
   display: grid;
@@ -2544,7 +2872,8 @@ html[dir="ltr"] .top-lang-switch {
 
 .whatsapp-tooltip {
   position: absolute;
-  right: 70px;
+  left: 70px;
+  right: auto;
   background: #000;
   color: #FFF;
   padding: 6px 14px;
@@ -2555,6 +2884,17 @@ html[dir="ltr"] .top-lang-switch {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s ease;
+}
+
+html[dir="ltr"] .whatsapp-tooltip {
+  left: auto;
+  right: 70px;
+}
+
+@media (max-width: 991px) {
+  .whatsapp-tooltip {
+    display: none !important;
+  }
 }
 
 .whatsapp-float:hover .whatsapp-tooltip {
@@ -2953,81 +3293,187 @@ html[dir="ltr"] .mobile-nav-list li a:active {
 }
 
 @media (max-width: 768px) {
+  /* ترويسة الموقع وشريط الإعلانات على الجوال */
+  .main-header .container,
+  .announcement-bar .container {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+  }
+
   /* 1. الشريط العلوي للإعلانات */
   .announcement-bar {
-    padding: 8px 0;
-    font-size: 0.76rem;
+    padding: 6px 0 !important;
+    font-size: 0.74rem !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
   }
 
   .announcement-inner {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-    justify-content: center;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0 4px !important;
   }
 
   .announcement-text {
-    justify-content: center;
-    font-size: 0.76rem;
-    line-height: 1.4;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    text-align: center !important;
+    font-size: 0.73rem !important;
+    line-height: 1.45 !important;
+    gap: 4px !important;
+    max-width: 100% !important;
   }
 
-  .header-top-selectors {
-    display: none;
+  .announcement-text .accent {
+    font-size: 0.72rem !important;
+    padding: 1px 6px !important;
   }
 
-  /* 2. الترويسة المدمجة */
-  .header-container {
-    min-height: 64px;
-    padding: 4px 0;
-    gap: 6px;
+  .track-order-top-link {
+    font-size: 0.68rem !important;
+    padding: 2px 10px !important;
+    margin: 0 auto !important;
   }
 
-  .brand-logo {
-    padding: 0;
-    flex: 1 1 auto;
-    min-width: 0;
+  /* 2. الترويسة المدمجة: 3 أركان متوازنة تماماً */
+  .header-main-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 64px !important;
+    height: auto !important;
+    padding: 6px 0 !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+    box-sizing: border-box !important;
   }
 
-  .brand-arabic {
-    font-size: 1.25rem;
-    line-height: 1.1;
+  /* الركن الأول: زر القائمة الجانبية الهامبرغر */
+  .menu-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    flex: 0 0 40px !important;
+    order: 1 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    color: #111111 !important;
+    cursor: pointer !important;
   }
 
-  .brand-title {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
+  /* الركن الأوسط: شعار أطياب للعطور بالمنتصف تماماً */
+  .header-center-branding {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 auto !important;
+    order: 2 !important;
+    margin: 0 auto !important;
+    padding: 0 4px !important;
+    text-align: center !important;
   }
 
-  .brand-tagline {
-    display: none;
+  .brand-emblem-logo-img {
+    height: 56px !important;
+    width: auto !important;
+    max-width: 130px !important;
+    margin: 0 auto !important;
   }
 
-  .header-actions {
-    gap: 4px;
-    flex-shrink: 1;
+  /* الركن الثالث: أيقونة سلة المشتريات */
+  .header-left-tools {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
+    order: 3 !important;
+    margin: 0 !important;
+    gap: 6px !important;
   }
 
-  .action-btn {
-    width: 35px;
-    height: 35px;
+  .header-icons-cluster {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
   }
 
-  .lang-toggle-btn {
-    width: 35px;
-    height: 35px;
-    justify-content: center;
-    padding: 0;
+  /* إخفاء مربع البحث المكتبي على الجوال */
+  .hdr-search-box {
+    display: none !important;
   }
 
-  .lang-toggle-btn .current-lang-text,
-  .lang-toggle-btn .lang-chevron-icon {
-    display: none;
+  /* إخفاء أزرار الفروع والحساب من الشريط العلوي على الجوال (متاحة في القائمة الجانبية) */
+  .header-icons-cluster > button:not(.hdr-cart-btn) {
+    display: none !important;
   }
 
-  .lang-globe-icon {
-    width: 15px;
-    height: 15px;
+  .hdr-cart-btn {
+    display: inline-flex !important;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px !important;
+    position: relative !important;
+  }
+
+  /* إخفاء القوائم المنسدلة للغة والدولة على الجوال (موجودة في القائمة الجانبية) */
+  .header-right-tools {
+    display: none !important;
+  }
+
+  /* شريط تصنيفات العطور القابل للتمرير الأفقي بسلاسة */
+  .header-category-row {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    border-top: 1px solid #F0F0F0 !important;
+    padding: 0 !important;
+  }
+
+  .category-nav-menu {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+    padding: 8px 12px 10px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x proximity !important;
+    scrollbar-width: none !important;
+  }
+
+  .category-nav-menu::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .category-nav-item {
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+  }
+
+  .cat-nav-link {
+    font-size: 0.82rem !important;
+    padding: 3px 2px !important;
+    white-space: nowrap !important;
   }
 
   /* 3. واجهة الهيرو البانورامية على الجوال */
@@ -3731,7 +4177,7 @@ html[dir="ltr"] .nav-link::after {
 }
 
 html[dir="ltr"] .badge-count {
-  right: -4px;
+  right: 0;
   left: auto;
 }
 

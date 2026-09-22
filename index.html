@@ -21,13 +21,19 @@
   <!-- Stylesheet (Ahmed Al Maghribi KSA Theme) -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Critical Anti-Flicker Guard (Prevents drawer flash during navigation/page load) -->
+  <!-- Critical Anti-Flicker Guard & Mobile Overflow Protection -->
   <style>
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+      width: 100% !important;
+    }
     .cart-drawer:not(.active),
     .drawer-backdrop:not(.active),
     .mobile-nav-drawer:not(.active),
     .mobile-nav-backdrop:not(.active),
     .modal-overlay:not(.active) {
+      display: none !important;
       visibility: hidden !important;
       pointer-events: none !important;
     }
@@ -38,131 +44,161 @@
   <!-- ===================================================================
        1. شريط الإعلانات العلوي (TOP ANNOUNCEMENT BAR)
        =================================================================== -->
+  <!-- ===================================================================
+       1. شريط الإعلانات والخدمات العلوي (TOP UTILITY & ANNOUNCEMENT BAR)
+       =================================================================== -->
   <div class="announcement-bar">
     <div class="announcement-inner container">
       <div class="announcement-text" id="announcement-text-container">
         <span>✨</span>
-        <span data-i18n="announcement_text">شحن مجاني لجميع مناطق المملكة للطلبات فوق <strong>150 ر.س</strong> 🇸🇦 | خصم إضافي <strong>10%</strong> باستخدام كود:</span>
+        <span data-i18n="announcement_text">شحن مجاني لجميع مناطق المملكة للطلبات فوق <strong>150 ر.س</strong> 🇸🇦 | خصم إضافي <strong>10%</strong> كود:</span>
         <span class="accent">ATYAB10</span>
       </div>
 
-      <div class="header-top-selectors">
-        <div class="currency-selector">
-          <label for="currency-select" data-i18n="currency_label">العملة:</label>
-          <select id="currency-select">
-            <option value="SAR" selected>ريال سعودي (ر.س)</option>
-            <option value="AED">درهم إماراتي (د.إ)</option>
-            <option value="USD">دولار أمريكي ($)</option>
-          </select>
-        </div>
-        <div class="top-lang-switch">
-          <button class="top-lang-btn" onclick="switchLanguage(state.language === 'ar' ? 'en' : 'ar')" title="Switch Language / تغيير اللغة">
-            <span class="top-lang-globe">🌐</span>
-            <span id="top-lang-text">English</span>
-          </button>
-        </div>
-      </div>
+      <a href="#track-order" class="track-order-top-link" onclick="openTrackOrderModal(); return false;" title="تتبع حالة شحنتك / Track Your Order">
+        <span>📦</span>
+        <span data-i18n="track_order_btn">تتبع طلبك • TRACK YOUR ORDER</span>
+      </a>
     </div>
   </div>
 
   <!-- ===================================================================
-       2. الترويسة الرئيسية الرسمية (MAIN LUXURY HEADER)
+       2. الترويسة الرئيسية الفاخرة على طراز أحمد المغربي لشعار أطياب
+          (ATYAB PERFUME LUXURY HEADER - AHMED MAGHRIBI ARCHITECTURE)
        =================================================================== -->
-  <header class="main-header">
-    <div class="header-container container">
-      <!-- زر قائمة الجوال الملكية (HAMBURGER MENU) -->
-      <button class="menu-toggle" onclick="openMobileNav()" title="القائمة الرئيسية" aria-label="القائمة الرئيسية">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
+  <header class="main-header" id="site-header">
+    <div class="container">
+      <!-- المستوى الأول: الأدوات، الشعار، ومحددات اللغة والدولة -->
+      <div class="header-main-row">
+        <!-- زر قائمة الجوال (HAMBURGER MENU ON MOBILE) -->
+        <button class="menu-toggle" onclick="openMobileNav()" title="القائمة الرئيسية" aria-label="القائمة الرئيسية">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
 
-      <!-- شعار أطياب للعطور -->
-      <a href="#" class="brand-logo">
-        <span class="brand-arabic">أطـيـاب للعـطـور</span>
-        <span class="brand-title">ATYAB PERFUME</span>
-        <span class="brand-tagline">ROYAL ARABIAN LUXURY • EST. 1988</span>
-      </a>
-
-      <!-- القائمة الرئيسية -->
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="#hero" class="nav-link active" data-i18n="nav_home">الرئيسية</a></li>
-          <li><a href="#showcase" class="nav-link" data-i18n="nav_showcase">مقدَّر من الجميع</a></li>
-          <li><a href="#best-sellers" class="nav-link" data-i18n="nav_bestsellers">الأكثر مبيعاً</a></li>
-          <li><a href="#catalog" class="nav-link" data-i18n="nav_catalog">جميع العطور</a></li>
-          <li><a href="#bakhoor" class="nav-link" data-i18n="nav_bakhoor">بخور ودخون</a></li>
-          <li><a href="#scent-quiz" class="nav-link" onclick="openScentQuiz(); return false;"><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot" data-i18n="nav_quiz_badge">اختبار</span></a></li>
-          <li><a href="#reviews" class="nav-link" data-i18n="nav_reviews">آراء العملاء</a></li>
-        </ul>
-      </nav>
-
-      <!-- أدوات الترويسة (زر اختيار اللغة، بحث، مفضلة، سلة) -->
-      <div class="header-actions">
-        <!-- زر اختيار وتبديل لغة الموقع الملكي (LANGUAGE SELECTOR BUTTON) -->
-        <div class="lang-selector-dropdown" id="lang-selector-dropdown">
-          <button class="lang-toggle-btn" id="lang-toggle-btn" onclick="toggleLangDropdown(event)" aria-label="اختر لغة المتجر / Select Language" title="اللغة / Language">
-            <svg class="lang-globe-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-            <span class="current-lang-text" id="current-lang-label" data-i18n="lang_btn_text">العربية</span>
-            <svg class="lang-chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-          <div class="lang-dropdown-menu" id="lang-dropdown-menu">
-            <button class="lang-option active" data-lang="ar" onclick="switchLanguage('ar')">
-              <span class="lang-flag">🇸🇦</span>
-              <span class="lang-name">العربية (Arabic)</span>
-              <span class="lang-check">✓</span>
+        <!-- الجانب الأيسر: الأيقونات (السلة، الفروع، الحساب) + مربع البحث المستطيل -->
+        <div class="header-left-tools">
+          <div class="header-icons-cluster">
+            <!-- 1. سلة المشتريات مع الشارة الذهبية المطابقة للصورة المرجعية -->
+            <button class="hdr-icon-btn hdr-cart-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية" aria-label="السلة" data-i18n-title="cart_tooltip">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              <span class="cart-badge-subtle cart-count-badge">0</span>
             </button>
-            <button class="lang-option" data-lang="en" onclick="switchLanguage('en')">
-              <span class="lang-flag">🇬🇧</span>
-              <span class="lang-name">English</span>
-              <span class="lang-check">✓</span>
+
+            <!-- 2. فروع ومعارض المملكة (STORE LOCATOR) -->
+            <button class="hdr-icon-btn" onclick="openStoreLocatorModal()" title="فروعنا بالمملكة" aria-label="فروعنا بالمملكة" data-i18n-title="store_locator_btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </button>
+
+            <!-- 3. الحساب الشخصي (USER ACCOUNT) -->
+            <button class="hdr-icon-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()" title="حسابي" aria-label="حسابي" data-i18n-title="account_tooltip">
+              <svg id="account-action-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <!-- مربع البحث المستطيل بنص SEARCH وأيقونة العدسة -->
+          <div class="hdr-search-box">
+            <input type="text" class="hdr-search-input" id="hdr-search-input" placeholder="SEARCH" aria-label="Search" data-i18n-placeholder="header_search_placeholder" onkeydown="if(event.key==='Enter') handleHeaderSearch()" />
+            <button class="hdr-search-btn" onclick="handleHeaderSearch()" aria-label="Search" title="Search">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </button>
           </div>
         </div>
 
-        <!-- حساب العميل: تسجيل الدخول أو إنشاء حساب محلي -->
-        <button class="action-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()" title="تسجيل الدخول أو إنشاء حساب" aria-label="تسجيل الدخول أو إنشاء حساب" data-i18n-title="account_tooltip">
-          <svg id="account-action-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M20 21a8 8 0 0 0-16 0"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
-        </button>
+        <!-- الوسط: شعار أطياب للعطور الملكي المصمم على طراز أحمد المغربي الفاخر -->
+        <a href="index.html" class="header-center-branding" aria-label="أطياب للعطور | ATYAB PERFUME">
+          <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" class="brand-emblem-logo-img" />
+        </a>
 
-        <!-- البحث السريع -->
-        <button class="action-btn" onclick="openSearchModal()" title="البحث في العطور" aria-label="البحث" data-i18n-title="search_tooltip">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </button>
+        <!-- الجانب الأيمن: قوائم اختيار اللغة والدولة والعملة -->
+        <div class="header-right-tools">
+          <!-- قائمة تبديل اللغة (عربي ∨ / English ∨) -->
+          <div class="hdr-dropdown-wrapper" id="hdr-lang-dropdown">
+            <button class="hdr-dropdown-trigger" onclick="toggleHdrLang(event)" aria-label="اختر اللغة / Select Language">
+              <span id="hdr-lang-current">عربي</span>
+              <svg class="dropdown-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="hdr-dropdown-menu">
+              <button class="hdr-dropdown-item active" data-lang="ar" onclick="switchLanguage('ar')">
+                <span>عربي (العربية)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                <span>English</span>
+                <span class="check-icon">✓</span>
+              </button>
+            </div>
+          </div>
 
-        <!-- قائمة المفضلة -->
-        <button class="action-btn" onclick="openWishlistModal()" title="قائمة المفضلة" aria-label="المفضلة" data-i18n-title="wishlist_tooltip">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-          <span class="badge-count wishlist-count-badge">0</span>
-        </button>
-
-        <!-- سلة المشتريات -->
-        <button class="action-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية" aria-label="السلة" data-i18n-title="cart_tooltip">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-          </svg>
-          <span class="badge-count cart-count-badge">0</span>
-        </button>
+          <!-- قائمة اختيار الدولة والمنطقة (KSA ∨ / GCC) -->
+          <div class="hdr-dropdown-wrapper" id="hdr-country-dropdown">
+            <button class="hdr-dropdown-trigger" onclick="toggleHdrCountry(event)" aria-label="الدولة / Country">
+              <span id="hdr-country-current">KSA</span>
+              <svg class="dropdown-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="hdr-dropdown-menu">
+              <button class="hdr-dropdown-item active" data-country="KSA" onclick="selectHdrCountry('KSA', 'SAR')">
+                <span>🇸🇦 المملكة العربية السعودية (KSA)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="UAE" onclick="selectHdrCountry('UAE', 'AED')">
+                <span>🇦🇪 الإمارات العربية المتحدة (UAE)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="KWT" onclick="selectHdrCountry('KWT', 'SAR')">
+                <span>🇰🇼 الكويت (Kuwait)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="BHR" onclick="selectHdrCountry('BHR', 'SAR')">
+                <span>🇧🇭 البحرين (Bahrain)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="OMN" onclick="selectHdrCountry('OMN', 'SAR')">
+                <span>🇴🇲 عُمان (Oman)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="QAT" onclick="selectHdrCountry('QAT', 'SAR')">
+                <span>🇶🇦 قطر (Qatar)</span>
+                <span class="check-icon">✓</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- المستوى الثاني: شريط أقسام الموقع الرسمية لأطياب للعطور -->
+      <nav class="header-category-row" aria-label="أقسام المتجر الرسمية">
+        <ul class="category-nav-menu" id="header-category-nav-menu">
+          <li class="category-nav-item"><a href="#hero" class="cat-nav-link active" data-i18n="nav_home">الرئيسية</a></li>
+          <li class="category-nav-item"><a href="#showcase" class="cat-nav-link" data-i18n="nav_showcase">مقدَّر من الجميع</a></li>
+          <li class="category-nav-item"><a href="#best-sellers" class="cat-nav-link" data-i18n="nav_bestsellers">الأكثر مبيعاً</a></li>
+          <li class="category-nav-item"><a href="#catalog" class="cat-nav-link" data-i18n="nav_catalog">جميع العطور</a></li>
+          <li class="category-nav-item"><a href="#bakhoor" class="cat-nav-link" data-i18n="nav_bakhoor">بخور ودخون</a></li>
+          <li class="category-nav-item"><a href="#scent-quiz" class="cat-nav-link" onclick="openScentQuiz(); return false;"><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot" data-i18n="nav_quiz_badge">اختبار</span></a></li>
+          <li class="category-nav-item"><a href="#reviews" class="cat-nav-link" data-i18n="nav_reviews">آراء العملاء</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
@@ -855,21 +891,35 @@
   <div class="mobile-nav-drawer" id="mobile-nav-drawer" style="visibility: hidden;">
     <div class="mobile-nav-header">
       <div class="mobile-nav-brand">
-        <span class="mobile-nav-brand-ar">أطـيـاب للعـطـور</span>
-        <span class="mobile-nav-brand-en">ATYAB PERFUME</span>
+        <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" style="height: 52px; width: auto;" />
       </div>
       <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="إغلاق">&times;</button>
     </div>
 
     <div class="mobile-nav-body">
+      <!-- مربع بحث الجوال -->
+      <div style="padding: 10px 14px; margin-bottom: 10px;">
+        <div class="hdr-search-box" style="display: flex; width: 100%;">
+          <input type="text" class="hdr-search-input" id="mobile-search-input" placeholder="SEARCH" onkeydown="if(event.key==='Enter'){ openSearchModal(); const mi=document.getElementById('search-input-box'); if(mi){ mi.value=this.value; handleLiveSearch(this.value); } closeMobileNav(); }" />
+          <button class="hdr-search-btn" onclick="openSearchModal(); closeMobileNav();">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <ul class="mobile-nav-list">
-        <li><a href="#hero" onclick="closeMobileNav()"><span class="nav-icon">🏰</span><span data-i18n="nav_home">الرئيسية</span></a></li>
-        <li><a href="#showcase" onclick="closeMobileNav()"><span class="nav-icon">✨</span><span data-i18n="nav_showcase">مقدَّر من الجميع</span></a></li>
-        <li><a href="#best-sellers" onclick="closeMobileNav()"><span class="nav-icon">🔥</span><span data-i18n="nav_bestsellers">الأكثر مبيعاً</span></a></li>
-        <li><a href="#catalog" onclick="closeMobileNav()"><span class="nav-icon">💎</span><span data-i18n="nav_catalog">جميع العطور</span></a></li>
-        <li><a href="#bakhoor" onclick="closeMobileNav()"><span class="nav-icon">💨</span><span data-i18n="nav_bakhoor">بخور ودخون</span></a></li>
-        <li><a href="#scent-quiz" onclick="closeMobileNav(); openScentQuiz(); return false;"><span class="nav-icon">🔮</span><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot">اختبار</span></a></li>
-        <li><a href="#reviews" onclick="closeMobileNav()"><span class="nav-icon">⭐</span><span data-i18n="nav_reviews">آراء العملاء</span></a></li>
+        <li><a href="#hero" onclick="closeMobileNav();"><span class="nav-icon">🏠</span><span data-i18n="nav_home">الرئيسية</span></a></li>
+        <li><a href="#showcase" onclick="closeMobileNav();"><span class="nav-icon">👑</span><span data-i18n="nav_showcase">مقدَّر من الجميع</span></a></li>
+        <li><a href="#best-sellers" onclick="closeMobileNav();"><span class="nav-icon">🔥</span><span data-i18n="nav_bestsellers">الأكثر مبيعاً</span></a></li>
+        <li><a href="#catalog" onclick="closeMobileNav();"><span class="nav-icon">💎</span><span data-i18n="nav_catalog">جميع العطور</span></a></li>
+        <li><a href="#bakhoor" onclick="closeMobileNav();"><span class="nav-icon">🪵</span><span data-i18n="nav_bakhoor">بخور ودخون</span></a></li>
+        <li><a href="#scent-quiz" onclick="openScentQuiz(); closeMobileNav(); return false;"><span class="nav-icon">🔮</span><span data-i18n="nav_quiz">مستشار العطور (اختبار)</span></a></li>
+        <li><a href="#reviews" onclick="closeMobileNav();"><span class="nav-icon">⭐</span><span data-i18n="nav_reviews">آراء العملاء</span></a></li>
+        <li><a href="#track-order" onclick="openTrackOrderModal(); closeMobileNav(); return false;"><span class="nav-icon">📦</span><span data-i18n="track_order_btn">تتبع طلبك</span></a></li>
+        <li><a href="#store-locator" onclick="openStoreLocatorModal(); closeMobileNav(); return false;"><span class="nav-icon">📍</span><span data-i18n="store_locator_btn">فروعنا بالمملكة</span></a></li>
       </ul>
 
       <div class="mobile-nav-divider"></div>
@@ -964,6 +1014,121 @@
   <!-- ===================================================================
        13. النوافذ المنبثقة (MODALS)
        =================================================================== -->
+
+  <!-- نافذة تتبع الطلب (TRACK YOUR ORDER MODAL) -->
+  <div class="modal-overlay" id="track-order-modal">
+    <div class="modal-card track-modal-card">
+      <button class="modal-close-btn" onclick="closeTrackOrderModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="font-size: 1.5rem;">📦</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="track_order_title">تتبع حالة طلبك</h3>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="track_order_desc">
+        أدخل رقم طلبك أو رقم جوالك لمتابعة حالة الشحن والتوصيل الفوري داخل المملكة 🇸🇦
+      </p>
+      <div class="track-input-group">
+        <input type="text" id="track-order-input" class="track-input-field" placeholder="رقم الطلب (مثال: ATY-8849) أو رقم الجوال" data-i18n-placeholder="track_order_input_placeholder" />
+        <button class="track-submit-btn" onclick="submitTrackOrder()" data-i18n="track_order_submit">تتبع الآن</button>
+      </div>
+      <div id="track-order-result" class="track-status-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(184, 138, 40, 0.2); padding-bottom: 8px;">
+          <span style="font-weight: 700; font-size: 0.88rem;">رقم الشحنة: <strong style="color: #B88A28;">SMSA-KSA-994821</strong></span>
+          <span style="font-size: 0.78rem; background: #E8F5E9; color: #2E7D32; padding: 2px 8px; border-radius: 4px; font-weight: 600;">قيد التوصيل 🚚</span>
+        </div>
+        <ul class="track-steps-timeline">
+          <li class="track-step-item completed">
+            <span class="track-step-icon">✓</span>
+            <div>
+              <div class="track-step-title">تم استلام وتأكيد طلبك</div>
+              <div class="track-step-sub">الرياض - مركز التوزيع الرئيسي</div>
+            </div>
+          </li>
+          <li class="track-step-item completed">
+            <span class="track-step-icon">✓</span>
+            <div>
+              <div class="track-step-title">التجهيز والتغليف الملكي الفاخر</div>
+              <div class="track-step-sub">تم فحص العطور ووضع الختم الأصلي</div>
+            </div>
+          </li>
+          <li class="track-step-item active">
+            <span class="track-step-icon">●</span>
+            <div>
+              <div class="track-step-title">تم التسليم لشركة الشحن (سمسا إكسبريس)</div>
+              <div class="track-step-sub">جاري النقل السريع إلى عنوانك داخل المملكة</div>
+            </div>
+          </li>
+          <li class="track-step-item">
+            <span class="track-step-icon">4</span>
+            <div>
+              <div class="track-step-title">التوصيل والاستلام عند بابك</div>
+              <div class="track-step-sub">الموعد المتوقع: خلال ٢٤ إلى ٤٨ ساعة</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة فروع ومعارض المملكة (STORE LOCATOR MODAL) -->
+  <div class="modal-overlay" id="store-locator-modal">
+    <div class="modal-card stores-modal-card">
+      <button class="modal-close-btn" onclick="closeStoreLocatorModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <span style="font-size: 1.5rem;">📍</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="store_locator_title">معارضنا وفروعنا بالمملكة العربية السعودية</h3>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="store_locator_desc">
+        تفضل بزيارة معارضنا الرسمية في الرياض، جدة، الدمام، مكة المكرمة والمدينة المنورة
+      </p>
+      <div class="stores-branches-grid">
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge">الرياض</span>
+            <div class="branch-name">معرض العليا الرئيسي - برج المملكة</div>
+            <div class="branch-address">طريق العليا العام، حي الورود، الرياض</div>
+            <div class="branch-hours">🕒 يومياً: ٩:٠٠ ص - ١١:٣٠ م • هاتف: ٠١١٤٤٥٨٨٩٩</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+        </div>
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge">جدة</span>
+            <div class="branch-name">معرض شارع التحلية - مول العرب</div>
+            <div class="branch-address">طريق الأمير محمد بن عبدالعزيز (التحلية)، جدة</div>
+            <div class="branch-hours">🕒 يومياً: ١٠:٠٠ ص - ١١:٠٠ م • هاتف: ٠١٢٦٦٨٨٤٤٢</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+        </div>
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge">الدمام والخبر</span>
+            <div class="branch-name">معرض الراشد مول وكورنيش الخبر</div>
+            <div class="branch-address">مجمع الراشد، بوابة ٤، الخبر - المنطقة الشرقية</div>
+            <div class="branch-hours">🕒 يومياً: ٩:٣٠ ص - ١١:٠٠ م • هاتف: ٠١٣٨٩٤٤٥٥١</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+        </div>
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge">مكة المكرمة</span>
+            <div class="branch-name">معرض أبراج البيت - وقف الملك عبدالعزيز</div>
+            <div class="branch-address">مجمع أبراج الساعة، الدور التجاري الثاني، مكة المكرمة</div>
+            <div class="branch-hours">🕒 يومياً: على مدار الساعة • هاتف: ٠١٢٥٧٢٢٣٣١</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+        </div>
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge">المدينة المنورة</span>
+            <div class="branch-name">معرض المنطقة المركزية الشمالية</div>
+            <div class="branch-address">شارع الملك فهد، أمام الحرم النبوي الشريف</div>
+            <div class="branch-hours">🕒 يومياً: على مدار الساعة • هاتف: ٠١٤٨٣١١٢٢٠</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- نافذة النظرة السريعة (QUICK VIEW) -->
   <div class="modal-overlay" id="quickview-modal">

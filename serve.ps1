@@ -17,6 +17,10 @@ while ($listener.IsListening) {
             $path = "/index.html"
         }
 
+        if ($request.QueryString["data"]) {
+            [IO.File]::WriteAllText((Join-Path $PSScriptRoot "overflow_log.txt"), $request.QueryString["data"])
+        }
+
         $cleanPath = $path.TrimStart("/").Replace("/", [IO.Path]::DirectorySeparatorChar)
         $fullPath = Join-Path $PSScriptRoot $cleanPath
 
