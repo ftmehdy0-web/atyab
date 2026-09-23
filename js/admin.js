@@ -227,6 +227,20 @@ function updateOrderStatus(orderId, newStatus) {
   });
 
   saveOrdersToStorage();
+  localStorage.setItem("atyab_orders_updated", Date.now().toString());
+  window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { orderId, status: newStatus } }));
+
+  // Live Firebase Firestore database status synchronization
+  if (typeof firebaseUpdateOrderStatus === "function") {
+    firebaseUpdateOrderStatus(orderId, newStatus, order.timeline)
+      .then((res) => {
+        if (res && res.success && !res.isLocal) {
+          console.log(`[Firebase Live Sync] Status successfully updated to ${newStatus} for ${orderId}`);
+        }
+      })
+      .catch((err) => console.warn("[Firebase Live Sync] Status sync notice:", err));
+  }
+
   renderDashboard();
   showToast(`Status Updated`, `Order ${orderId} marked as ${statusLabels[newStatus] || newStatus}`);
 
@@ -242,6 +256,8 @@ function deleteOrder(orderId) {
   if (!confirm(`Are you sure you want to delete order ${orderId}?`)) return;
   adminState.orders = adminState.orders.filter((o) => o.id !== orderId);
   saveOrdersToStorage();
+  localStorage.setItem("atyab_orders_updated", Date.now().toString());
+  window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { orderId, deleted: true } }));
   closeOrderModal();
   renderDashboard();
   showToast("Order Deleted", `Order ${orderId} was removed from records.`);
@@ -254,6 +270,8 @@ function clearAllOrders() {
   if (confirm("Are you sure you want to clear all orders? This will empty the orders list completely.")) {
     adminState.orders = [];
     saveOrdersToStorage();
+    localStorage.setItem("atyab_orders_updated", Date.now().toString());
+    window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { cleared: true } }));
     renderDashboard();
     showToast("Orders Cleared", "All order records have been cleared.");
   }
@@ -293,6 +311,7 @@ function initDashboard() {
   populateCityFilter();
   renderDashboard();
   startLiveSyncEngine();
+  initFirebaseAdminIntegration();
 }
 
 function renderDashboard() {
@@ -1337,9 +1356,192 @@ function showToast(title, message = "") {
     toast.style.transition = "all 0.3s ease";
     setTimeout(() => toast.remove(), 300);
   }, 4000);
+// ===================================================================
+// 8. FIREBASE LIVE SYNC & AUTHENTICATION CONFIGURATION (ADMIN ONLY)
+// ===================================================================
+function initFirebaseAdminIntegration() {
+  updateFirebaseStatusBadge();
+
+  // If Firebase is configured, fetch initial Firestore orders and attach real-time live listener
+  if (typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+    if (typeof firebaseGetAllOrders === "function") {
+      firebaseGetAllOrders().then((cloudOrders) => {
+        if (cloudOrders && cloudOrders.length > 0) {
+          const existingIds = new Set(adminState.orders.map((o) => o.id));
+          let added = false;
+          cloudOrders.forEach((co) => {
+            if (!existingIds.has(co.id)) {
+              adminState.orders.push(co);
+              existingIds.add(co.id);
+              added = true;
+            }
+          });
+          if (added) {
+            saveOrdersToStorage();
+            renderDashboard();
+          }
+        }
+      }).catch((e) => console.warn("[Firebase Live Sync] Cloud orders fetch notice:", e));
+    }
+
+    if (typeof firebaseSubscribeToOrders === "function") {
+      firebaseSubscribeToOrders((cloudOrders) => {
+        console.log("[Firebase Live Sync] Real-time event in Admin:", cloudOrders);
+        if (cloudOrders && cloudOrders.length > 0) {
+          const existingMap = new Map(adminState.orders.map(o => [o.id, o]));
+          let modified = false;
+          cloudOrders.forEach(co => {
+            const current = existingMap.get(co.id);
+            if (!current || JSON.stringify(current) !== JSON.stringify(co)) {
+              existingMap.set(co.id, co);
+              modified = true;
+            }
+          });
+          if (modified) {
+            adminState.orders = Array.from(existingMap.values()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            saveOrdersToStorage();
+            renderDashboard();
+            playRoyalChime();
+            showToast("Firebase Live Update", "Orders synchronized with Firebase cloud database.");
+          }
+        }
+      });
+    }
+  }
+}
+}
+
+// ===================================================================
+// 9. FIREBASE AUTHENTICATION CONFIGURATION (ADMIN MANAGEMENT)
+// ===================================================================
+function initFirebaseAdminIntegration() {
+  updateFirebaseStatusBadge();
+}
+
+function updateFirebaseStatusBadge() {
+  const isConfigured = typeof isFirebaseConfigured === "function" && isFirebaseConfigured();
+  const dot = document.getElementById("firebase-status-dot");
+  const label = document.getElementById("firebase-btn-label");
+  const statusBox = document.getElementById("firebase-modal-status-box");
+  const statusIcon = document.getElementById("firebase-modal-status-icon");
+  const statusTitle = document.getElementById("firebase-modal-status-title");
+  const statusDesc = document.getElementById("firebase-modal-status-desc");
+
+  if (dot) dot.style.background = isConfigured ? "#10B981" : "#EF4444";
+  if (label) label.textContent = isConfigured ? "🔥 Firebase: Active" : "🔥 Firebase: Setup";
+
+  if (statusBox) {
+    statusBox.style.background = isConfigured ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.1)";
+    statusBox.style.borderColor = isConfigured ? "rgba(16, 185, 129, 0.35)" : "rgba(239, 68, 68, 0.3)";
+  }
+  if (statusIcon) statusIcon.textContent = isConfigured ? "🟢" : "🔴";
+  if (statusTitle) {
+    statusTitle.style.color = isConfigured ? "#34D399" : "#F87171";
+    statusTitle.textContent = isConfigured ? "Firebase Auth: Active & Connected" : "Firebase Auth: Not Configured";
+  }
+  if (statusDesc) {
+    statusDesc.textContent = isConfigured 
+      ? `Firebase Authentication is successfully connected and verifying customer signups/logins.`
+      : "Paste your Firebase web config JSON or fill in the keys below to activate.";
+  }
+}
+
+function openFirebaseConfigModal() {
+  const modal = document.getElementById("firebase-config-modal");
+  if (!modal) return;
+
+  const cfg = (typeof getFirebaseConfig === "function") ? getFirebaseConfig() : {};
+  const apiKeyInput = document.getElementById("cfg-fb-apikey");
+  const projIdInput = document.getElementById("cfg-fb-projectid");
+  const authDomainInput = document.getElementById("cfg-fb-authdomain");
+  const appIdInput = document.getElementById("cfg-fb-appid");
+
+  if (apiKeyInput && cfg.apiKey) apiKeyInput.value = cfg.apiKey;
+  if (projIdInput && cfg.projectId) projIdInput.value = cfg.projectId;
+  if (authDomainInput && cfg.authDomain) authDomainInput.value = cfg.authDomain;
+  if (appIdInput && cfg.appId) appIdInput.value = cfg.appId;
+
+  updateFirebaseStatusBadge();
+  modal.classList.add("active");
+}
+
+function closeFirebaseConfigModal() {
+  const modal = document.getElementById("firebase-config-modal");
+  modal?.classList.remove("active");
+}
+
+function handleFirebaseJsonPaste(val) {
+  if (!val) return;
+  try {
+    let clean = val.trim();
+    if (clean.includes("{") && clean.includes("}")) {
+      clean = clean.substring(clean.indexOf("{"), clean.lastIndexOf("}") + 1);
+    }
+    clean = clean.replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":').replace(/'/g, '"');
+    const parsed = JSON.parse(clean);
+
+    if (parsed.apiKey) document.getElementById("cfg-fb-apikey").value = parsed.apiKey;
+    if (parsed.projectId) document.getElementById("cfg-fb-projectid").value = parsed.projectId;
+    if (parsed.authDomain) document.getElementById("cfg-fb-authdomain").value = parsed.authDomain;
+    if (parsed.appId) document.getElementById("cfg-fb-appid").value = parsed.appId;
+  } catch (err) {
+    // Soft ignore parsing errors while user is actively typing
+  }
+}
+
+function handleSaveFirebaseConfig(e) {
+  e.preventDefault();
+  const apiKey = document.getElementById("cfg-fb-apikey")?.value.trim() || "";
+  const projectId = document.getElementById("cfg-fb-projectid")?.value.trim() || "";
+  const authDomain = document.getElementById("cfg-fb-authdomain")?.value.trim() || `${projectId}.firebaseapp.com`;
+  const appId = document.getElementById("cfg-fb-appid")?.value.trim() || "";
+
+  if (!apiKey || !projectId) {
+    alert("Please enter at least an API Key and Project ID.");
+    return;
+  }
+
+  const fbConfig = {
+    apiKey,
+    projectId,
+    authDomain,
+    appId,
+    storageBucket: `${projectId}.appspot.com`
+  };
+
+  localStorage.setItem("atyab_firebase_config", JSON.stringify(fbConfig));
+
+  if (typeof initFirebase === "function") {
+    initFirebase();
+  }
+
+  updateFirebaseStatusBadge();
+  showToast("Firebase Connected!", "Customer sign up & login are now secured by Google Firebase Auth.");
+  closeFirebaseConfigModal();
+}
+
+function handleClearFirebaseConfig() {
+  if (confirm("Reset Firebase Authentication config? Customers will use local account mode.")) {
+    localStorage.removeItem("atyab_firebase_config");
+    const apiKeyInput = document.getElementById("cfg-fb-apikey");
+    const projIdInput = document.getElementById("cfg-fb-projectid");
+    const authDomainInput = document.getElementById("cfg-fb-authdomain");
+    const appIdInput = document.getElementById("cfg-fb-appid");
+    const jsonInput = document.getElementById("cfg-fb-json");
+
+    if (apiKeyInput) apiKeyInput.value = "";
+    if (projIdInput) projIdInput.value = "";
+    if (authDomainInput) authDomainInput.value = "";
+    if (appIdInput) appIdInput.value = "";
+    if (jsonInput) jsonInput.value = "";
+
+    updateFirebaseStatusBadge();
+    showToast("Firebase Reset", "Switched back to local authentication mode.");
+  }
 }
 
 // Bootstrap dashboard on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
   initDashboard();
 });
+

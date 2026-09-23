@@ -21,9 +21,33 @@ function readStoredAccount() {
   }
 }
 
+function getCartStorageKey(email) {
+  const account = state?.account || readStoredAccount();
+  const userEmail = email || account?.email;
+  return userEmail ? `atyab_cart_${userEmail.toLowerCase()}` : "atyab_guest_cart";
+}
+
+function readStoredCart() {
+  const account = readStoredAccount();
+  // When not logged in: cart strictly has NO items or data
+  if (!account) {
+    return [];
+  }
+  // When logged in: read user-specific cart
+  const userKey = `atyab_cart_${account.email.toLowerCase()}`;
+  try {
+    const raw = localStorage.getItem(userKey);
+    if (raw) return JSON.parse(raw);
+    return [];
+  } catch {
+    return [];
+  }
+}
+
 const state = {
   language: initialLang,
-  cart: JSON.parse(localStorage.getItem("atyab_cart") || localStorage.getItem("aytyab_cart") || "[]"),
+  account: readStoredAccount(),
+  cart: readStoredCart(),
   wishlist: JSON.parse(localStorage.getItem("atyab_wishlist") || localStorage.getItem("aytyab_wishlist") || "[]"),
   currency: localStorage.getItem("atyab_currency") || localStorage.getItem("aytyab_currency") || "SAR",
   filter: "all",
@@ -31,7 +55,6 @@ const state = {
   sortBy: "featured",
   appliedCoupon: null,
   giftWrap: false,
-  account: readStoredAccount(),
   rates: {
     SAR: { symbolAr: "ر.س", symbolEn: "SAR", rate: 1, freeShipThreshold: 150, nameAr: "ريال سعودي", nameEn: "Saudi Riyal" },
     AED: { symbolAr: "د.إ", symbolEn: "AED", rate: 0.98, freeShipThreshold: 150, nameAr: "درهم إماراتي", nameEn: "UAE Dirham" },
@@ -44,7 +67,8 @@ const state = {
       occasion: null,
       notes: null
     }
-  }
+  },
+  lastTrackedNumber: null
 };
 
 // ===================================================================
@@ -122,8 +146,7 @@ function openTrackOrderModal() {
   if (modal) {
     modal.classList.add("active");
     document.body.style.overflow = "hidden";
-    const input = document.getElementById("track-order-input");
-    if (input) input.focus();
+    renderTrackModalContent();
   }
 }
 
@@ -135,17 +158,400 @@ function closeTrackOrderModal() {
   }
 }
 
+function getStoredOrdersList() {
+  try {
+    const raw = localStorage.getItem("atyab_orders");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function formatDateKSA(isoStr) {
+  if (!isoStr) return "";
+  try {
+    const d = new Date(isoStr);
+    return d.toLocaleDateString(state.language === "ar" ? "ar-SA" : "en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+  } catch {
+    return "";
+  }
+}
+
+function getOrderStatusBadgeText(status) {
+  const isEn = state.language === "en";
+  switch (status) {
+    case "cancelled":
+      return isEn ? "Cancelled ❌" : "ملغي ❌";
+    case "delivered":
+      return isEn ? "Delivered ✅" : "تم التوصيل ✅";
+    case "shipped":
+      return isEn ? "Shipped 🚚" : "قيد الشحن 🚚";
+    case "processing":
+      return isEn ? "Packaging 📦" : "قيد التجهيز 📦";
+    case "confirmed":
+      return isEn ? "Confirmed ✨" : "تم التأكيد ✨";
+    case "pending":
+    default:
+      return isEn ? "Pending ⏳" : "قيد الانتظار ⏳";
+  }
+}
+
+function renderTrackModalContent(forceGuest = false) {
+  const body = document.getElementById("track-modal-card-body");
+  if (!body) return;
+
+  const isEn = state.language === "en";
+
+  // CASE 1: User is NOT logged in and hasn't selected guest tracking
+  if (!state.account && !forceGuest) {
+    body.innerHTML = `
+      <div class="track-login-prompt-box">
+        <span style="font-size: 2.8rem; display: block; margin-bottom: 10px;">🔒</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; font-weight: 800; color: #111; margin-bottom: 8px;" data-i18n="track_login_prompt_title">
+          ${t("track_login_prompt_title")}
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 440px; margin: 0 auto 20px; line-height: 1.6;" data-i18n="track_login_prompt_desc">
+          ${t("track_login_prompt_desc")}
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="closeTrackOrderModal(); openAccountModal(); setAccountMode('login');" style="padding: 12px 26px;">
+            🔑 <span data-i18n="track_login_btn">${t("track_login_btn")}</span>
+          </button>
+          <button class="btn btn-secondary" onclick="renderTrackModalContent(true)" style="padding: 12px 20px;">
+            🔍 <span data-i18n="track_guest_lookup_btn">${t("track_guest_lookup_btn")}</span>
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // CASE 2: Guest Lookup View
+  if (!state.account && forceGuest) {
+    body.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.4rem;">📦</span>
+          <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800;" data-i18n="track_order_title">
+            ${t("track_order_title")}
+          </h3>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(false)" style="font-size: 0.78rem; padding: 4px 10px;">
+          🔒 ${t("track_login_btn")}
+        </button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;" data-i18n="track_order_desc">
+        ${t("track_order_desc")}
+      </p>
+      <div class="track-input-group">
+        <input type="text" id="track-order-input" class="track-input-field" placeholder="${t("track_order_input_placeholder")}" data-i18n-placeholder="track_order_input_placeholder" />
+        <button class="track-submit-btn" onclick="submitTrackOrder()" data-i18n="track_order_submit">${t("track_order_submit")}</button>
+      </div>
+      <div id="track-order-result" class="track-status-box" style="display: none;"></div>
+    `;
+    setTimeout(() => document.getElementById("track-order-input")?.focus(), 80);
+    return;
+  }
+
+  // CASE 3: Authenticated User with Personal Orders
+  const allOrders = getStoredOrdersList();
+  const userEmail = state.account.email.toLowerCase();
+  const userOrders = allOrders.filter(o =>
+    (o.customer?.email && o.customer.email.toLowerCase() === userEmail) ||
+    (o.user_email && o.user_email.toLowerCase() === userEmail)
+  );
+
+  if (userOrders.length === 0) {
+    body.innerHTML = `
+      <div style="text-align: center; padding: 28px 12px;">
+        <span style="font-size: 3rem; display: block; margin-bottom: 10px;">📦</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; font-weight: 800; color: #111; margin-bottom: 8px;" data-i18n="track_no_orders_title">
+          ${t("track_no_orders_title")}
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 420px; margin: 0 auto 20px; line-height: 1.6;" data-i18n="track_no_orders_desc">
+          ${t("track_no_orders_desc")}
+        </p>
+        <button class="btn btn-primary" onclick="closeTrackOrderModal(); window.location.href='#catalog';" style="padding: 11px 24px;">
+          🛍️ <span data-i18n="track_no_orders_shop_btn">${t("track_no_orders_shop_btn")}</span>
+        </button>
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-light);">
+          <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(true)" style="font-size: 0.8rem;">
+            🔍 ${t("track_guest_lookup_btn")}
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // User has active or historical orders!
+  body.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.4rem;">👑</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800;" data-i18n="track_order_title">
+          ${t("track_order_title")}
+        </h3>
+      </div>
+      <span style="font-size: 0.8rem; color: var(--gold-deep); font-weight: 700;">
+        ${state.account.name}
+      </span>
+    </div>
+    <label for="track-user-orders-select" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;" data-i18n="track_select_order_label">
+      ${t("track_select_order_label")}
+    </label>
+    <select id="track-user-orders-select" class="track-user-orders-selector" onchange="renderTrackOrderResult(this.value)">
+      ${userOrders.map((o) => `
+        <option value="${o.id}">
+          ${o.id} • ${formatDateKSA(o.createdAt)} • ${getOrderStatusBadgeText(o.status)} (${formatPrice(o.financials?.totalSAR || 0)})
+        </option>
+      `).join("")}
+    </select>
+    <div id="track-order-result" class="track-status-box" style="display: block;"></div>
+    <div style="margin-top: 16px; text-align: center;">
+      <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(true)" style="font-size: 0.78rem;">
+        🔍 ${isEn ? "Search Another Order Number" : "البحث برقم طلب آخر"}
+      </button>
+    </div>
+  `;
+
+  renderTrackOrderResult(userOrders[0].id);
+}
+
+function renderTrackOrderResult(trackingNum) {
+  const resultBox = document.getElementById("track-order-result");
+  if (!resultBox) return;
+
+  const targetId = (trackingNum || state.lastTrackedNumber || "").trim();
+  state.lastTrackedNumber = targetId;
+  const isEn = state.language === "en";
+
+  const allOrders = getStoredOrdersList();
+  let order = allOrders.find(o =>
+    o.id === targetId ||
+    o.tracking?.trackingNumber === targetId ||
+    o.customer?.phone === targetId
+  );
+
+  if (!order) {
+    if (state.account) {
+      resultBox.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #DC2626;">
+          ${t("track_order_not_found")}
+        </div>
+      `;
+      resultBox.style.display = "block";
+      return;
+    } else {
+      order = {
+        id: targetId || "ATY-KSA-994821",
+        status: "processing",
+        carrier: "SMSA Express (سمسا إكسبريس)",
+        tracking: { carrier: "SMSA Express (سمسا إكسبريس)", trackingNumber: targetId || "SMSA-KSA-994821" }
+      };
+    }
+  }
+
+  const orderNum = order.id || targetId;
+  const carrierName = order.tracking?.carrier || "SMSA Express (سمسا إكسبريس)";
+  const isCancelled = order.status === "cancelled";
+  const status = order.status || "pending";
+
+  // Status Badge
+  let statusBadgeHtml = "";
+  if (isCancelled) {
+    statusBadgeHtml = `
+      <span class="track-status-cancelled-badge">
+        <span>❌</span>
+        <span>${t("track_status_cancelled")}</span>
+      </span>
+    `;
+  } else if (status === "delivered") {
+    statusBadgeHtml = `
+      <span style="font-size: 0.78rem; background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+        ${isEn ? "Delivered 🎉" : "تم التوصيل بنجاح 🎉"}
+      </span>
+    `;
+  } else if (status === "shipped") {
+    statusBadgeHtml = `
+      <span style="font-size: 0.78rem; background: #E0F2FE; color: #0369A1; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+        ${t("track_status_in_transit")}
+      </span>
+    `;
+  } else if (status === "processing") {
+    statusBadgeHtml = `
+      <span style="font-size: 0.78rem; background: #FEF3C7; color: #B45309; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+        ${isEn ? "Packaging 📦" : "جاري التجهيز والتغليف 📦"}
+      </span>
+    `;
+  } else if (status === "confirmed") {
+    statusBadgeHtml = `
+      <span style="font-size: 0.78rem; background: #EDE9FE; color: #6D28D9; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+        ${isEn ? "Confirmed ✨" : "تم التأكيد الملكي ✨"}
+      </span>
+    `;
+  } else {
+    statusBadgeHtml = `
+      <span style="font-size: 0.78rem; background: #F3F4F6; color: #4B5563; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+        ${isEn ? "Pending Review ⏳" : "قيد المراجعة ⏳"}
+      </span>
+    `;
+  }
+
+  // Cancellation Alert Notice if order was cancelled by admin
+  let cancellationNoticeHtml = "";
+  if (isCancelled) {
+    cancellationNoticeHtml = `
+      <div class="track-cancelled-notice-box">
+        <div style="font-weight: 800; font-size: 0.92rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <span>⚠️</span>
+          <span>${isEn ? "Order Cancelled by Store Administration" : "تم إلغاء هذا الطلب من قِبل إدارة المتجر"}</span>
+        </div>
+        <p style="margin: 0; font-size: 0.84rem; line-height: 1.6;">${t("track_cancelled_notice")}</p>
+      </div>
+    `;
+  }
+
+  // Timeline steps
+  let timelineStepsHtml = "";
+  if (isCancelled) {
+    timelineStepsHtml = `
+      <li class="track-step-item completed">
+        <span class="track-step-icon">✓</span>
+        <div>
+          <div class="track-step-title">${t("track_step1_title")}</div>
+          <div class="track-step-sub">${formatDateKSA(order.createdAt || new Date().toISOString())}</div>
+        </div>
+      </li>
+      <li class="track-step-item cancelled">
+        <span class="track-step-icon">✕</span>
+        <div>
+          <div class="track-step-title">${t("track_step_cancelled_title")}</div>
+          <div class="track-step-sub">${t("track_step_cancelled_sub")}</div>
+        </div>
+      </li>
+    `;
+  } else {
+    const isStep1Done = ["pending", "confirmed", "processing", "shipped", "delivered"].includes(status);
+    const isStep1Active = status === "pending";
+    const isStep2Done = ["confirmed", "processing", "shipped", "delivered"].includes(status);
+    const isStep2Active = status === "confirmed";
+    const isStep3Done = ["processing", "shipped", "delivered"].includes(status);
+    const isStep3Active = status === "processing";
+    const isStep4Done = status === "delivered";
+    const isStep4Active = status === "shipped";
+
+    timelineStepsHtml = `
+      <li class="track-step-item ${isStep1Done ? (isStep1Active ? 'active' : 'completed') : ''}">
+        <span class="track-step-icon">${isStep1Done && !isStep1Active ? '✓' : '1'}</span>
+        <div>
+          <div class="track-step-title">${t("track_step1_title")}</div>
+          <div class="track-step-sub">${t("track_step1_sub")}</div>
+        </div>
+      </li>
+      <li class="track-step-item ${isStep2Done ? (isStep2Active ? 'active' : 'completed') : ''}">
+        <span class="track-step-icon">${isStep2Done && !isStep2Active ? '✓' : '2'}</span>
+        <div>
+          <div class="track-step-title">${t("track_step2_title")}</div>
+          <div class="track-step-sub">${t("track_step2_sub")}</div>
+        </div>
+      </li>
+      <li class="track-step-item ${isStep3Done ? (isStep3Active ? 'active' : 'completed') : ''}">
+        <span class="track-step-icon">${isStep3Done && !isStep3Active ? '✓' : '3'}</span>
+        <div>
+          <div class="track-step-title">${t("track_step3_title")}</div>
+          <div class="track-step-sub">${t("track_step3_sub")}</div>
+        </div>
+      </li>
+      <li class="track-step-item ${isStep4Done ? 'completed' : (isStep4Active ? 'active' : '')}">
+        <span class="track-step-icon">${isStep4Done ? '✓' : '4'}</span>
+        <div>
+          <div class="track-step-title">${t("track_step4_title")}</div>
+          <div class="track-step-sub">${t("track_step4_sub")}</div>
+        </div>
+      </li>
+    `;
+  }
+
+  // Items Chips
+  let itemsHtml = "";
+  if (order.items && order.items.length > 0) {
+    itemsHtml = `
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(184, 138, 40, 0.2);">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--gold-deep); margin-bottom: 6px;">
+          ${isEn ? "Order Fragrances:" : "عطور ومقتنيات الطلب الملكي:"}
+        </div>
+        ${order.items.map(item => `
+          <div class="track-order-item-chip">
+            <img src="${item.image || 'assets/images/mashair.jpg'}" alt="" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px;" />
+            <div style="flex: 1; font-size: 0.82rem;">
+              <strong style="display: block;">${isEn ? (item.nameEn || item.name) : item.name}</strong>
+              <span style="color: var(--text-muted); font-size: 0.76rem;">${item.size || "100ml"} × ${item.quantity}</span>
+            </div>
+            <strong style="color: var(--gold-primary); font-size: 0.85rem;">${formatPrice((item.priceSAR || 0) * (item.quantity || 1))}</strong>
+          </div>
+        `).join("")}
+        <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 0.92rem; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-light);">
+          <span>${isEn ? "Grand Total:" : "المجموع الإجمالي:"}</span>
+          <span style="color: var(--gold-primary);">${formatPrice(order.financials?.totalSAR || 0)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  resultBox.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(184, 138, 40, 0.2); padding-bottom: 8px;">
+      <div>
+        <span style="font-size: 0.74rem; color: var(--text-muted); display: block;">${carrierName}</span>
+        <span style="font-weight: 700; font-size: 0.9rem;">
+          ${t("track_waybill_label")} <strong id="track-result-num" style="color: #B88A28;">${orderNum}</strong>
+        </span>
+      </div>
+      ${statusBadgeHtml}
+    </div>
+
+    ${cancellationNoticeHtml}
+
+    <ul class="track-steps-timeline">
+      ${timelineStepsHtml}
+    </ul>
+
+    ${itemsHtml}
+  `;
+
+  resultBox.style.display = "block";
+}
+
 function submitTrackOrder() {
   const input = document.getElementById("track-order-input");
   const val = input?.value?.trim();
   const resultBox = document.getElementById("track-order-result");
   if (!val) {
-    showToast(state.language === "ar" ? "يرجى إدخال رقم الطلب أو رقم الجوال" : "Please enter an order or mobile number", "error");
+    showToast(t("track_error_empty"), "", "⚠️");
     return;
   }
+  state.lastTrackedNumber = val;
   if (resultBox) {
-    resultBox.style.display = "block";
-    showToast(state.language === "ar" ? `جاري تتبع الشحنة: ${val}` : `Tracking shipment: ${val}`);
+    renderTrackOrderResult(val);
+    showToast(`${t("track_searching")} ${val}`, "", "📦");
+  }
+}
+
+function refreshActiveOrderTracking() {
+  const modal = document.getElementById("track-order-modal");
+  if (!modal || !modal.classList.contains("active")) return;
+
+  const selector = document.getElementById("track-user-orders-select");
+  if (selector && selector.value) {
+    renderTrackOrderResult(selector.value);
+  } else if (state.lastTrackedNumber) {
+    renderTrackOrderResult(state.lastTrackedNumber);
+  } else if (state.account) {
+    renderTrackModalContent();
   }
 }
 
@@ -214,16 +620,28 @@ function switchLanguage(lang, notify = true) {
     btn.classList.toggle("active", (btn.textContent.includes("العربية") && lang === "ar") || (btn.textContent.includes("English") && lang === "en"));
   });
 
+  // تحديث عنوان الصفحة
+  if (typeof currentProduct === "undefined" || !currentProduct) {
+    const pageTitle = t("page_title");
+    if (pageTitle && pageTitle !== "page_title") {
+      document.title = pageTitle;
+    }
+  }
+
   // تحديث جميع النصوص التي تحمل السمة data-i18n
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     const translated = t(key);
     if (translated && translated !== key) {
-      el.innerHTML = translated;
+      if (el.tagName === "OPTION") {
+        el.textContent = translated.replace(/<[^>]*>/g, "");
+      } else {
+        el.innerHTML = translated;
+      }
     }
   });
 
-  // تحديث النصوص في السمات (placeholder / title)
+  // تحديث النصوص في السمات (placeholder / title / aria-label)
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder");
     const translated = t(key);
@@ -235,6 +653,14 @@ function switchLanguage(lang, notify = true) {
     const translated = t(key);
     if (translated) {
       el.title = translated;
+      el.setAttribute("aria-label", translated);
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    const translated = t(key);
+    if (translated) {
       el.setAttribute("aria-label", translated);
     }
   });
@@ -253,6 +679,9 @@ function switchLanguage(lang, notify = true) {
   if (bakhoorOfficialPrice) bakhoorOfficialPrice.textContent = formatPrice(30);
   if (bakhoorOldPrice) bakhoorOldPrice.textContent = formatPrice(50);
 
+  // تحديث صندوق تتبع الشحنة المباشر
+  renderTrackOrderResult(state.lastTrackedNumber || "SMSA-KSA-994821");
+
   // إعادة تصيير الأقسام الديناميكية
   renderProducts();
   renderShowcase();
@@ -262,6 +691,10 @@ function switchLanguage(lang, notify = true) {
 
   if (document.getElementById("scent-quiz-modal")?.classList.contains("active")) {
     renderQuizStep();
+  }
+
+  if (document.getElementById("checkout-modal")?.classList.contains("active")) {
+    openCheckoutModal();
   }
 
   // إذا كنا في صفحة المنتج المستقلة، أعد تصييرها أيضاً
@@ -466,6 +899,16 @@ function initHeroSlider() {
 
 // التصفية السريعة عبر دوائر وتصنيفات الترويسة
 function filterByCategory(category) {
+  if (category === "bakhoor") {
+    const bakhoorEl = document.getElementById("bakhoor");
+    if (bakhoorEl) {
+      bakhoorEl.scrollIntoView({ behavior: "smooth" });
+      document.querySelectorAll(".cat-nav-link").forEach((link) => {
+        link.classList.toggle("active", link.dataset.cat === "bakhoor");
+      });
+      return;
+    }
+  }
   state.filter = category;
   document.querySelectorAll(".filter-tab").forEach((t) => {
     t.classList.toggle("active", t.dataset.filter === category);
@@ -517,7 +960,20 @@ function renderProducts() {
   const query = state.searchQuery.toLowerCase().trim();
 
   let filtered = ATYAB_PRODUCTS.filter((p) => {
-    const matchesCategory = state.filter === "all" || p.category === state.filter;
+    let matchesCategory = state.filter === "all" || p.category === state.filter;
+    if (state.filter === "oud") {
+      matchesCategory = p.id === "atyab-tiger-oud" || p.id === "atyab-backhoor" || (p.family && p.family.includes("عود"));
+    } else if (state.filter === "oriental") {
+      matchesCategory = p.id === "atyab-nader" || p.id === "atyab-mashair";
+    } else if (state.filter === "fresh") {
+      matchesCategory = p.id === "atyab-a555" || p.id === "atyab-moon-flower";
+    } else if (state.filter === "perfumes") {
+      matchesCategory = p.category === "perfumes";
+    } else if (state.filter === "oil") {
+      matchesCategory = p.id === "atyab-tiger-oud" || p.id === "atyab-backhoor";
+    } else if (state.filter === "cream") {
+      matchesCategory = p.id === "atyab-mashair" || p.id === "atyab-moon-flower";
+    }
     const matchesSearch =
       query === "" ||
       p.name.toLowerCase().includes(query) ||
@@ -640,6 +1096,20 @@ function resetFilters() {
 // إدارة سلة المشتريات (CART MANAGEMENT)
 // ===================================================================
 function addToCart(productId, size, quantity = 1) {
+  // STRICT AUTHENTICATION GUARD:
+  // "without logged in item cart me bhi place na ho"
+  if (!state.account) {
+    showToast(
+      t("cart_login_prompt_title"),
+      t("cart_login_required"),
+      "🔒"
+    );
+    openAccountModal();
+    setAccountMode("login");
+    showAccountMessage(t("cart_login_required"), "error");
+    return;
+  }
+
   const product = ATYAB_PRODUCTS.find((p) => p.id === productId);
   if (!product) return;
 
@@ -688,8 +1158,20 @@ function updateCartQty(productId, size, delta) {
 }
 
 function saveCart() {
-  localStorage.setItem("atyab_cart", JSON.stringify(state.cart));
-  localStorage.setItem("aytyab_cart", JSON.stringify(state.cart));
+  if (!state.account) return;
+  const key = getCartStorageKey();
+  try {
+    localStorage.setItem(key, JSON.stringify(state.cart));
+    localStorage.setItem("atyab_cart", JSON.stringify(state.cart));
+    if (typeof firebaseSaveCart === "function") {
+      firebaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Firebase cart sync notice:", e));
+    }
+    if (typeof supabaseSaveCart === "function") {
+      supabaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Supabase cart sync notice:", e));
+    }
+  } catch (err) {
+    console.warn("Could not save cart:", err);
+  }
 }
 
 function updateCartUI() {
@@ -700,6 +1182,30 @@ function updateCartUI() {
   const totalEl = document.getElementById("cart-total");
   const meterProgress = document.getElementById("shipping-meter-progress");
   const meterText = document.getElementById("shipping-meter-text");
+
+  // If user is not logged in: cart is locked with zero items and prompt
+  if (!state.account) {
+    countBadges.forEach((b) => (b.textContent = 0));
+    if (subtotalEl) subtotalEl.textContent = formatPrice(0);
+    if (discountEl) discountEl.textContent = formatPrice(0);
+    if (totalEl) totalEl.textContent = formatPrice(0);
+    if (meterProgress) meterProgress.style.width = "0%";
+    if (meterText) meterText.innerHTML = t("shipping_meter_unqualified", { diff: formatPrice(150) });
+
+    if (cartBody) {
+      cartBody.innerHTML = `
+        <div style="text-align: center; padding: 48px 18px;">
+          <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">🔒</span>
+          <h4 style="font-size: 1.25rem; font-weight: 800; color: #000; margin-bottom: 8px;">${t("cart_login_prompt_title")}</h4>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 auto 22px; line-height: 1.6; max-width: 320px;">${t("cart_login_prompt_desc")}</p>
+          <button class="btn btn-primary" onclick="closeCartDrawer(); openAccountModal(); setAccountMode('login');" style="padding: 12px 24px;">
+            🔑 ${t("track_login_btn")}
+          </button>
+        </div>
+      `;
+    }
+    return;
+  }
 
   // عدد المنتجات
   const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -1023,7 +1529,7 @@ function saveAccount(account) {
   updateAccountUI();
 }
 
-function handleAccountLogin(event) {
+async function handleAccountLogin(event) {
   event.preventDefault();
   const email = document.getElementById("account-login-email")?.value.trim().toLowerCase();
   const password = document.getElementById("account-login-password")?.value;
@@ -1065,17 +1571,87 @@ function handleAccountLogin(event) {
     }
   }
 
-  // تسجيل دخول المستخدم العادي
-  if (!email || !password || !state.account || state.account.email.toLowerCase() !== email) {
+  // تسجيل دخول المستخدم العادي (Supabase أو الحساب المحلي)
+  if (!email || !password || password.length < 6) {
     showAccountMessage(t("account_login_error"));
     return;
   }
 
+  let userProfile = null;
+
+  // Try Firebase Auth if configured
+  if (typeof firebaseAuthSignIn === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+    const fbRes = await firebaseAuthSignIn(email, password);
+    if (fbRes && fbRes.success && !fbRes.isLocal) {
+      userProfile = {
+        name: fbRes.user?.displayName || email.split("@")[0],
+        email: fbRes.user?.email || email
+      };
+    } else if (fbRes && !fbRes.isLocal) {
+      showAccountMessage(fbRes.error || t("account_login_error"));
+      return;
+    }
+  }
+
+  // Try Supabase Auth if configured (and not already authenticated by Firebase)
+  if (!userProfile && typeof supabaseAuthSignIn === "function" && typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
+    const res = await supabaseAuthSignIn(email, password);
+    if (res && res.success) {
+      userProfile = {
+        name: res.profile?.name || res.user?.user_metadata?.full_name || email.split("@")[0],
+        email: email
+      };
+    } else if (res && !res.isLocal) {
+      showAccountMessage(res.error || t("account_login_error"));
+      return;
+    }
+  }
+
+  // Local fallback recovery
+  if (!userProfile) {
+    try {
+      const storedUserRaw = localStorage.getItem(`atyab_user_${email}`);
+      if (storedUserRaw) {
+        userProfile = JSON.parse(storedUserRaw);
+      }
+    } catch {}
+    if (!userProfile && state.account && state.account.email.toLowerCase() === email) {
+      userProfile = state.account;
+    }
+    if (!userProfile) {
+      userProfile = { name: email.split("@")[0], email };
+    }
+  }
+
+  // Save active account
+  saveAccount(userProfile);
+  try {
+    localStorage.setItem(`atyab_user_${email}`, JSON.stringify(userProfile));
+  } catch {}
+
+  // LOAD USER-SCOPED CART (Saved exclusively for this user):
+  const userCartRaw = localStorage.getItem(`atyab_cart_${email}`);
+  let userCart = userCartRaw ? JSON.parse(userCartRaw) : [];
+  state.cart = userCart;
+  saveCart();
+  updateCartUI();
+
+  // If Supabase is active, sync cloud cart
+  if (typeof supabaseGetCart === "function" && typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
+    supabaseGetCart(email).then((cloudCart) => {
+      if (cloudCart && cloudCart.length > 0) {
+        state.cart = cloudCart;
+        saveCart();
+        updateCartUI();
+      }
+    });
+  }
+
   setAccountMode("signed-in");
-  showToast(t("account_login_success_title"), t("account_login_success_msg", { name: state.account.name }), "👋");
+  showToast(t("account_login_success_title"), t("account_login_success_msg", { name: userProfile.name }), "👋");
 }
 
-function handleAccountSignup(event) {
+async function handleAccountSignup(event) {
   event.preventDefault();
   const name = document.getElementById("account-signup-name")?.value.trim();
   const email = document.getElementById("account-signup-email")?.value.trim().toLowerCase();
@@ -1091,7 +1667,36 @@ function handleAccountSignup(event) {
     return;
   }
 
-  saveAccount({ name, email });
+  // Try Firebase Auth signup if configured
+  if (typeof firebaseAuthSignUp === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+    const fbRes = await firebaseAuthSignUp(name, email, password);
+    if (fbRes && !fbRes.success && !fbRes.isLocal) {
+      showAccountMessage(fbRes.error || t("account_login_error"));
+      return;
+    }
+  }
+
+  // Try Supabase signup if active (and Firebase is not configured)
+  const isFbActive = typeof isFirebaseConfigured === "function" && isFirebaseConfigured();
+  if (!isFbActive && typeof supabaseAuthSignUp === "function" && typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
+    const res = await supabaseAuthSignUp(name, email, password);
+    if (res && !res.success && !res.isLocal) {
+      showAccountMessage(res.error || t("account_login_error"));
+      return;
+    }
+  }
+
+  const userProfile = { name, email };
+  saveAccount(userProfile);
+  try {
+    localStorage.setItem(`atyab_user_${email}`, JSON.stringify(userProfile));
+  } catch {}
+
+  // User starts with their own fresh/saved cart
+  state.cart = [];
+  saveCart();
+  updateCartUI();
+
   document.getElementById("account-signup-form")?.reset();
   setAccountMode("signed-in");
   showToast(t("account_signup_success_title"), t("account_signup_success_msg", { name }), "✨");
@@ -1103,8 +1708,52 @@ function logoutAccount() {
   localStorage.removeItem("aytyab_account");
   localStorage.removeItem("atyab_admin_session");
   sessionStorage.removeItem("atyab_admin_session");
+
+  // As requested: "jaise hi logged out ho waise hi site normal ho jae without uska data"
+  // Completely reset cart and session data to clean guest mode
+  state.cart = [];
+  state.lastTrackedNumber = null;
+  state.appliedCoupon = null;
+  localStorage.removeItem("atyab_guest_cart");
+  localStorage.removeItem("atyab_cart");
+  localStorage.removeItem("aytyab_cart");
+
+  // Reset checkout input fields
+  const coName = document.getElementById("co-name");
+  const coEmail = document.getElementById("co-email");
+  const coPhone = document.getElementById("co-phone");
+  const coAddr = document.getElementById("co-address");
+  if (coName) coName.value = "";
+  if (coEmail) coEmail.value = "";
+  if (coPhone) coPhone.value = "";
+  if (coAddr) coAddr.value = "";
+
+  closeCartDrawer();
+  closeCheckoutModal();
+
+  updateCartUI();
   updateAccountUI();
   setAccountMode("login");
+
+  // Reset Track Order modal back to unauthenticated login lock screen
+  const trackModal = document.getElementById("track-order-modal");
+  if (trackModal && trackModal.classList.contains("active")) {
+    renderTrackModalContent(false);
+  }
+
+  if (typeof firebaseAuthSignOut === "function") {
+    firebaseAuthSignOut();
+  }
+
+  if (typeof supabaseAuthSignOut === "function") {
+    supabaseAuthSignOut();
+  }
+
+  showToast(
+    state.language === "en" ? "Logged Out" : "تم تسجيل الخروج",
+    state.language === "en" ? "Storefront reset to guest mode. Your cart and details have been cleared." : "تم تفريغ الجلسة والسلة بنجاح وعاد المتجر للوضع الطبيعي.",
+    "👋"
+  );
 }
 
 // ===================================================================
@@ -1374,6 +2023,14 @@ function renderQuizStep() {
 // نافذة إتمام الطلب (CHECKOUT SIMULATION & CONFIRMATION)
 // ===================================================================
 function openCheckoutModal() {
+  if (!state.account) {
+    showToast(t("cart_login_prompt_title"), t("cart_login_required"), "🔒");
+    openAccountModal();
+    setAccountMode("login");
+    showAccountMessage(t("cart_login_required"), "error");
+    return;
+  }
+
   if (state.cart.length === 0) {
     showToast(t("cart_empty_title"), t("cart_empty_desc"));
     return;
@@ -1381,6 +2038,13 @@ function openCheckoutModal() {
 
   closeCartDrawer();
   const modal = document.getElementById("checkout-modal");
+
+  // Pre-fill user details into checkout form
+  const nameInput = document.getElementById("co-name");
+  const emailInput = document.getElementById("co-email");
+  if (nameInput && state.account) nameInput.value = state.account.name || "";
+  if (emailInput && state.account) emailInput.value = state.account.email || "";
+
   const subtotalSAR = state.cart.reduce((sum, item) => sum + (item.priceSAR || 0) * item.quantity, 0);
   const discountSAR = (state.appliedCoupon === "ATYAB10" || state.appliedCoupon === "AYTYAB10") ? Math.round(subtotalSAR * 0.1) : 0;
   const totalSAR = Math.max(0, subtotalSAR - discountSAR);
@@ -1440,14 +2104,17 @@ function handleCheckoutSubmit(e) {
     cod: "الدفع عند الاستلام (COD)"
   };
 
+  const customerEmail = (state.account?.email || email || "customer@atyab.sa").toLowerCase();
+
   // تجهيز سجل الطلب الكامل لحفظه في لوحة الإدارة
   const orderRecord = {
     id: orderId,
     createdAt: new Date().toISOString(),
     status: "pending", // pending, confirmed, processing, shipped, delivered, cancelled
+    user_email: customerEmail,
     customer: {
       name,
-      email,
+      email: customerEmail,
       phone,
       city,
       address,
@@ -1497,8 +2164,20 @@ function handleCheckoutSubmit(e) {
     const orders = stored ? JSON.parse(stored) : [];
     orders.unshift(orderRecord);
     localStorage.setItem("atyab_orders", JSON.stringify(orders));
+    localStorage.setItem("atyab_orders_updated", Date.now().toString());
+    window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { order: orderRecord } }));
   } catch (err) {
     console.error("Error saving order to localStorage:", err);
+  }
+
+  // Live Firebase Firestore database sync
+  if (typeof firebaseCreateOrder === "function") {
+    firebaseCreateOrder(orderRecord).catch((err) => console.warn("Firebase create order notice:", err));
+  }
+
+  // Live Supabase database sync (fallback if configured)
+  if (typeof supabaseCreateOrder === "function") {
+    supabaseCreateOrder(orderRecord).catch((err) => console.warn("Supabase create order notice:", err));
   }
 
   closeCheckoutModal();
@@ -1678,6 +2357,48 @@ function setupEventListeners() {
       closeCartDrawer();
       closeMobileNav();
       closeAccountModal();
+      closeTrackOrderModal();
     }
   });
+
+  // Cross-tab and Realtime Synchronization
+  window.addEventListener("storage", (e) => {
+    if (e.key === "atyab_orders" || e.key === "atyab_orders_updated") {
+      refreshActiveOrderTracking();
+    }
+    if (e.key === "atyab_account") {
+      state.account = readStoredAccount();
+      updateAccountUI();
+    }
+  });
+
+  window.addEventListener("atyab_orders_updated", () => {
+    refreshActiveOrderTracking();
+  });
+
+  // Firebase Live Sync realtime subscription for tracking status updates (including cancellations)
+  if (typeof firebaseSubscribeToOrders === "function") {
+    firebaseSubscribeToOrders((orders) => {
+      if (orders && orders.length > 0) {
+        try {
+          const stored = localStorage.getItem("atyab_orders");
+          const localOrders = stored ? JSON.parse(stored) : [];
+          const localMap = new Map(localOrders.map(o => [o.id, o]));
+          orders.forEach(co => {
+            localMap.set(co.id, co);
+          });
+          localStorage.setItem("atyab_orders", JSON.stringify(Array.from(localMap.values())));
+        } catch {}
+      }
+      refreshActiveOrderTracking();
+    });
+  }
+
+  // Supabase live realtime subscription for tracking status updates (including cancellations)
+  if (typeof supabaseSubscribeToOrders === "function") {
+    supabaseSubscribeToOrders((payload) => {
+      refreshActiveOrderTracking();
+    });
+  }
 }
+

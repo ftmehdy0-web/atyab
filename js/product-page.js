@@ -152,7 +152,7 @@ function renderGallery(lp) {
             <line x1="11" y1="8" x2="11" y2="14"></line>
             <line x1="8" y1="11" x2="14" y2="11"></line>
           </svg>
-          <span>تكبير الزاوية / Zoom</span>
+          <span>${t("pdp_zoom_btn")}</span>
         </button>
       </div>
     `;
@@ -348,7 +348,7 @@ function renderPurchaseBox(lp) {
         </div>
         <div class="pdp-perk-item">
           <span>💳</span>
-          <span>دفع آمن وفوري عبر مدى، آبل باي، فيزا، والدفع عند الاستلام</span>
+          <span>${t("pdp_pay_secure_badge")}</span>
         </div>
       </div>
     `;
@@ -435,7 +435,7 @@ function renderPyramid(lp) {
               <span>🌿</span>
               <span>${t("pdp_top_notes_title")}</span>
             </div>
-            <span class="pdp-tier-duration">0 - 30 دقيقة</span>
+            <span class="pdp-tier-duration">${t("pdp_tier1_duration")}</span>
           </div>
           <div class="pdp-tier-desc">${t("pdp_top_notes_desc")}</div>
           <div class="pdp-tier-pills">
@@ -450,7 +450,7 @@ function renderPyramid(lp) {
               <span>🌹</span>
               <span>${t("pdp_heart_notes_title")}</span>
             </div>
-            <span class="pdp-tier-duration">2 - 6 ساعات</span>
+            <span class="pdp-tier-duration">${t("pdp_tier2_duration")}</span>
           </div>
           <div class="pdp-tier-desc">${t("pdp_heart_notes_desc")}</div>
           <div class="pdp-tier-pills">
@@ -465,7 +465,7 @@ function renderPyramid(lp) {
               <span>🪵</span>
               <span>${t("pdp_base_notes_title")}</span>
             </div>
-            <span class="pdp-tier-duration">14+ ساعة</span>
+            <span class="pdp-tier-duration">${t("pdp_tier3_duration")}</span>
           </div>
           <div class="pdp-tier-desc">${t("pdp_base_notes_desc")}</div>
           <div class="pdp-tier-pills">
@@ -489,7 +489,7 @@ function renderAccordsAndSpecs(lp) {
   accordsContainer.innerHTML = `
     <div class="pdp-accords-card">
       <div>
-        <span class="section-subtitle">📊 الطابع العطري</span>
+        <span class="section-subtitle">📊 ${t("pdp_accords_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800; margin: 4px 0 16px;">${t("pdp_accords_title")}</h3>
         ${accords.map(a => `
           <div class="pdp-accord-item">
@@ -525,7 +525,7 @@ function renderAccordsAndSpecs(lp) {
           </div>
           <div class="pdp-spec-box" style="grid-column: 1 / -1;">
             <span class="pdp-spec-label">${t("pdp_spec_season")}</span>
-            <span class="pdp-spec-val">${lp.displaySeason || 'جميع فصول السنة'}</span>
+            <span class="pdp-spec-val">${lp.displaySeason || t("pdp_specs_season_all")}</span>
           </div>
         </div>
       </div>
@@ -543,17 +543,17 @@ function renderStoryAndRitual(lp) {
   container.innerHTML = `
     <div class="pdp-story-grid">
       <div class="pdp-story-box">
-        <span class="section-subtitle">⚜️ إلهام الصانع</span>
+        <span class="section-subtitle">⚜️ ${t("pdp_story_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800; margin: 6px 0 14px; color: #000;">${t("pdp_story_title")}</h3>
         <p>${lp.displayStory || lp.displayDescription}</p>
       </div>
 
       <div class="pdp-story-box">
-        <span class="section-subtitle">👑 نصائح الخبراء</span>
+        <span class="section-subtitle">👑 ${t("pdp_ritual_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800; margin: 6px 0 14px; color: #000;">${t("pdp_ritual_title")}</h3>
-        <p>${lp.displayRitual || 'رش العطر على أماكن النبض: المعصمين وجانبي الرقبة وأطراف الثوب الفاخر لثبات استثنائي.'}</p>
+        <p>${lp.displayRitual || t("pdp_ritual_fallback")}</p>
         <div style="margin-top: 16px; padding: 12px 16px; background: #FFF; border-radius: 6px; border: 1px dashed var(--gold-primary); font-size: 0.85rem; color: var(--gold-deep);">
-          💡 <strong>نصيحة أطياب:</strong> ${t("pdp_golden_guarantee")}
+          💡 <strong>${t("pdp_tip_label")}</strong> ${t("pdp_golden_guarantee")}
         </div>
       </div>
     </div>
@@ -572,7 +572,7 @@ function renderReviewsSection(lp) {
   container.innerHTML = `
     <div class="pdp-reviews-header-bar">
       <div>
-        <span class="section-subtitle">⭐ آراء وتجارب واقعية</span>
+        <span class="section-subtitle">⭐ ${t("pdp_reviews_eyebrow")}</span>
         <h2 style="font-family: var(--font-arabic-title); font-size: 1.8rem; font-weight: 800; color: #000;">${t("pdp_reviews_section_title")}</h2>
         <span style="font-size: 0.9rem; color: var(--text-muted);">${t("pdp_reviews_based_on", { count: currentProduct.reviewsCount })}</span>
       </div>
@@ -725,5 +725,5 @@ function handleReviewSubmit(e) {
   closeReviewModal();
   const lp = getProductLocalized(currentProduct, state.language);
   renderReviewsSection(lp);
-  showToast("تم إرسال تقييمك الملكي", "شكراً لمشاركتك رأيك القيّم مع عائلة أطياب للعطور.", "⭐");
+  showToast(t("review_success_title"), t("review_success_msg"), "⭐");
 }

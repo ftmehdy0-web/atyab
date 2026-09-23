@@ -2765,6 +2765,87 @@ html[dir="ltr"] .track-step-item:not(:last-child)::before {
   color: var(--text-muted);
 }
 
+.track-step-item.cancelled .track-step-icon {
+  background: #DC2626 !important;
+  color: #FFF !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25) !important;
+}
+
+.track-step-item.cancelled .track-step-title {
+  color: #DC2626 !important;
+}
+
+.track-status-cancelled-badge {
+  background: #FEE2E2 !important;
+  color: #991B1B !important;
+  border: 1px solid #FCA5A5 !important;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.track-cancelled-notice-box {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-right: 4px solid #DC2626;
+  border-radius: var(--radius-xs);
+  padding: 12px 16px;
+  margin: 14px 0 16px;
+  color: #991B1B;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+html[dir="ltr"] .track-cancelled-notice-box {
+  border-right: 1px solid #FCA5A5;
+  border-left: 4px solid #DC2626;
+}
+
+.track-login-prompt-box {
+  background: #FAF7F2;
+  border: 1px solid rgba(184, 138, 40, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 24px 18px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.track-user-orders-selector {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid rgba(184, 138, 40, 0.4);
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: 0.88rem;
+  background: #FFFFFF;
+  color: #111111;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.track-user-orders-selector:focus {
+  border-color: #B88A28;
+  box-shadow: 0 0 0 3px rgba(184, 138, 40, 0.15);
+}
+
+.track-order-item-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border: 1px solid #ECECEC;
+  border-radius: var(--radius-xs);
+  margin-top: 8px;
+}
+
+
 /* نافذة فروع المملكة (STORE LOCATOR MODAL) */
 .stores-modal-card {
   max-width: 680px;

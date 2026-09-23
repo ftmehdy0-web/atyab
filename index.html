@@ -55,9 +55,9 @@
         <span class="accent">ATYAB10</span>
       </div>
 
-      <a href="#track-order" class="track-order-top-link" onclick="openTrackOrderModal(); return false;" title="تتبع حالة شحنتك / Track Your Order">
+      <a href="#track-order" class="track-order-top-link" onclick="openTrackOrderModal(); return false;" title="تتبع طلبك" data-i18n-title="track_order_btn">
         <span>📦</span>
-        <span data-i18n="track_order_btn">تتبع طلبك • TRACK YOUR ORDER</span>
+        <span data-i18n="track_order_btn">تتبع طلبك</span>
       </a>
     </div>
   </div>
@@ -190,13 +190,11 @@
       <!-- المستوى الثاني: شريط أقسام الموقع الرسمية لأطياب للعطور -->
       <nav class="header-category-row" aria-label="أقسام المتجر الرسمية">
         <ul class="category-nav-menu" id="header-category-nav-menu">
-          <li class="category-nav-item"><a href="#hero" class="cat-nav-link active" data-i18n="nav_home">الرئيسية</a></li>
-          <li class="category-nav-item"><a href="#showcase" class="cat-nav-link" data-i18n="nav_showcase">مقدَّر من الجميع</a></li>
-          <li class="category-nav-item"><a href="#best-sellers" class="cat-nav-link" data-i18n="nav_bestsellers">الأكثر مبيعاً</a></li>
-          <li class="category-nav-item"><a href="#catalog" class="cat-nav-link" data-i18n="nav_catalog">جميع العطور</a></li>
-          <li class="category-nav-item"><a href="#bakhoor" class="cat-nav-link" data-i18n="nav_bakhoor">بخور ودخون</a></li>
+          <li class="category-nav-item"><a href="#catalog" class="cat-nav-link active" data-cat="perfumes" data-i18n="nav_perfume">عطور</a></li>
+          <li class="category-nav-item"><a href="#catalog" class="cat-nav-link" data-cat="oil" data-i18n="nav_oil_perfume">عطور زيتية</a></li>
+          <li class="category-nav-item"><a href="#bakhoor" class="cat-nav-link" data-cat="bakhoor" data-i18n="nav_bakhoor">بخور</a></li>
+          <li class="category-nav-item"><a href="#catalog" class="cat-nav-link" data-cat="cream" data-i18n="nav_cream">كريم</a></li>
           <li class="category-nav-item"><a href="#scent-quiz" class="cat-nav-link" onclick="openScentQuiz(); return false;"><span data-i18n="nav_quiz">مستشار العطور</span> <span class="nav-badge-hot" data-i18n="nav_quiz_badge">اختبار</span></a></li>
-          <li class="category-nav-item"><a href="#reviews" class="cat-nav-link" data-i18n="nav_reviews">آراء العملاء</a></li>
         </ul>
       </nav>
     </div>
@@ -494,7 +492,7 @@
             <div class="chapter-footer">
               <div class="chapter-price-val" data-i18n="bs_card1_price">ابتداءً من 40 ر.س</div>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <a href="product.html?id=atyab-tiger-oud" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);">
+                <a href="product.html?id=atyab-tiger-oud" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);" data-i18n="pdp_view_details_btn">
                   تفاصيل العطر
                 </a>
                 <button class="btn-classic" onclick="addToCart('atyab-tiger-oud', '110 مل', 1)" data-i18n="bs_add_to_cart">
@@ -524,7 +522,7 @@
             <div class="chapter-footer">
               <div class="chapter-price-val" data-i18n="bs_card2_price">ابتداءً من 50 ر.س</div>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <a href="product.html?id=atyab-nader" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);">
+                <a href="product.html?id=atyab-nader" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);" data-i18n="pdp_view_details_btn">
                   تفاصيل العطر
                 </a>
                 <button class="btn-classic" onclick="addToCart('atyab-nader', '100 مل', 1)" data-i18n="bs_add_to_cart">
@@ -554,7 +552,7 @@
             <div class="chapter-footer">
               <div class="chapter-price-val" data-i18n="bs_card3_price">ابتداءً من 80 ر.س</div>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <a href="product.html?id=atyab-moon-flower" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);">
+                <a href="product.html?id=atyab-moon-flower" class="btn-classic" style="background: var(--bg-ivory); color: #000; border: 1px solid var(--border-light);" data-i18n="pdp_view_details_btn">
                   تفاصيل العطر
                 </a>
                 <button class="btn-classic" onclick="addToCart('atyab-moon-flower', '100 مل', 1)" data-i18n="bs_add_to_cart">
@@ -669,7 +667,7 @@
             <span style="font-size: 1rem; color: var(--text-muted); text-decoration: line-through;" id="bakhoor-old-price">50 ر.س</span>
           </div>
           <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-            <a href="product.html?id=atyab-backhoor" class="btn btn-primary">
+            <a href="product.html?id=atyab-backhoor" class="btn btn-primary" data-i18n="bakhoor_page_btn">
               صفحة بخور أطياب الملكي
             </a>
             <button class="btn btn-secondary" onclick="addToCart('atyab-backhoor', '100 جرام', 1)" data-i18n="bakhoor_btn_cart">
@@ -821,7 +819,7 @@
           <li><a href="#showcase" data-i18n="nav_showcase">مقدَّر من الجميع</a></li>
           <li><a href="#best-sellers" data-i18n="nav_bestsellers">الأكثر مبيعاً بالمملكة</a></li>
           <li><a href="#catalog" data-i18n="nav_catalog">كتالوج العطور الستة</a></li>
-          <li><a href="#bakhoor" data-i18n="nav_bakhoor">بخور ودخون المجالس</a></li>
+          <li><a href="#bakhoor" data-i18n="footer_bakhoor">بخور ودخون المجالس</a></li>
           <li><a href="#scent-quiz" onclick="openScentQuiz(); return false;" data-i18n="nav_quiz">مستشار العطور التفاعلي</a></li>
         </ul>
       </div>
@@ -911,13 +909,11 @@
       </div>
 
       <ul class="mobile-nav-list">
-        <li><a href="#hero" onclick="closeMobileNav();"><span class="nav-icon">🏠</span><span data-i18n="nav_home">الرئيسية</span></a></li>
-        <li><a href="#showcase" onclick="closeMobileNav();"><span class="nav-icon">👑</span><span data-i18n="nav_showcase">مقدَّر من الجميع</span></a></li>
-        <li><a href="#best-sellers" onclick="closeMobileNav();"><span class="nav-icon">🔥</span><span data-i18n="nav_bestsellers">الأكثر مبيعاً</span></a></li>
-        <li><a href="#catalog" onclick="closeMobileNav();"><span class="nav-icon">💎</span><span data-i18n="nav_catalog">جميع العطور</span></a></li>
-        <li><a href="#bakhoor" onclick="closeMobileNav();"><span class="nav-icon">🪵</span><span data-i18n="nav_bakhoor">بخور ودخون</span></a></li>
+        <li><a href="#catalog" onclick="closeMobileNav();"><span class="nav-icon">💎</span><span data-i18n="nav_perfume">عطور</span></a></li>
+        <li><a href="#catalog" onclick="closeMobileNav();"><span class="nav-icon">🧪</span><span data-i18n="nav_oil_perfume">عطور زيتية</span></a></li>
+        <li><a href="#bakhoor" onclick="closeMobileNav();"><span class="nav-icon">🪵</span><span data-i18n="nav_bakhoor">بخور</span></a></li>
+        <li><a href="#catalog" onclick="closeMobileNav();"><span class="nav-icon">🧴</span><span data-i18n="nav_cream">كريم</span></a></li>
         <li><a href="#scent-quiz" onclick="openScentQuiz(); closeMobileNav(); return false;"><span class="nav-icon">🔮</span><span data-i18n="nav_quiz">مستشار العطور (اختبار)</span></a></li>
-        <li><a href="#reviews" onclick="closeMobileNav();"><span class="nav-icon">⭐</span><span data-i18n="nav_reviews">آراء العملاء</span></a></li>
         <li><a href="#track-order" onclick="openTrackOrderModal(); closeMobileNav(); return false;"><span class="nav-icon">📦</span><span data-i18n="track_order_btn">تتبع طلبك</span></a></li>
         <li><a href="#store-locator" onclick="openStoreLocatorModal(); closeMobileNav(); return false;"><span class="nav-icon">📍</span><span data-i18n="store_locator_btn">فروعنا بالمملكة</span></a></li>
       </ul>
@@ -927,7 +923,7 @@
       <!-- تبديل العملة واللغة داخل القائمة -->
       <div class="mobile-nav-settings">
         <div class="mobile-setting-item">
-          <span class="setting-label">🌐 اللغة / Language</span>
+          <span class="setting-label" data-i18n="mobile_lang_label">🌐 اللغة / Language</span>
           <div class="mobile-lang-switch-btns">
             <button class="mobile-lang-btn" onclick="switchLanguage('ar'); closeMobileNav();">🇸🇦 العربية</button>
             <button class="mobile-lang-btn" onclick="switchLanguage('en'); closeMobileNav();">🇬🇧 English</button>
@@ -935,7 +931,7 @@
         </div>
 
         <div class="mobile-setting-item">
-          <span class="setting-label">💵 العملة / Currency</span>
+          <span class="setting-label" data-i18n="mobile_curr_label">💵 العملة / Currency</span>
           <div class="mobile-currency-btns">
             <button class="mobile-curr-btn" onclick="setCurrency('SAR'); closeMobileNav();">ر.س (SAR)</button>
             <button class="mobile-curr-btn" onclick="setCurrency('AED'); closeMobileNav();">د.إ (AED)</button>
@@ -948,7 +944,7 @@
       <div class="mobile-nav-whatsapp">
         <a href="https://wa.me/966500000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D9%84%D9%83%D9%8A%D8%A9" target="_blank" rel="noopener noreferrer" class="mobile-wa-btn">
           <span>💬</span>
-          <span>خدمة العملاء الملكية (واتساب)</span>
+          <span data-i18n="mobile_wa_btn">خدمة العملاء الملكية (واتساب)</span>
         </a>
       </div>
     </div>
@@ -1019,52 +1015,19 @@
   <div class="modal-overlay" id="track-order-modal">
     <div class="modal-card track-modal-card">
       <button class="modal-close-btn" onclick="closeTrackOrderModal()" aria-label="إغلاق">&times;</button>
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-        <span style="font-size: 1.5rem;">📦</span>
-        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="track_order_title">تتبع حالة طلبك</h3>
-      </div>
-      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="track_order_desc">
-        أدخل رقم طلبك أو رقم جوالك لمتابعة حالة الشحن والتوصيل الفوري داخل المملكة 🇸🇦
-      </p>
-      <div class="track-input-group">
-        <input type="text" id="track-order-input" class="track-input-field" placeholder="رقم الطلب (مثال: ATY-8849) أو رقم الجوال" data-i18n-placeholder="track_order_input_placeholder" />
-        <button class="track-submit-btn" onclick="submitTrackOrder()" data-i18n="track_order_submit">تتبع الآن</button>
-      </div>
-      <div id="track-order-result" class="track-status-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(184, 138, 40, 0.2); padding-bottom: 8px;">
-          <span style="font-weight: 700; font-size: 0.88rem;">رقم الشحنة: <strong style="color: #B88A28;">SMSA-KSA-994821</strong></span>
-          <span style="font-size: 0.78rem; background: #E8F5E9; color: #2E7D32; padding: 2px 8px; border-radius: 4px; font-weight: 600;">قيد التوصيل 🚚</span>
+      <div id="track-modal-card-body">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <span style="font-size: 1.5rem;">📦</span>
+          <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="track_order_title">تتبع حالة طلبك</h3>
         </div>
-        <ul class="track-steps-timeline">
-          <li class="track-step-item completed">
-            <span class="track-step-icon">✓</span>
-            <div>
-              <div class="track-step-title">تم استلام وتأكيد طلبك</div>
-              <div class="track-step-sub">الرياض - مركز التوزيع الرئيسي</div>
-            </div>
-          </li>
-          <li class="track-step-item completed">
-            <span class="track-step-icon">✓</span>
-            <div>
-              <div class="track-step-title">التجهيز والتغليف الملكي الفاخر</div>
-              <div class="track-step-sub">تم فحص العطور ووضع الختم الأصلي</div>
-            </div>
-          </li>
-          <li class="track-step-item active">
-            <span class="track-step-icon">●</span>
-            <div>
-              <div class="track-step-title">تم التسليم لشركة الشحن (سمسا إكسبريس)</div>
-              <div class="track-step-sub">جاري النقل السريع إلى عنوانك داخل المملكة</div>
-            </div>
-          </li>
-          <li class="track-step-item">
-            <span class="track-step-icon">4</span>
-            <div>
-              <div class="track-step-title">التوصيل والاستلام عند بابك</div>
-              <div class="track-step-sub">الموعد المتوقع: خلال ٢٤ إلى ٤٨ ساعة</div>
-            </div>
-          </li>
-        </ul>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="track_order_desc">
+          أدخل رقم طلبك أو رقم جوالك لمتابعة حالة الشحن والتوصيل الفوري داخل المملكة 🇸🇦
+        </p>
+        <div class="track-input-group">
+          <input type="text" id="track-order-input" class="track-input-field" placeholder="رقم الطلب (مثال: ATY-8849) أو رقم الجوال" data-i18n-placeholder="track_order_input_placeholder" />
+          <button class="track-submit-btn" onclick="submitTrackOrder()" data-i18n="track_order_submit">تتبع الآن</button>
+        </div>
+        <div id="track-order-result" class="track-status-box" style="display: none;"></div>
       </div>
     </div>
   </div>
@@ -1083,48 +1046,48 @@
       <div class="stores-branches-grid">
         <div class="branch-card-item">
           <div>
-            <span class="branch-city-badge">الرياض</span>
-            <div class="branch-name">معرض العليا الرئيسي - برج المملكة</div>
-            <div class="branch-address">طريق العليا العام، حي الورود، الرياض</div>
-            <div class="branch-hours">🕒 يومياً: ٩:٠٠ ص - ١١:٣٠ م • هاتف: ٠١١٤٤٥٨٨٩٩</div>
+            <span class="branch-city-badge" data-i18n="branch_city_riyadh">الرياض</span>
+            <div class="branch-name" data-i18n="branch_name_riyadh">معرض العليا الرئيسي - برج المملكة</div>
+            <div class="branch-address" data-i18n="branch_addr_riyadh">طريق العليا العام، حي الورود، الرياض</div>
+            <div class="branch-hours" data-i18n="branch_hours_riyadh">🕒 يومياً: ٩:٠٠ ص - ١١:٣٠ م • هاتف: ٠١١٤٤٥٨٨٩٩</div>
           </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
         </div>
         <div class="branch-card-item">
           <div>
-            <span class="branch-city-badge">جدة</span>
-            <div class="branch-name">معرض شارع التحلية - مول العرب</div>
-            <div class="branch-address">طريق الأمير محمد بن عبدالعزيز (التحلية)، جدة</div>
-            <div class="branch-hours">🕒 يومياً: ١٠:٠٠ ص - ١١:٠٠ م • هاتف: ٠١٢٦٦٨٨٤٤٢</div>
+            <span class="branch-city-badge" data-i18n="branch_city_jeddah">جدة</span>
+            <div class="branch-name" data-i18n="branch_name_jeddah">معرض شارع التحلية - مول العرب</div>
+            <div class="branch-address" data-i18n="branch_addr_jeddah">طريق الأمير محمد بن عبدالعزيز (التحلية)، جدة</div>
+            <div class="branch-hours" data-i18n="branch_hours_jeddah">🕒 يومياً: ١٠:٠٠ ص - ١١:٠٠ م • هاتف: ٠١٢٦٦٨٨٤٤٢</div>
           </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
         </div>
         <div class="branch-card-item">
           <div>
-            <span class="branch-city-badge">الدمام والخبر</span>
-            <div class="branch-name">معرض الراشد مول وكورنيش الخبر</div>
-            <div class="branch-address">مجمع الراشد، بوابة ٤، الخبر - المنطقة الشرقية</div>
-            <div class="branch-hours">🕒 يومياً: ٩:٣٠ ص - ١١:٠٠ م • هاتف: ٠١٣٨٩٤٤٥٥١</div>
+            <span class="branch-city-badge" data-i18n="branch_city_dammam">الدمام والخبر</span>
+            <div class="branch-name" data-i18n="branch_name_dammam">معرض الراشد مول وكورنيش الخبر</div>
+            <div class="branch-address" data-i18n="branch_addr_dammam">مجمع الراشد، بوابة ٤، الخبر - المنطقة الشرقية</div>
+            <div class="branch-hours" data-i18n="branch_hours_dammam">🕒 يومياً: ٩:٣٠ ص - ١١:٠٠ م • هاتف: ٠١٣٨٩٤٤٥٥١</div>
           </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
         </div>
         <div class="branch-card-item">
           <div>
-            <span class="branch-city-badge">مكة المكرمة</span>
-            <div class="branch-name">معرض أبراج البيت - وقف الملك عبدالعزيز</div>
-            <div class="branch-address">مجمع أبراج الساعة، الدور التجاري الثاني، مكة المكرمة</div>
-            <div class="branch-hours">🕒 يومياً: على مدار الساعة • هاتف: ٠١٢٥٧٢٢٣٣١</div>
+            <span class="branch-city-badge" data-i18n="branch_city_makkah">مكة المكرمة</span>
+            <div class="branch-name" data-i18n="branch_name_makkah">معرض أبراج البيت - وقف الملك عبدالعزيز</div>
+            <div class="branch-address" data-i18n="branch_addr_makkah">مجمع أبراج الساعة، الدور التجاري الثاني، مكة المكرمة</div>
+            <div class="branch-hours" data-i18n="branch_hours_makkah">🕒 يومياً: على مدار الساعة • هاتف: ٠١٢٥٧٢٢٣٣١</div>
           </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
         </div>
         <div class="branch-card-item">
           <div>
-            <span class="branch-city-badge">المدينة المنورة</span>
-            <div class="branch-name">معرض المنطقة المركزية الشمالية</div>
-            <div class="branch-address">شارع الملك فهد، أمام الحرم النبوي الشريف</div>
-            <div class="branch-hours">🕒 يومياً: على مدار الساعة • هاتف: ٠١٤٨٣١١٢٢٠</div>
+            <span class="branch-city-badge" data-i18n="branch_city_madinah">المدينة المنورة</span>
+            <div class="branch-name" data-i18n="branch_name_madinah">معرض المنطقة المركزية الشمالية</div>
+            <div class="branch-address" data-i18n="branch_addr_madinah">شارع الملك فهد، أمام الحرم النبوي الشريف</div>
+            <div class="branch-hours" data-i18n="branch_hours_madinah">🕒 يومياً: على مدار الساعة • هاتف: ٠١٤٨٣١١٢٢٠</div>
           </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;">الموقع على الخريطة</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
         </div>
       </div>
     </div>
@@ -1280,26 +1243,26 @@
               <div class="form-group">
                 <label for="co-city" data-i18n="co_city_label">المدينة بالمملكة *</label>
                 <select id="co-city" class="form-control" required>
-                  <option value="الرياض" selected>الرياض / Riyadh</option>
-                  <option value="جدة">جدة / Jeddah</option>
-                  <option value="مكة المكرمة">مكة المكرمة / Makkah</option>
-                  <option value="المدينة المنورة">المدينة المنورة / Madinah</option>
-                  <option value="الدمام">الدمام / Dammam</option>
-                  <option value="الخبر">الخبر / Khobar</option>
-                  <option value="القصيم">القصيم / Qassim</option>
-                  <option value="أبها">أبها / Abha</option>
-                  <option value="تبوك">تبوك / Tabuk</option>
-                  <option value="مدينة أخرى">مدينة أخرى بالمملكة / Other</option>
+                  <option value="الرياض" selected data-i18n="co_city_riyadh">الرياض / Riyadh</option>
+                  <option value="جدة" data-i18n="co_city_jeddah">جدة / Jeddah</option>
+                  <option value="مكة المكرمة" data-i18n="co_city_makkah">مكة المكرمة / Makkah</option>
+                  <option value="المدينة المنورة" data-i18n="co_city_madinah">المدينة المنورة / Madinah</option>
+                  <option value="الدمام" data-i18n="co_city_dammam">الدمام / Dammam</option>
+                  <option value="الخبر" data-i18n="co_city_khobar">الخبر / Khobar</option>
+                  <option value="القصيم" data-i18n="co_city_qassim">القصيم / Qassim</option>
+                  <option value="أبها" data-i18n="co_city_abha">أبها / Abha</option>
+                  <option value="تبوك" data-i18n="co_city_tabuk">تبوك / Tabuk</option>
+                  <option value="مدينة أخرى" data-i18n="co_city_other">مدينة أخرى بالمملكة / Other</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label for="co-payment" data-i18n="co_payment_label">طريقة الدفع المفضلة *</label>
                 <select id="co-payment" class="form-control" required>
-                  <option value="mada">بطاقة مدى البنكية (Mada)</option>
-                  <option value="applepay">آبل باي (Apple Pay)</option>
-                  <option value="credit">فيزا / ماستركارد (Visa / MC)</option>
-                  <option value="cod">الدفع نقداً عند الاستلام (COD)</option>
+                  <option value="mada" data-i18n="co_pay_mada">بطاقة مدى البنكية (Mada)</option>
+                  <option value="applepay" data-i18n="co_pay_apple">آبل باي (Apple Pay)</option>
+                  <option value="credit" data-i18n="co_pay_credit">فيزا / ماستركارد (Visa / MC)</option>
+                  <option value="cod" data-i18n="co_pay_cod">الدفع نقداً عند الاستلام (COD)</option>
                 </select>
               </div>
             </div>
@@ -1343,6 +1306,16 @@
       <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.991 0-9.05 4.058-9.05 9.05 0 1.602.42 3.109 1.156 4.417l-1.226 4.478 4.606-1.208c1.261.688 2.709 1.081 4.249 1.081 4.991 0 9.05-4.058 9.05-9.05 0-4.992-4.059-9.05-9.05-9.05z"></path>
     </svg>
   </a>
+
+  <!-- محرك سوبابيز السحابي (Supabase Cloud Backend) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+
+  <!-- محرك فايربيس للمصادقة والمزامنة الحية (Firebase Auth & Firestore Backend) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase.js"></script>
 
   <!-- Scripts: أولاً قاموس اللغات ثم بيانات المنتجات ثم منطق المتجر -->
   <script src="js/translations.js"></script>

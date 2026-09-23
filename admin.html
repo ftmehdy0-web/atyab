@@ -49,6 +49,12 @@
           <span>View Store</span>
         </a>
 
+        <!-- Firebase Live Sync Settings (Strictly Firebase Only) -->
+        <button type="button" class="btn-header-action" onclick="openFirebaseConfigModal()" id="btn-firebase-modal" title="Firebase Live Sync & Authentication">
+          <span id="firebase-status-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; margin-right: 4px;"></span>
+          <span id="firebase-btn-label">🔥 Firebase Live Sync</span>
+        </button>
+
         <!-- Clear Orders -->
         <button type="button" class="btn-header-action" onclick="clearAllOrders()" title="Clear all orders from dashboard">
           <span>🗑️</span>
@@ -430,7 +436,93 @@
   <!-- Toast Notifications Container -->
   <div class="admin-toast-hub" id="admin-toast-hub"></div>
 
-  <!-- JavaScript Scripts -->
+  <!-- Firebase Live Sync & Authentication Setup Modal (Firebase Only) -->
+  <div class="modal-backdrop-overlay" id="firebase-config-modal">
+    <div class="modal-sheet-card" style="max-width: 620px;">
+      <div class="modal-title-bar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">🔥</span>
+          <div>
+            <h3>Connect Firebase Live Sync & Auth</h3>
+            <p>Real-time cloud database syncing for customer orders, cancellations, and user accounts</p>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-dismiss" onclick="closeFirebaseConfigModal()">&times;</button>
+      </div>
+
+      <div style="padding: 24px;">
+        <!-- Status Banner -->
+        <div id="firebase-modal-status-box" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+          <span id="firebase-modal-status-icon" style="font-size: 1.4rem;">🔴</span>
+          <div style="flex: 1;">
+            <div id="firebase-modal-status-title" style="font-weight: 700; color: #F87171; font-size: 0.92rem;">Firebase Live Sync: Not Configured</div>
+            <div id="firebase-modal-status-desc" style="font-size: 0.78rem; color: var(--text-muted);">Paste your Firebase web config JSON or fill in the keys below to activate real-time order sync & cloud auth.</div>
+          </div>
+        </div>
+
+        <form id="firebase-config-form" onsubmit="handleSaveFirebaseConfig(event)">
+          <div class="form-group-item" style="margin-bottom: 14px;">
+            <label for="cfg-fb-json" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--gold-pale);">
+              Quick Paste: Firebase Config JSON / Object
+            </label>
+            <textarea id="cfg-fb-json" rows="4" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "your-app.firebaseapp.com",
+  "projectId": "your-app",
+  "appId": "1:..."
+}' style="width: 100%; padding: 10px 12px; background: #0E0E13; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); color: #FFF; font-family: monospace; font-size: 0.8rem; resize: vertical;" oninput="handleFirebaseJsonPaste(this.value)"></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label for="cfg-fb-apikey" style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--gold-pale);">API Key</label>
+              <input type="text" id="cfg-fb-apikey" placeholder="AIzaSy..." style="width: 100%; padding: 8px 10px; background: #0E0E13; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); color: #FFF; font-family: monospace; font-size: 0.82rem;" required />
+            </div>
+            <div>
+              <label for="cfg-fb-projectid" style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--gold-pale);">Project ID</label>
+              <input type="text" id="cfg-fb-projectid" placeholder="atyab-perfumes" style="width: 100%; padding: 8px 10px; background: #0E0E13; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); color: #FFF; font-family: monospace; font-size: 0.82rem;" required />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+            <div>
+              <label for="cfg-fb-authdomain" style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--gold-pale);">Auth Domain</label>
+              <input type="text" id="cfg-fb-authdomain" placeholder="atyab.firebaseapp.com" style="width: 100%; padding: 8px 10px; background: #0E0E13; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); color: #FFF; font-family: monospace; font-size: 0.82rem;" />
+            </div>
+            <div>
+              <label for="cfg-fb-appid" style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; color: var(--gold-pale);">App ID</label>
+              <input type="text" id="cfg-fb-appid" placeholder="1:123456:web:abcdef" style="width: 100%; padding: 8px 10px; background: #0E0E13; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); color: #FFF; font-family: monospace; font-size: 0.82rem;" />
+            </div>
+          </div>
+
+          <!-- Quick Setup Helper -->
+          <div style="background: rgba(197, 155, 39, 0.08); border: 1px dashed rgba(197, 155, 39, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
+            <div style="font-weight: 700; color: var(--gold-pale); font-size: 0.84rem; margin-bottom: 6px;">
+              📋 Firebase Console Setup Steps:
+            </div>
+            <ol style="margin-left: 18px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">
+              <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color: var(--gold-primary); text-decoration: underline;">console.firebase.google.com</a> & create a project.</li>
+              <li>Go to <strong>Build &gt; Firestore Database</strong>, click <strong>Create database</strong> (Start in test mode).</li>
+              <li>Go to <strong>Build &gt; Authentication &gt; Sign-in method</strong>, enable <strong>Email/Password</strong>.</li>
+              <li>Go to <strong>Project Settings ⚙️ &gt; General</strong>, register a Web App (`</>`) and copy the <code style="color: #F8E2A7;">firebaseConfig</code> snippet!</li>
+            </ol>
+          </div>
+
+          <div class="modal-footer-bar" style="padding: 0; background: transparent; border-top: none; display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" class="btn-secondary-action" onclick="handleClearFirebaseConfig()">Reset Firebase</button>
+            <button type="button" class="btn-secondary-action" onclick="closeFirebaseConfigModal()">Close</button>
+            <button type="submit" class="btn-primary-action">🔥 Save & Activate Live Sync</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Scripts: Firebase SDK (App, Auth, Firestore), Products catalog, Admin logic (Supabase completely removed) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase.js"></script>
   <script src="js/products.js"></script>
   <script src="js/admin.js"></script>
 </body>
