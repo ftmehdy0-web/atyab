@@ -43,10 +43,11 @@
           </div>
         </div>
 
-        <!-- Quick Dedicated Add Product Action -->
-        <button type="button" class="btn-header-action btn-header-gold" onclick="openProductEditorModal()" title="Upload and publish a new product to the website">
-          <span>✨</span>
-          <span>+ Add Product</span>
+        <!-- Dedicated Manage Products Action -->
+        <button type="button" class="btn-header-action btn-header-gold" onclick="switchAdminView('products')" id="btn-header-manage-products" title="Manage store products, add new, or remove products">
+          <span>👑</span>
+          <span>Manage Products</span>
+          <span class="tab-btn-badge" id="header-products-count" style="margin-left: 6px; background: rgba(0,0,0,0.4); color: #FFF;">0</span>
         </button>
 
         <!-- Quick Storefront Link -->
@@ -86,7 +87,7 @@
       </button>
       <button type="button" class="admin-nav-tab-btn" id="tab-btn-products" onclick="switchAdminView('products')">
         <span class="tab-btn-icon">👑</span>
-        <span class="tab-btn-text">Product Catalog & Categories</span>
+        <span class="tab-btn-text">Manage Products & Live Sync</span>
         <span class="tab-btn-badge" id="nav-products-count">19</span>
       </button>
     </div>
@@ -363,9 +364,9 @@
           <div class="catalog-banner-info">
             <div class="catalog-banner-icon">👑</div>
             <div>
-              <div class="catalog-banner-title">Product Catalog & Inventory Publisher</div>
+              <div class="catalog-banner-title">Manage Products & Live Store Sync</div>
               <div class="catalog-banner-sub">
-                Upload from PC, publish live to customer storefront, organize by category, edit pricing, or remove products instantly.
+                Dedicated Product Control • Add new creations from PC, manage categories, edit pricing, or remove products instantly with live storefront sync.
               </div>
             </div>
           </div>

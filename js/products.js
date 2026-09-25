@@ -2041,8 +2041,8 @@ const BASE_ATYAB_PRODUCTS = [
       {
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
-        priceSAR: 42,
-        originalPriceSAR: 60,
+        priceSAR: 30,
+        originalPriceSAR: 45,
         savePercent: "33%",
         sku: "AYT-KF-50",
         stockNoteAr: "متوفر",
@@ -2419,7 +2419,6 @@ function getUnifiedProductsCatalog() {
   try {
     const customList = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
     if (Array.isArray(customList) && customList.length > 0) {
-      // Avoid duplicates with custom products
       const customIds = new Set(customList.map(c => c.id));
       list = [...customList, ...list.filter(p => !customIds.has(p.id))];
     }
@@ -2445,9 +2444,51 @@ function refreshAtyabProducts() {
     window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
     try {
       window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { products: ATYAB_PRODUCTS } }));
-    } catch {}
+    } catch (e) {}
   }
   return ATYAB_PRODUCTS;
+}
+
+// ===================================================================
+// BROADCASTCHANNEL REAL-TIME LIVE STOREFRONT SYNCHRONIZATION
+// ===================================================================
+let liveProductsBroadcastChannel = null;
+if (typeof window !== "undefined" && typeof BroadcastChannel !== "undefined") {
+  try {
+    liveProductsBroadcastChannel = new BroadcastChannel("atyab_live_products_sync");
+    liveProductsBroadcastChannel.onmessage = (event) => {
+      triggerLiveWebsiteSync(event.data);
+    };
+  } catch (err) {
+    console.warn("BroadcastChannel not available:", err);
+  }
+}
+
+function broadcastCatalogUpdate(action, payload) {
+  triggerLiveWebsiteSync({ action, payload });
+  if (liveProductsBroadcastChannel) {
+    try {
+      liveProductsBroadcastChannel.postMessage({ action, payload, time: Date.now() });
+    } catch (err) {}
+  }
+  try {
+    window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { action, payload, products: ATYAB_PRODUCTS } }));
+  } catch (err) {}
+}
+
+function triggerLiveWebsiteSync(data) {
+  refreshAtyabProducts();
+  if (typeof renderProducts === "function") renderProducts();
+  if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+  if (typeof renderShowcase === "function") renderShowcase();
+  if (typeof renderCreamsSpotlight === "function") renderCreamsSpotlight();
+  if (typeof renderProductPage === "function") renderProductPage();
+  if (typeof renderProductsManagement === "function") renderProductsManagement();
+  if (typeof updateTopNavCounts === "function") updateTopNavCounts();
+  if (typeof populateManualOrderProductSelect === "function") populateManualOrderProductSelect();
+  if (typeof initProductPage === "function" && typeof window !== "undefined" && window.location.pathname.includes("product.html")) {
+    initProductPage();
+  }
 }
 
 /**
@@ -2480,6 +2521,7 @@ function saveCustomProductToStorage(product) {
     }
 
     refreshAtyabProducts();
+    broadcastCatalogUpdate("save", product);
     return { success: true, product };
   } catch (err) {
     console.error("Failed to save custom product:", err);
@@ -2505,6 +2547,7 @@ function updateProductInStorage(productId, updates) {
     }
 
     refreshAtyabProducts();
+    broadcastCatalogUpdate("update", { productId, updates });
     return { success: true };
   } catch (err) {
     console.error("Failed to update product:", err);
@@ -2540,6 +2583,7 @@ function deleteProductFromStorage(productId) {
     }
 
     refreshAtyabProducts();
+    broadcastCatalogUpdate("delete", { productId });
     return { success: true };
   } catch (err) {
     console.error("Failed to delete product:", err);
@@ -2555,6 +2599,7 @@ function restoreDefaultCatalogInStorage() {
     localStorage.removeItem("atyab_deleted_product_ids");
     localStorage.removeItem("atyab_updated_products");
     refreshAtyabProducts();
+    broadcastCatalogUpdate("restore", {});
     return { success: true };
   } catch (err) {
     return { success: false, error: err.message };
@@ -2571,6 +2616,8 @@ if (typeof window !== "undefined") {
   window.updateProductInStorage = updateProductInStorage;
   window.deleteProductFromStorage = deleteProductFromStorage;
   window.restoreDefaultCatalogInStorage = restoreDefaultCatalogInStorage;
+  window.broadcastCatalogUpdate = broadcastCatalogUpdate;
+  window.triggerLiveWebsiteSync = triggerLiveWebsiteSync;
 
   // React instantly to cross-tab product changes
   window.addEventListener("storage", (e) => {
@@ -2579,15 +2626,7 @@ if (typeof window !== "undefined") {
       e.key === "atyab_deleted_product_ids" ||
       e.key === "atyab_updated_products"
     ) {
-      refreshAtyabProducts();
-      if (typeof renderProducts === "function") renderProducts();
-      if (typeof renderCategoryProducts === "function") renderCategoryProducts();
-      if (typeof renderShowcase === "function") renderShowcase();
-      if (typeof renderProductsManagement === "function") renderProductsManagement();
+      triggerLiveWebsiteSync({ action: "storage_sync" });
     }
   });
-}
-if (typeof window !== "undefined") {
-  window.ATYAB_PRODUCTS = ATYAB_PRODUCTS;
-  window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
 }

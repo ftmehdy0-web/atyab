@@ -1594,10 +1594,14 @@ function updateTopNavCounts() {
   if (ordersBadge) {
     ordersBadge.textContent = adminState.orders.length;
   }
+  const prods = (typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []));
   const productsBadge = document.getElementById("nav-products-count");
   if (productsBadge) {
-    const prods = (typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []));
     productsBadge.textContent = prods.length;
+  }
+  const headerBadge = document.getElementById("header-products-count");
+  if (headerBadge) {
+    headerBadge.textContent = prods.length;
   }
 }
 
@@ -2169,12 +2173,22 @@ function openProductEditorModal(productId = null) {
   }
 
   updateLivePreview();
+  modal.classList.add("active");
   modal.style.display = "flex";
+  modal.style.opacity = "1";
+  modal.style.visibility = "visible";
+  modal.style.pointerEvents = "auto";
 }
 
 function closeProductEditorModal() {
   const modal = document.getElementById("product-editor-modal");
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.style.opacity = "0";
+    modal.style.visibility = "hidden";
+    modal.style.pointerEvents = "none";
+  }
   adminState.editingProductId = null;
 }
 
@@ -2339,12 +2353,24 @@ function confirmDeleteProduct(productId) {
   }
 
   const modal = document.getElementById("delete-product-modal");
-  if (modal) modal.style.display = "flex";
+  if (modal) {
+    modal.classList.add("active");
+    modal.style.display = "flex";
+    modal.style.opacity = "1";
+    modal.style.visibility = "visible";
+    modal.style.pointerEvents = "auto";
+  }
 }
 
 function closeDeleteProductModal() {
   const modal = document.getElementById("delete-product-modal");
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    modal.classList.remove("active");
+    modal.style.display = "none";
+    modal.style.opacity = "0";
+    modal.style.visibility = "hidden";
+    modal.style.pointerEvents = "none";
+  }
   adminState.deletingProductId = null;
 }
 
