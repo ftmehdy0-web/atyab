@@ -26,6 +26,17 @@ function initProductPage() {
     if (foundBySlug) productId = foundBySlug.id;
   }
 
+  // Also auto-detect product from filename (e.g. product-backhoor.html)
+  if (!productId) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes("backhoor") || path.includes("bakhoor")) productId = "atyab-bakhoor";
+    else if (path.includes("tiger-oud")) productId = "atyab-tiger-oud";
+    else if (path.includes("nader")) productId = "atyab-nader";
+    else if (path.includes("moon-flower")) productId = "atyab-moon-flower";
+    else if (path.includes("mashair")) productId = "atyab-mashair";
+    else if (path.includes("a555")) productId = "atyab-a555";
+  }
+
   // إذا تم فتح صفحة العطر مباشرة بدون معرّف أو كان المعرف غير صالح
   currentProduct = ATYAB_PRODUCTS.find(p => p.id === productId) || ATYAB_PRODUCTS[0];
 
@@ -109,22 +120,22 @@ function renderBreadcrumb(lp) {
   const container = document.getElementById("pdp-breadcrumb-container");
   if (!container) return;
 
-  const catName = currentProduct.category === "dakhoon" 
-    ? t("pdp_breadcrumb_bakhoor") 
-    : t("pdp_breadcrumb_perfumes");
+  const isEn = state.language === "en";
+  const homeUrl = `index.html${isEn ? '?lang=en' : ''}`;
+  const perfumesUrl = `perfumes.html${isEn ? '?lang=en' : ''}`;
 
   container.innerHTML = `
     <ul class="pdp-breadcrumb-list">
       <li>
-        <a href="index.html">${t("pdp_breadcrumb_home")}</a>
+        <a href="${homeUrl}">${t("pdp_breadcrumb_home")}</a>
       </li>
       <li class="pdp-breadcrumb-sep">/</li>
       <li>
-        <a href="index.html#catalog">${t("pdp_breadcrumb_catalog")}</a>
+        <a href="${perfumesUrl}">${isEn ? "Perfumes" : "العطور"}</a>
       </li>
       <li class="pdp-breadcrumb-sep">/</li>
       <li>
-        <a href="index.html#catalog">${catName}</a>
+        <a href="${perfumesUrl}">${t("pdp_breadcrumb_perfumes")}</a>
       </li>
       <li class="pdp-breadcrumb-sep">/</li>
       <li class="pdp-breadcrumb-current">${lp.displayName}</li>
@@ -215,70 +226,69 @@ function closeLightbox() {
  * تفاصيل العطر، الحساب الديناميكي للسعر، وخيارات السعة
  */
 function renderPurchaseBox(lp) {
-  const variants = lp.displaySizeVariants || [];
-  const currentVariant = variants[currentSizeIndex] || {
-    priceSAR: currentProduct.priceSAR,
-    originalPriceSAR: currentProduct.originalPriceSAR,
-    displaySize: currentProduct.defaultSize,
-    savePercent: "30%",
-    displayStockNote: t("pdp_stock_status")
-  };
+  const isEn = state.language === "en";
+  const singlePrice = currentProduct.priceSAR;
+  const oldPrice = currentProduct.originalPriceSAR;
+  const officialSize = isEn ? (currentProduct.defaultSizeEn || "100ml Bottle (Official Signature)") : (currentProduct.defaultSize || "قارورة 100 مل (الحجم الرسمي)");
+  const cleanVolume = officialSize.split("(")[0].trim();
+  const savePercent = oldPrice && oldPrice > singlePrice 
+    ? Math.round((1 - singlePrice / oldPrice) * 100) 
+    : 0;
 
-  const isWishlisted = state.wishlist.includes(currentProduct.id);
+  const isWishlisted = state.wishlist && state.wishlist.some(w => (typeof w === "object" ? w.id : w) === currentProduct.id);
 
   // تحديث أعلى الصندوق
   const metaContainer = document.getElementById("pdp-info-meta");
   if (metaContainer) {
     metaContainer.innerHTML = `
       <div class="pdp-top-meta">
-        <span class="pdp-family-badge">⚜️ ${lp.displayFamily}</span>
+        <span class="pdp-family-badge">⚜️ ${lp.displayFamily || currentProduct.family}</span>
         <div class="pdp-rating-strip">
           <span class="pdp-rating-stars">★★★★★</span>
-          <span class="pdp-rating-number">${currentProduct.rating}</span>
-          <a href="#reviews-section" class="pdp-reviews-jump">(${currentProduct.reviewsCount} ${t("reviews_count_suffix")})</a>
+          <span class="pdp-rating-number">${currentProduct.rating || 5.0}</span>
+          <a href="#reviews-section" class="pdp-reviews-jump">(${currentProduct.reviewsCount || 150} ${isEn ? "reviews" : "تقييم"})</a>
         </div>
       </div>
       <h1 class="pdp-title">${lp.displayName}</h1>
-      <p class="pdp-subtitle">${lp.displaySubtitle}</p>
+      <p class="pdp-subtitle">${lp.displaySubtitle || lp.displayFamily}</p>
     `;
   }
 
   // تحديث صندوق السعر
   const priceContainer = document.getElementById("pdp-price-container");
   if (priceContainer) {
-    const singlePrice = currentVariant.priceSAR;
-    const oldPrice = currentVariant.originalPriceSAR;
-
     priceContainer.innerHTML = `
       <div class="pdp-price-box">
         <div class="pdp-price-left">
           <span class="pdp-current-price">${formatPrice(singlePrice * currentQty)}</span>
           ${oldPrice ? `<span class="pdp-old-price">${formatPrice(oldPrice * currentQty)}</span>` : ''}
-          ${currentVariant.savePercent ? `<span class="pdp-save-badge">${t("pdp_save_badge", { save: currentVariant.savePercent })}</span>` : ''}
+          ${savePercent > 0 ? `<span class="pdp-save-badge">${isEn ? "Save" : "وفر"} ${savePercent}%</span>` : ''}
         </div>
-        <span class="pdp-concentration-pill">${lp.displayConcentration}</span>
+        <span class="pdp-concentration-pill">${lp.displayConcentration ? lp.displayConcentration.split("(")[0].trim() : (isEn ? "Eau De Parfum Royal" : "أو دو بارفان ملكي")}</span>
       </div>
     `;
   }
 
-  // خيارات السعة والأحجام (Size Options Selector)
+  // سعة القارورة الرسمية المعتمدة (Authentic Signature Edition - Ahmed Al Maghribi Architecture)
   const sizeSelectorContainer = document.getElementById("pdp-size-selector-container");
   if (sizeSelectorContainer) {
     sizeSelectorContainer.innerHTML = `
       <div class="pdp-size-selector-section">
         <div class="pdp-selector-label">
-          <span>${t("pdp_select_size")}</span>
-          <span style="color: var(--gold-primary); font-weight: 800;">${currentVariant.displaySize}</span>
+          <span>${isEn ? "Official Bottle Volume & Edition:" : "سعة القارورة الرسمية:"}</span>
+          <span style="color: var(--gold-primary); font-weight: 800;">${cleanVolume}</span>
         </div>
-        <div class="pdp-size-cards-grid">
-          ${variants.map((v, idx) => `
-            <div class="pdp-size-card ${idx === currentSizeIndex ? 'active' : ''}" onclick="selectSizeVariant(${idx})">
-              ${v.isPopular ? `<span class="pdp-size-popular-badge">${t("badge_best_seller")}</span>` : ''}
-              <div class="pdp-size-card-name">${v.displaySize}</div>
-              <div class="pdp-size-card-price">${formatPrice(v.priceSAR)}</div>
-              ${v.savePercent ? `<div class="pdp-size-card-save">${t("pdp_save_badge", { save: v.savePercent })}</div>` : ''}
+        <div class="pdp-signature-edition-pill" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border: 1.5px solid var(--gold-primary); border-radius: 8px; background: rgba(197, 155, 39, 0.05); margin-top: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 1.5rem;">💎</span>
+            <div>
+              <div style="font-weight: 800; font-size: 0.98rem; color: #111;">${officialSize}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${isEn ? "100% Authentic Signature Royal Bottle" : "الإصدار الملكي الأصلي المعتمد"}</div>
             </div>
-          `).join("")}
+          </div>
+          <div style="text-align: end;">
+            <span style="font-family: var(--font-arabic-title); font-size: 1.2rem; font-weight: 900; color: #111;">${formatPrice(singlePrice)}</span>
+          </div>
         </div>
       </div>
     `;
@@ -290,7 +300,7 @@ function renderPurchaseBox(lp) {
     stockContainer.innerHTML = `
       <div class="pdp-stock-banner">
         <span class="pdp-pulse-dot"></span>
-        <span>${currentVariant.displayStockNote || t("pdp_stock_status")}</span>
+        <span>${isEn ? "In Stock - Riyadh Central Fulfillment (Immediate Express Dispatch across KSA 🇸🇦)" : "متوفر بالمستودع المركزي - الرياض (شحن فوري سريع لكافة مدن المملكة 🇸🇦)"}</span>
       </div>
     `;
   }
@@ -298,32 +308,30 @@ function renderPurchaseBox(lp) {
   // أزرار الشراء والإضافة للسلة
   const actionsContainer = document.getElementById("pdp-actions-container");
   if (actionsContainer) {
-    const rawPriceText = formatPrice(currentVariant.priceSAR * currentQty);
+    const rawPriceText = formatPrice(singlePrice * currentQty);
     const waText = encodeURIComponent(
-      t("pdp_whatsapp_order_msg", {
-        name: lp.displayName,
-        size: currentVariant.displaySize,
-        price: rawPriceText
-      })
+      isEn
+        ? `Hello Atyab Fragrance Concierge, I would like to order ${lp.displayName} (${cleanVolume}) at ${rawPriceText} from the official store.`
+        : `مرحباً مستشار أطياب، أود طلب ${lp.displayName} (${cleanVolume}) بسعر ${rawPriceText} من المتجر الرسمي.`
     );
     const waUrl = `https://wa.me/966500000000?text=${waText}`;
 
     actionsContainer.innerHTML = `
       <div class="pdp-action-row">
         <div class="pdp-qty-picker">
-          <button class="pdp-qty-btn" onclick="updatePdpQty(-1)">-</button>
+          <button type="button" class="pdp-qty-btn" onclick="updatePdpQty(-1)" aria-label="Decrease quantity">-</button>
           <span class="pdp-qty-val">${currentQty}</span>
-          <button class="pdp-qty-btn" onclick="updatePdpQty(1)">+</button>
+          <button type="button" class="pdp-qty-btn" onclick="updatePdpQty(1)" aria-label="Increase quantity">+</button>
         </div>
-        <button class="pdp-btn-add-cart" onclick="addCurrentVariantToCart()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button type="button" class="pdp-btn-add-cart" id="pdp-add-cart-btn" onclick="addCurrentVariantToCart()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
           <span>${t("pdp_add_to_cart_btn")} (${rawPriceText})</span>
         </button>
-        <button class="pdp-btn-wishlist ${isWishlisted ? 'active' : ''}" onclick="togglePdpWishlist()" title="${t("wishlist_tooltip")}">
+        <button type="button" class="pdp-btn-wishlist ${isWishlisted ? 'active' : ''}" onclick="togglePdpWishlist()" title="${t("wishlist_tooltip")}">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="${isWishlisted ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
@@ -390,17 +398,30 @@ function updatePdpQty(delta) {
 }
 
 /**
- * إضافة السعة الحالية المختارة إلى السلة
+ * إضافة السعة الحالية المختارة إلى السلة بالسعر الدقيق
  */
 function addCurrentVariantToCart() {
-  const lp = getProductLocalized(currentProduct, state.language);
-  const variants = currentProduct.sizeVariants || [];
-  const chosenVariant = variants[currentSizeIndex] || {
-    size: currentProduct.defaultSize,
-    priceSAR: currentProduct.priceSAR
-  };
+  const isEn = state.language === "en";
+  const officialSize = isEn ? (currentProduct.defaultSizeEn || currentProduct.defaultSize) : currentProduct.defaultSize;
 
-  addToCart(currentProduct.id, chosenVariant.size, currentQty);
+  addToCart(currentProduct.id, officialSize, currentQty);
+
+  const btn = document.getElementById("pdp-add-cart-btn");
+  if (btn) {
+    const origContent = btn.innerHTML;
+    btn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>${isEn ? "Added to Bag ✓" : "تمت الإضافة للسلة ✓"}</span>
+    `;
+    btn.classList.add("btn-added-state");
+
+    setTimeout(() => {
+      btn.innerHTML = origContent;
+      btn.classList.remove("btn-added-state");
+    }, 1600);
+  }
 }
 
 /**
@@ -667,18 +688,16 @@ function updateMobileStickyBar() {
   const bar = document.getElementById("pdp-mobile-sticky-bar");
   if (!bar || !currentProduct) return;
   const lp = getProductLocalized(currentProduct, state.language);
-  const variants = currentProduct.sizeVariants || [];
-  const currentVariant = variants[currentSizeIndex] || {
-    priceSAR: currentProduct.priceSAR,
-    displaySize: currentProduct.defaultSize
-  };
+  const isEn = state.language === "en";
+  const officialSize = isEn ? (currentProduct.defaultSizeEn || currentProduct.defaultSize) : currentProduct.defaultSize;
+  const cleanVol = officialSize.split("(")[0].trim();
 
   bar.innerHTML = `
     <div class="pdp-sticky-product-info">
       <img src="${currentProduct.image}" alt="${lp.displayName}" class="pdp-sticky-product-thumb" />
       <div>
         <div class="pdp-sticky-title">${lp.displayName}</div>
-        <div class="pdp-sticky-price">${formatPrice(currentVariant.priceSAR * currentQty)} (${currentVariant.displaySize})</div>
+        <div class="pdp-sticky-price">${formatPrice(currentProduct.priceSAR * currentQty)} (${cleanVol})</div>
       </div>
     </div>
     <button class="btn btn-primary" onclick="addCurrentVariantToCart()" style="padding: 10px 18px; font-size: 0.88rem;">

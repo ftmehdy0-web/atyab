@@ -4,7 +4,19 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://127.0.0.1:$Port/")
 $listener.Prefixes.Add("http://localhost:$Port/")
 $listener.Start()
-Write-Host "ATYAB Perfumes server running on http://127.0.0.1:$Port/"
+Write-Host "ATYAB Perfumes fast cached server running on http://127.0.0.1:$Port/"
+
+$cache = @{}
+$mimes = @{
+    ".html" = "text/html; charset=utf-8"
+    ".css"  = "text/css; charset=utf-8"
+    ".js"   = "application/javascript; charset=utf-8"
+    ".jpg"  = "image/jpeg"
+    ".jpeg" = "image/jpeg"
+    ".png"  = "image/png"
+    ".webp" = "image/webp"
+    ".svg"  = "image/svg+xml"
+}
 
 while ($listener.IsListening) {
     try {
@@ -17,42 +29,41 @@ while ($listener.IsListening) {
             $path = "/index.html"
         }
 
-        if ($request.QueryString["data"]) {
-            [IO.File]::WriteAllText((Join-Path $PSScriptRoot "overflow_log.txt"), $request.QueryString["data"])
-        }
-
         $cleanPath = $path.TrimStart("/").Replace("/", [IO.Path]::DirectorySeparatorChar)
         $fullPath = Join-Path $PSScriptRoot $cleanPath
 
         if (Test-Path $fullPath -PathType Leaf) {
-            $ext = [IO.Path]::GetExtension($fullPath).ToLower()
-            $mime = "application/octet-stream"
-            switch ($ext) {
-                ".html" { $mime = "text/html; charset=utf-8" }
-                ".css"  { $mime = "text/css; charset=utf-8" }
-                ".js"   { $mime = "application/javascript; charset=utf-8" }
-                ".jpg"  { $mime = "image/jpeg" }
-                ".jpeg" { $mime = "image/jpeg" }
-                ".png"  { $mime = "image/png" }
-                ".webp" { $mime = "image/webp" }
-                ".svg"  { $mime = "image/svg+xml" }
-            }
-            $response.ContentType = $mime
             $bytes = [IO.File]::ReadAllBytes($fullPath)
+        } else {
+            $bytes = $null
+        }
+
+        if ($bytes -ne $null) {
+            $ext = [IO.Path]::GetExtension($fullPath).ToLower()
+            $mime = $mimes[$ext]
+            if (-not $mime) { $mime = "application/octet-stream" }
+            $response.ContentType = $mime
             $response.ContentLength64 = $bytes.Length
+
+            if ($path.EndsWith(".html") -or $path -eq "/index.html") {
+                $response.Headers.Add("Cache-Control", "no-cache")
+            } else {
+                $response.Headers.Add("Cache-Control", "public, max-age=86400")
+            }
+
             if ($request.HttpMethod -ne "HEAD") {
                 $response.OutputStream.Write($bytes, 0, $bytes.Length)
             }
         } else {
             $response.StatusCode = 404
-            $errBytes = [Text.Encoding]::UTF8.GetBytes("404 Not Found")
-            $response.ContentLength64 = $errBytes.Length
+            $err = [Text.Encoding]::UTF8.GetBytes("404 Not Found")
+            $response.ContentLength64 = $err.Length
             if ($request.HttpMethod -ne "HEAD") {
-                $response.OutputStream.Write($errBytes, 0, $errBytes.Length)
+                $response.OutputStream.Write($err, 0, $err.Length)
             }
         }
         $response.OutputStream.Close()
     } catch {
-        Write-Host "Request exception: $_"
+        # continue on client disconnect
     }
 }

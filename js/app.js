@@ -29,20 +29,20 @@ function getCartStorageKey(email) {
 
 function readStoredCart() {
   const account = readStoredAccount();
-  // When not logged in: cart strictly has NO items or data
-  if (!account) {
-    return [];
+  if (account && account.email) {
+    const userKey = `atyab_cart_${account.email.toLowerCase()}`;
+    try {
+      const raw = localStorage.getItem(userKey);
+      if (raw) return JSON.parse(raw);
+    } catch {}
   }
-  // When logged in: read user-specific cart
-  const userKey = `atyab_cart_${account.email.toLowerCase()}`;
   try {
-    const raw = localStorage.getItem(userKey);
+    const raw = localStorage.getItem("atyab_guest_cart") || localStorage.getItem("atyab_cart");
     if (raw) return JSON.parse(raw);
-    return [];
-  } catch {
-    return [];
-  }
+  } catch {}
+  return [];
 }
+
 
 const state = {
   language: initialLang,
@@ -586,13 +586,26 @@ function switchLanguage(lang, notify = true) {
   // تحديث سمات HTML والاتجاه (RTL / LTR)
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.documentElement.classList.toggle("lang-en", lang === "en");
+  document.documentElement.classList.toggle("lang-ar", lang === "ar");
+  document.body.classList.toggle("lang-en", lang === "en");
+  document.body.classList.toggle("lang-ar", lang === "ar");
+
+  // مزامنة الروابط الداخلية لتحمل اللغة النشطة تلقائياً
+  syncNavLinksLanguage(lang);
 
   // إغلاق القوائم المنسدلة
   document.getElementById("lang-selector-dropdown")?.classList.remove("open");
   document.getElementById("hdr-lang-dropdown")?.classList.remove("open");
   document.getElementById("hdr-country-dropdown")?.classList.remove("open");
 
-  // تحديث تسمية الزر وحالة الاختيار في الترويسة الجديدة
+  // تحديث مبدل اللغة الشريطي المنفصل (Segmented Pill Toggle)
+  const btnAr = document.getElementById("lang-btn-ar");
+  const btnEn = document.getElementById("lang-btn-en");
+  if (btnAr) btnAr.classList.toggle("active", lang === "ar");
+  if (btnEn) btnEn.classList.toggle("active", lang === "en");
+
+  // تحديث تسمية الزر وحالة الاختيار في الترويسة
   const hdrLangCurrent = document.getElementById("hdr-lang-current");
   if (hdrLangCurrent) {
     hdrLangCurrent.textContent = lang === "en" ? "English" : "عربي";
@@ -618,6 +631,11 @@ function switchLanguage(lang, notify = true) {
 
   document.querySelectorAll(".mobile-lang-btn").forEach((btn) => {
     btn.classList.toggle("active", (btn.textContent.includes("العربية") && lang === "ar") || (btn.textContent.includes("English") && lang === "en"));
+  });
+
+  // تحديث نصوص خانات البحث
+  document.querySelectorAll(".hdr-search-input, #search-input-box, #mobile-search-input").forEach((inp) => {
+    inp.placeholder = lang === "en" ? "SEARCH" : "ابحث في عطور أطياب...";
   });
 
   // تحديث عنوان الصفحة
@@ -685,6 +703,7 @@ function switchLanguage(lang, notify = true) {
   // إعادة تصيير الأقسام الديناميكية
   renderProducts();
   renderShowcase();
+  renderCreamsSpotlight();
   updateCartUI();
   updateWishlistBadge();
   updateAccountUI();
@@ -701,13 +720,45 @@ function switchLanguage(lang, notify = true) {
   if (typeof renderProductPage === "function") {
     renderProductPage();
   }
+  if (typeof renderCategoryProducts === "function") {
+    renderCategoryProducts();
+  }
+  if (typeof updateCategoryPageHeader === "function") {
+    updateCategoryPageHeader();
+  }
   if (typeof updatePageSEO === "function") {
     updatePageSEO();
   }
 
   if (notify) {
-    showToast(t("toast_lang_title"), t("toast_lang_msg"), "🌐");
+    showToast(t("toast_lang_title") || "اللغة", t("toast_lang_msg") || (lang === "en" ? "Switched to English" : "تم التبديل إلى العربية"), "🌐");
   }
+}
+
+/**
+ * مزامنة جميع الروابط الداخلية للتنقل بلغة العرض الحالية دون فقدان السياق
+ */
+function syncNavLinksLanguage(lang) {
+  document.querySelectorAll("a[href]").forEach((a) => {
+    const href = a.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("javascript") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("https://wa.me") || href.startsWith("http")) return;
+
+    if (href.endsWith(".html") || href.includes(".html?")) {
+      try {
+        const parts = href.split("?");
+        const base = parts[0];
+        const search = parts[1] || "";
+        const sp = new URLSearchParams(search);
+        if (lang === "en") {
+          sp.set("lang", "en");
+        } else {
+          sp.delete("lang");
+        }
+        const newSearch = sp.toString();
+        a.setAttribute("href", newSearch ? `${base}?${newSearch}` : base);
+      } catch (e) {}
+    }
+  });
 }
 
 // ===================================================================
@@ -745,6 +796,9 @@ function setCurrency(curr) {
     // تحديث صفحة المنتج المنفصلة إن وجدت
     if (typeof renderProductPage === "function") {
       renderProductPage();
+    }
+    if (typeof renderCategoryProducts === "function") {
+      renderCategoryProducts();
     }
 
     const currName = state.language === "en" ? state.rates[curr].nameEn : state.rates[curr].nameAr;
@@ -805,8 +859,10 @@ function initHeader() {
 let scrollObserver = null;
 
 function initScrollReveal() {
+  const selector = ".showcase-item, .cherished-card, .lux-cat-card, .chapter-card, .product-card, .trust-card, .category-bubble-card, .review-card, .pdp-tier-block, .pdp-accord-item, .spotlight-banner-wide, .scent-finder-banner, .mastery-section, .reveal-on-scroll";
+  
   if (!("IntersectionObserver" in window)) {
-    document.querySelectorAll(".showcase-item, .chapter-card, .product-card, .trust-card, .review-card").forEach(el => {
+    document.querySelectorAll(selector).forEach(el => {
       el.classList.add("revealed");
     });
     return;
@@ -824,13 +880,11 @@ function initScrollReveal() {
       }
     });
   }, {
-    threshold: 0.08,
+    threshold: 0.05,
     rootMargin: "0px 0px -30px 0px"
   });
 
-  const targets = document.querySelectorAll(
-    ".showcase-item, .chapter-card, .product-card, .trust-card, .category-bubble-card, .review-card, .pdp-tier-block, .pdp-accord-item, .spotlight-banner-wide, .scent-finder-banner"
-  );
+  const targets = document.querySelectorAll(selector);
 
   targets.forEach((el, idx) => {
     if (!el.classList.contains("revealed")) {
@@ -878,22 +932,66 @@ function initHeroSlider() {
   };
 
   function startSlideTimer() {
+    if (slideInterval) clearInterval(slideInterval);
     slideInterval = setInterval(() => {
       showSlide(currentSlide + 1);
     }, 5500);
   }
 
   function resetSlideTimer() {
-    if (slideInterval) clearInterval(slideInterval);
     startSlideTimer();
   }
 
   startSlideTimer();
 
-  const sliderContainer = document.querySelector(".hero-slider-container");
+  // ربط أزرار الأسهم السابقة والتالية
+  const prevBtns = document.querySelectorAll("#heroPrev, .hero-nav-prev");
+  const nextBtns = document.querySelectorAll("#heroNext, .hero-nav-next");
+
+  prevBtns.forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      window.changeHeroSlide(-1);
+    };
+  });
+
+  nextBtns.forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      window.changeHeroSlide(1);
+    };
+  });
+
+  // ربط نقاط التنقل
+  dots.forEach((dot, idx) => {
+    dot.onclick = (e) => {
+      e.preventDefault();
+      window.goToHeroSlide(idx);
+    };
+  });
+
+  const sliderContainer = document.querySelector(".hero-slider-section, .hero-slider-container");
   if (sliderContainer) {
     sliderContainer.addEventListener("mouseenter", () => clearInterval(slideInterval));
     sliderContainer.addEventListener("mouseleave", () => startSlideTimer());
+
+    // دعم السحب باللمس على الجوال (Touch Swipe Support)
+    let touchStartX = 0;
+    sliderContainer.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    sliderContainer.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) {
+          window.changeHeroSlide(document.documentElement.dir === "rtl" ? 1 : -1);
+        } else {
+          window.changeHeroSlide(document.documentElement.dir === "rtl" ? -1 : 1);
+        }
+      }
+    }, { passive: true });
   }
 }
 
@@ -924,29 +1022,102 @@ function filterByCategory(category) {
 }
 
 // ===================================================================
-// عرض قسم "مقدَّر من الجميع" (SHOWCASE GRID)
+// عرض قسم "مقدَّر ومحبوب من الجميع" (CHERISHED BY ALL - DYNAMIC RENDERING)
 // ===================================================================
 function renderShowcase() {
-  const container = document.getElementById("showcase-grid-items");
+  const container = document.getElementById("cherished-grid-items") || document.getElementById("showcase-grid-items");
   if (!container) return;
 
-  container.innerHTML = ATYAB_PRODUCTS.map((p) => {
+  const targetIds = ["atyab-marj", "atyab-tiger-oud", "atyab-kaaf", "atyab-bin-shaikh"];
+  const products = targetIds
+    .map(id => ATYAB_PRODUCTS.find(p => p.id === id))
+    .filter(Boolean);
+
+  container.innerHTML = products.map((p) => {
     const lp = getProductLocalized(p, state.language);
+    const isEn = state.language === "en";
+    const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
+    const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
+
     return `
-      <div class="showcase-item">
-        <a href="product.html?id=${p.id}" class="showcase-media" style="display: block;">
-          <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
-        </a>
-        <h4 class="showcase-title">
-          <a href="product.html?id=${p.id}">${lp.displayName}</a>
-        </h4>
-        <div class="showcase-price">${formatPrice(p.priceSAR)}</div>
-        <a href="product.html?id=${p.id}" class="btn-classic" style="display: inline-block; padding: 6px 14px; font-size: 0.78rem;">
-          ${t("showcase_shop_now")}
-        </a>
+      <div class="cherished-card">
+        <div class="cherished-card-media">
+          ${lp.displayBadge ? `<span class="cherished-badge">${lp.displayBadge}</span>` : ""}
+          <a href="${pdpUrl}" aria-label="${lp.displayName}">
+            <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
+          </a>
+        </div>
+        <div class="cherished-card-content">
+          <h3 class="cherished-item-title">
+            <a href="${pdpUrl}">${lp.displayName}</a>
+          </h3>
+          <p class="cherished-item-notes">${lp.displaySubtitle || lp.displayFamily}</p>
+          <div class="cherished-item-price-row">
+            <span class="cherished-current-price">${formatPrice(p.priceSAR)}</span>
+            ${p.originalPriceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
+          </div>
+          <div class="cherished-actions">
+            <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" title="${t("cherished_add_cart") || "Add to Bag"}">
+              <span>🛍️</span> <span>${t("cherished_add_cart") || "أضف للسلة"}</span>
+            </button>
+            <a href="${pdpUrl}" class="btn-cherished-view" title="${lp.displayName}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     `;
   }).join("");
+
+  initScrollReveal();
+}
+
+// ===================================================================
+// عرض تسليط الضوء على كريمات الجسم المخملية (CREAMS SPOTLIGHT)
+// ===================================================================
+function renderCreamsSpotlight() {
+  const container = document.getElementById("creams-spotlight-items");
+  if (!container) return;
+
+  const creamIds = ["atyab-cream-oud-roses", "atyab-cream-bin-shaikh", "atyab-cream-musk-silk", "atyab-cream-marj"];
+  const creams = creamIds
+    .map(id => ATYAB_PRODUCTS.find(p => p.id === id))
+    .filter(Boolean);
+
+  container.innerHTML = creams.map((p) => {
+    const lp = getProductLocalized(p, state.language);
+    const isEn = state.language === "en";
+    const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
+
+    const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
+    return `
+      <div class="cherished-card">
+        <div class="cherished-card-media">
+          ${lp.displayBadge ? `<span class="cherished-badge">${lp.displayBadge}</span>` : ""}
+          <a href="${pdpUrl}" aria-label="${lp.displayName}">
+            <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
+          </a>
+        </div>
+        <div class="cherished-card-content">
+          <h3 class="cherished-item-title">
+            <a href="${pdpUrl}">${lp.displayName}</a>
+          </h3>
+          <p class="cherished-item-notes">${lp.displaySubtitle || lp.displayFamily}</p>
+          <div class="cherished-item-price-row">
+            <span class="cherished-current-price">${formatPrice(p.priceSAR)}</span>
+            ${p.originalPriceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
+          </div>
+          <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" style="width: 100%;">
+            <span>🛍️</span> <span>${t("cherished_add_cart") || "أضف للسلة الآن"}</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
   initScrollReveal();
 }
 
@@ -962,17 +1133,19 @@ function renderProducts() {
   let filtered = ATYAB_PRODUCTS.filter((p) => {
     let matchesCategory = state.filter === "all" || p.category === state.filter;
     if (state.filter === "oud") {
-      matchesCategory = p.id === "atyab-tiger-oud" || p.id === "atyab-backhoor" || (p.family && p.family.includes("عود"));
+      matchesCategory = p.category === "bakhoor" || (p.family && p.family.includes("عود")) || p.id === "atyab-tiger-oud";
     } else if (state.filter === "oriental") {
-      matchesCategory = p.id === "atyab-nader" || p.id === "atyab-mashair";
+      matchesCategory = (p.family && p.family.includes("شرقي")) || p.id === "atyab-nader" || p.id === "atyab-mashair" || p.id === "atyab-bin-shaikh";
     } else if (state.filter === "fresh") {
-      matchesCategory = p.id === "atyab-a555" || p.id === "atyab-moon-flower";
+      matchesCategory = p.id === "atyab-a555" || p.id === "atyab-moon-flower" || p.id === "atyab-kaaf";
     } else if (state.filter === "perfumes") {
       matchesCategory = p.category === "perfumes";
     } else if (state.filter === "oil") {
-      matchesCategory = p.id === "atyab-tiger-oud" || p.id === "atyab-backhoor";
+      matchesCategory = p.category === "oil";
     } else if (state.filter === "cream") {
-      matchesCategory = p.id === "atyab-mashair" || p.id === "atyab-moon-flower";
+      matchesCategory = p.category === "cream";
+    } else if (state.filter === "bakhoor") {
+      matchesCategory = p.category === "bakhoor";
     }
     const matchesSearch =
       query === "" ||
@@ -1028,11 +1201,11 @@ function renderProducts() {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
-          <a href="product.html?id=${product.id}">
+          <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}">
             <img src="${product.image}" alt="${lp.displayName}" loading="lazy" />
           </a>
           <div class="quick-view-overlay">
-            <a href="product.html?id=${product.id}" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
+            <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
               ${t("pdp_view_product_btn") || "تفاصيل العطر"}
             </a>
             <button class="btn-quick-view" onclick="openQuickView('${product.id}')" style="background: rgba(0,0,0,0.7); font-size: 0.75rem; padding: 6px 12px;">
@@ -1044,7 +1217,7 @@ function renderProducts() {
         <div class="product-details">
           <div class="product-arabic-title">${lp.displayFamily}</div>
           <h3 class="product-title">
-            <a href="product.html?id=${product.id}">${lp.displayName}</a>
+            <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}">${lp.displayName}</a>
           </h3>
           <p class="product-subtitle">${lp.displaySubtitle}</p>
 
@@ -1063,10 +1236,9 @@ function renderProducts() {
           <div class="product-footer">
             <div class="price-box">
               <div class="min-price-indicator">
-                <span class="from-label">${t("from_label")}</span>
                 <span class="current-price">${formatPrice(product.priceSAR)}</span>
               </div>
-              <span class="original-price">${formatPrice(product.originalPriceSAR)}</span>
+              ${product.originalPriceSAR ? `<span class="original-price">${formatPrice(product.originalPriceSAR)}</span>` : ""}
             </div>
             <button class="btn-add-cart" onclick="addToCart('${product.id}', '${product.defaultSize}', 1)" title="${t("cart_tooltip")}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1096,25 +1268,14 @@ function resetFilters() {
 // إدارة سلة المشتريات (CART MANAGEMENT)
 // ===================================================================
 function addToCart(productId, size, quantity = 1) {
-  // STRICT AUTHENTICATION GUARD:
-  // "without logged in item cart me bhi place na ho"
-  if (!state.account) {
-    showToast(
-      t("cart_login_prompt_title"),
-      t("cart_login_required"),
-      "🔒"
-    );
-    openAccountModal();
-    setAccountMode("login");
-    showAccountMessage(t("cart_login_required"), "error");
-    return;
-  }
-
-  const product = ATYAB_PRODUCTS.find((p) => p.id === productId);
+  const product = (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []).find((p) => p.id === productId);
   if (!product) return;
 
   const lp = getProductLocalized(product, state.language);
-  const chosenSize = size || product.defaultSize;
+  const chosenSize = size || (state.language === "en" ? (product.defaultSizeEn || product.defaultSize) : product.defaultSize);
+
+  // Exact authentic single given rate - no variant distortion
+  const itemPrice = product.priceSAR;
 
   const existingIndex = state.cart.findIndex((item) => item.id === productId && item.size === chosenSize);
 
@@ -1126,7 +1287,7 @@ function addToCart(productId, size, quantity = 1) {
       name: product.name,
       nameEn: product.nameEn || product.englishName,
       image: product.image,
-      priceSAR: product.priceSAR,
+      priceSAR: itemPrice,
       size: chosenSize,
       quantity: quantity
     });
@@ -1134,8 +1295,20 @@ function addToCart(productId, size, quantity = 1) {
 
   saveCart();
   updateCartUI();
+  
+  // Trigger badge bounce animation
+  document.querySelectorAll(".cart-count-badge").forEach(badge => {
+    badge.classList.remove("badge-bounce");
+    void badge.offsetWidth; // trigger reflow
+    badge.classList.add("badge-bounce");
+  });
+
   openCartDrawer();
-  showToast(t("toast_cart_added_title"), t("toast_cart_added_msg", { name: lp.displayName }));
+  showToast(
+    state.language === "en" ? "Added to Royal Bag" : "تمت الإضافة إلى السلة الملكية",
+    state.language === "en" ? `${lp.displayName} has been added.` : `تمت إضافة ${lp.displayName} بنجاح ✨`,
+    "🛍️"
+  );
 }
 
 function removeFromCart(productId, size) {
@@ -1158,20 +1331,41 @@ function updateCartQty(productId, size, delta) {
 }
 
 function saveCart() {
-  if (!state.account) return;
   const key = getCartStorageKey();
   try {
     localStorage.setItem(key, JSON.stringify(state.cart));
+    localStorage.setItem("atyab_guest_cart", JSON.stringify(state.cart));
     localStorage.setItem("atyab_cart", JSON.stringify(state.cart));
-    if (typeof firebaseSaveCart === "function") {
-      firebaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Firebase cart sync notice:", e));
-    }
-    if (typeof supabaseSaveCart === "function") {
-      supabaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Supabase cart sync notice:", e));
+    if (state.account) {
+      if (typeof firebaseSaveCart === "function") {
+        firebaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Firebase cart sync notice:", e));
+      }
+      if (typeof supabaseSaveCart === "function") {
+        supabaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Supabase cart sync notice:", e));
+      }
     }
   } catch (err) {
     console.warn("Could not save cart:", err);
   }
+}
+
+function formatItemSize(size, lang = state.language) {
+  if (!size) return "";
+  if (lang !== "en") return size;
+  return size
+    .replace(/قارورة/g, "Bottle")
+    .replace(/مرطبان/g, "Jar")
+    .replace(/تولة/g, "Tola")
+    .replace(/نصف تولة/g, "1/2 Tola")
+    .replace(/ربع تولة/g, "1/4 Tola")
+    .replace(/مل/g, "ml")
+    .replace(/جرام/g, "g")
+    .replace(/\(الحجم الرسمي\)/g, "(Official Volume)")
+    .replace(/\(الحجم الملكي\)/g, "(Royal Volume)")
+    .replace(/\(الأكثر طلباً\)/g, "(Most Popular)")
+    .replace(/\(الحجم الكلاسيكي\)/g, "(Classic Volume)")
+    .replace(/\(حجم السفر\)/g, "(Travel Size)")
+    .replace(/\(الحجم الفاخر\)/g, "(Luxury Size)");
 }
 
 function updateCartUI() {
@@ -1183,8 +1377,9 @@ function updateCartUI() {
   const meterProgress = document.getElementById("shipping-meter-progress");
   const meterText = document.getElementById("shipping-meter-text");
 
-  // If user is not logged in: cart is locked with zero items and prompt
-  if (!state.account) {
+
+  // Empty cart check
+  if (!state.cart || state.cart.length === 0) {
     countBadges.forEach((b) => (b.textContent = 0));
     if (subtotalEl) subtotalEl.textContent = formatPrice(0);
     if (discountEl) discountEl.textContent = formatPrice(0);
@@ -1195,12 +1390,12 @@ function updateCartUI() {
     if (cartBody) {
       cartBody.innerHTML = `
         <div style="text-align: center; padding: 48px 18px;">
-          <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">🔒</span>
-          <h4 style="font-size: 1.25rem; font-weight: 800; color: #000; margin-bottom: 8px;">${t("cart_login_prompt_title")}</h4>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 auto 22px; line-height: 1.6; max-width: 320px;">${t("cart_login_prompt_desc")}</p>
-          <button class="btn btn-primary" onclick="closeCartDrawer(); openAccountModal(); setAccountMode('login');" style="padding: 12px 24px;">
-            🔑 ${t("track_login_btn")}
-          </button>
+          <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">🛍️</span>
+          <h4 style="font-size: 1.25rem; font-weight: 800; color: #000; margin-bottom: 8px;">${t("cart_empty_title")}</h4>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 auto 22px; line-height: 1.6; max-width: 320px;">${t("cart_empty_desc")}</p>
+          <a class="btn btn-primary" href="index.html#catalog" onclick="closeCartDrawer();" style="padding: 12px 24px; display: inline-flex; align-items: center; gap: 8px;">
+            ✨ ${t("cart_empty_cta")}
+          </a>
         </div>
       `;
     }
@@ -1272,7 +1467,7 @@ function updateCartUI() {
         </div>
         <div class="cart-item-info">
           <h4 class="cart-item-title">${itemTitle}</h4>
-          <div class="cart-item-size">${item.size}</div>
+          <div class="cart-item-size">${formatItemSize(item.size)}</div>
           <div class="cart-item-price">${formatPrice(item.priceSAR || 0)}</div>
           <div class="cart-item-actions">
             <div class="qty-control">
@@ -2061,7 +2256,7 @@ function openCheckoutModal() {
           const itemTitle = state.language === "en" ? (i.nameEn || i.name) : i.name;
           return `
           <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-            <span>${itemTitle} (${i.size}) × ${i.quantity}</span>
+            <span>${itemTitle} (${formatItemSize(i.size)}) × ${i.quantity}</span>
             <span style="font-weight: 700;">${formatPrice((i.priceSAR || 0) * i.quantity)}</span>
           </div>
         `;

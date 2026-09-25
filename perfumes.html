@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    (function() {
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        var qLang = sp.get('lang');
+        var sLang = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
+        var lang = (qLang === 'ar' || qLang === 'en') ? qLang : (sLang || 'ar');
+        if (lang === 'en') {
+          document.documentElement.lang = 'en';
+          document.documentElement.dir = 'ltr';
+          document.documentElement.classList.add('lang-en');
+          document.documentElement.classList.remove('lang-ar');
+        } else {
+          document.documentElement.lang = 'ar';
+          document.documentElement.dir = 'rtl';
+          document.documentElement.classList.add('lang-ar');
+          document.documentElement.classList.remove('lang-en');
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>العطور الملكية الفاخرة | أطياب للعطور ATYAB PERFUMES</title>
+  <meta name="description" content="تشكيلة العطور الشرقية والفرنسية الملكية من أطياب للعطور؛ تايقر عود، نادر، أ. 555، مشاعر، مون فلاور، مرج، بن شيخ، عود وورد، كاف، وسمر عود. ثبات أسطوري وفوحان ملكي." />
+  <meta name="keywords" content="عطور أطياب, تايقر عود, عطر نادر, عطر مشاعر, عطر مون فلاور, عطر مرج, عطر بن شيخ, عود وورد, عطور سعودية فاخرة, عطور شرقية, عطور فرنسية" />
+  <link rel="icon" type="image/svg+xml" href="assets/images/atyab_logo.svg" />
+  
+  <!-- Google Fonts: Cormorant Garamond (Luxury Serif), Outfit (Clean Modern Sans), Cairo & Tajawal (Arabic Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,400&family=Cairo:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  
+  <!-- Main Stylesheet (Ahmed Al Maghribi Theme) -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Critical Anti-Flicker Guard -->
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+      width: 100% !important;
+    }
+    .cart-drawer:not(.active),
+    .drawer-backdrop:not(.active),
+    .mobile-nav-drawer:not(.active),
+    .mobile-nav-backdrop:not(.active),
+    .modal-overlay:not(.active) {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+  </style>
+</head>
+<body class="theme-ahmed-maghribi">
+
+  <!-- ===================================================================
+       1. شريط الإعلانات والخدمات العلوي (TOP UTILITY & ANNOUNCEMENT BAR)
+       =================================================================== -->
+  <div class="announcement-bar">
+    <div class="announcement-inner container">
+      <div class="announcement-text" id="announcement-text-container">
+        <span>✨</span>
+        <span data-i18n="announcement_text">شحن مجاني لجميع مناطق المملكة للطلبات فوق <strong>150 ر.س</strong> 🇸🇦 | خصم إضافي <strong>10%</strong> كود:</span>
+        <span class="accent">ATYAB10</span>
+      </div>
+
+      <a href="#track-order" class="track-order-top-link" onclick="openTrackOrderModal(); return false;" title="تتبع طلبك" data-i18n-title="track_order_btn">
+        <span>📦</span>
+        <span data-i18n="track_order_btn">تتبع طلبك</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       2. الترويسة الرئيسية الفاخرة على طراز أحمد المغربي لشعار أطياب
+          (ATYAB PERFUME LUXURY HEADER - AHMED MAGHRIBI ARCHITECTURE)
+       =================================================================== -->
+  <header class="main-header" id="site-header">
+    <div class="container">
+      <div class="header-main-row">
+        <!-- زر قائمة الجوال (HAMBURGER MENU ON MOBILE) -->
+        <button class="menu-toggle" onclick="openMobileNav()" title="القائمة الرئيسية" aria-label="القائمة الرئيسية">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <!-- الجانب الأيسر: الأدوات (السلة، الفروع، الحساب) + مربع البحث المستطيل -->
+        <div class="header-left-tools">
+          <div class="header-icons-cluster">
+            <!-- 1. سلة المشتريات -->
+            <button class="hdr-icon-btn hdr-cart-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية" aria-label="السلة" data-i18n-title="cart_tooltip">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              <span class="cart-badge-subtle cart-count-badge">0</span>
+            </button>
+
+            <!-- 2. فروع ومعارض المملكة -->
+            <button class="hdr-icon-btn" onclick="openStoreLocatorModal()" title="فروعنا بالمملكة" aria-label="فروعنا بالمملكة" data-i18n-title="store_locator_btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </button>
+
+            <!-- 3. الحساب الشخصي -->
+            <button class="hdr-icon-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()" title="حسابي" aria-label="حسابي" data-i18n-title="account_tooltip">
+              <svg id="account-action-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <!-- مربع البحث المستطيل بنص SEARCH -->
+          <div class="hdr-search-box">
+            <input type="text" class="hdr-search-input" id="hdr-search-input" placeholder="SEARCH" aria-label="Search" data-i18n-placeholder="header_search_placeholder" onkeydown="if(event.key==='Enter') handleHeaderSearch()" />
+            <button class="hdr-search-btn" onclick="handleHeaderSearch()" aria-label="Search" title="Search">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- الوسط: الشعار الرسمي لأطياب للعطور -->
+        <a href="index.html" class="header-center-branding" aria-label="أطياب للعطور | ATYAB PERFUME">
+          <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" class="brand-emblem-logo-img" />
+        </a>
+
+        <!-- الجانب الأيمن: قوائم اختيار اللغة والدولة والعملة -->
+        <div class="header-right-tools">
+          <!-- قائمة تبديل اللغة (عربي / English) -->
+          <div class="hdr-dropdown-wrapper" id="hdr-lang-dropdown">
+            <button class="hdr-dropdown-trigger" onclick="toggleHdrLang(event)" aria-label="Select Language">
+              <span id="hdr-lang-current">عربي</span>
+              <svg class="dropdown-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="hdr-dropdown-menu">
+              <button class="hdr-dropdown-item active" data-lang="ar" onclick="switchLanguage('ar')">
+                <span>عربي (العربية)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                <span>English</span>
+                <span class="check-icon">✓</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- قائمة اختيار الدولة والمنطقة -->
+          <div class="hdr-dropdown-wrapper" id="hdr-country-dropdown">
+            <button class="hdr-dropdown-trigger" onclick="toggleHdrCountry(event)" aria-label="Country">
+              <span id="hdr-country-current">KSA</span>
+              <svg class="dropdown-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="hdr-dropdown-menu">
+              <button class="hdr-dropdown-item active" data-country="KSA" onclick="selectHdrCountry('KSA', 'SAR')">
+                <span>🇸🇦 المملكة العربية السعودية (KSA)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="UAE" onclick="selectHdrCountry('UAE', 'AED')">
+                <span>🇦🇪 الإمارات العربية المتحدة (UAE)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="KWT" onclick="selectHdrCountry('KWT', 'SAR')">
+                <span>🇰🇼 الكويت (Kuwait)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="BHR" onclick="selectHdrCountry('BHR', 'SAR')">
+                <span>🇧🇭 البحرين (Bahrain)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="OMN" onclick="selectHdrCountry('OMN', 'SAR')">
+                <span>🇴🇲 عُمان (Oman)</span>
+                <span class="check-icon">✓</span>
+              </button>
+              <button class="hdr-dropdown-item" data-country="QAT" onclick="selectHdrCountry('QAT', 'SAR')">
+                <span>🇶🇦 قطر (Qatar)</span>
+                <span class="check-icon">✓</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- المستوى الثاني: شريط أقسام الموقع الرسمية لأطياب للعطور -->
+      <nav class="header-category-row" aria-label="أقسام المتجر الرسمية">
+        <ul class="category-nav-menu" id="header-category-nav-menu">
+          <li class="category-nav-item"><a href="perfumes.html?cat=perfumes" class="cat-nav-link" data-cat="perfumes" data-i18n="nav_perfume">عطور</a></li>
+          <li class="category-nav-item"><a href="perfumes.html?cat=oil" class="cat-nav-link" data-cat="oil" data-i18n="nav_oil_perfume">عطور زيتية</a></li>
+          <li class="category-nav-item"><a href="perfumes.html?cat=bakhoor" class="cat-nav-link" data-cat="bakhoor" data-i18n="nav_bakhoor">بخور</a></li>
+          <li class="category-nav-item"><a href="perfumes.html?cat=cream" class="cat-nav-link" data-cat="cream" data-i18n="nav_cream">كريم <span class="nav-badge-new">جديد</span></a></li>
+          <li class="category-nav-item"><a href="perfumes.html?cat=giftset" class="cat-nav-link" data-cat="giftset" data-i18n="nav_gift_sets">أطقم هدايا</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       3. واجهة صفحة العطور الملكية (CATEGORY HERO BANNER - AHMED MAGHRIBI ARCHITECTURE)
+       =================================================================== -->
+  <main class="cat-page-wrapper">
+    <section class="cat-page-hero">
+      <div class="container">
+        <!-- فتات الخبز (Breadcrumbs) -->
+        <nav class="cat-page-breadcrumbs" aria-label="مسار التصفح">
+          <a href="index.html" id="cat-breadcrumb-home" data-i18n="breadcrumb_home">الرئيسية</a>
+          <span class="sep">/</span>
+          <span class="current" id="cat-breadcrumb-current" data-i18n="cat_perfumes_crumb">العطور الملكية</span>
+        </nav>
+
+        <!-- نصوص العنوان الرئيسي -->
+        <div class="cat-hero-title-group">
+          <div class="cat-hero-pill">
+            <span id="cat-hero-pill-text" data-i18n="cat_perfumes_pill">⚜️ أفخر التوليفات الشرقية والفرنسية الملكية</span>
+          </div>
+          <h1 class="cat-hero-title">
+            <span id="cat-hero-title-main" data-i18n="cat_perfumes_title">العطور الملكية الفاخرة</span>
+            <span class="gold-accent" id="cat-hero-title-accent" data-i18n="cat_perfumes_accent">أثرٌ خالد وفوحان يأسر الحواس</span>
+          </h1>
+          <p class="cat-hero-desc" id="cat-hero-desc-text" data-i18n="cat_perfumes_desc">
+            توليفات عطرية استثنائية صُممت لمحبي التميز والوقار؛ تجمع بين نبل العود الكمبودي والورود الدمشقية وزعفران قصر الملوك لتمنحك حضوراً يفرض هيبته في أرقى المناسبات.
+          </p>
+        </div>
+
+        <!-- شريط المميزات والضمانات الملكية -->
+        <div class="cat-hero-perks-strip">
+          <div class="cat-perk-item">
+            <span class="perk-icon">💎</span>
+            <span data-i18n="cat_trust_authentic">أصالة مضمونة 100% مستخلصة من أندر المكونات</span>
+          </div>
+          <div class="cat-perk-item">
+            <span class="perk-icon">🚚</span>
+            <span data-i18n="cat_trust_shipping">شحن سريع مجاني لجميع مناطق المملكة فوق 150 ر.س</span>
+          </div>
+          <div class="cat-perk-item">
+            <span class="perk-icon">💬</span>
+            <span data-i18n="cat_trust_advisory">استشارات عطرية مجانية عبر واتساب على مدار الساعة</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         4. شريط التحكم والفلترة والترتيب (INTERACTIVE TOOLBAR & CONTROLS)
+         =================================================================== -->
+    <section class="cat-toolbar" id="cat-toolbar">
+      <div class="container cat-toolbar-inner">
+        <!-- أزرار الفلترة حسب الطابع العطري -->
+        <div class="cat-filters-group" id="cat-filters-group">
+          <!-- Rendered dynamically by updateCategoryPageHeader() -->
+        </div>
+
+        <!-- الجانب الآخر: عدد المعروض + الترتيب + مبدل الشبكة -->
+        <div class="cat-toolbar-right">
+          <div class="cat-count-info">
+            <span class="cat-count-num" id="cat-count-num">10 عطور ملكية</span>
+          </div>
+
+          <!-- قائمة الترتيب -->
+          <div class="cat-sort-wrapper">
+            <label for="cat-sort-select" class="cat-sort-label" id="cat-sort-label" data-i18n="cat_sort_label">ترتيب حسب:</label>
+            <select id="cat-sort-select" onchange="sortCategoryProducts(this.value)" class="cat-sort-select">
+              <option value="featured" data-i18n="sort_featured_cat">المقترح والمميز</option>
+              <option value="price-asc" data-i18n="sort_price_asc_cat">السعر: من الأقل للأعلى</option>
+              <option value="price-desc" data-i18n="sort_price_desc_cat">السعر: من الأعلى للأقل</option>
+              <option value="rating" data-i18n="sort_rating_cat">الأعلى تقييماً ★</option>
+            </select>
+          </div>
+
+          <!-- مبدل الشبكة (3 أعمدة / 4 أعمدة) -->
+          <div class="cat-grid-toggle-cluster">
+            <button type="button" 
+                    class="grid-view-btn active" 
+                    data-layout="cols-4" 
+                    onclick="setCategoryGridLayout('cols-4')"
+                    title="عرض 4 أعمدة">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="2" y="2" width="4" height="20" rx="1"></rect>
+                <rect x="8" y="2" width="4" height="20" rx="1"></rect>
+                <rect x="14" y="2" width="4" height="20" rx="1"></rect>
+                <rect x="20" y="2" width="4" height="20" rx="1"></rect>
+              </svg>
+            </button>
+            <button type="button" 
+                    class="grid-view-btn" 
+                    data-layout="cols-3" 
+                    onclick="setCategoryGridLayout('cols-3')"
+                    title="عرض 3 أعمدة">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="2" y="2" width="5.5" height="20" rx="1"></rect>
+                <rect x="9.25" y="2" width="5.5" height="20" rx="1"></rect>
+                <rect x="16.5" y="2" width="5.5" height="20" rx="1"></rect>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. شبكة منتجات العطور الملكية الفاخرة (LUXURY PERFUMES PRODUCT GRID)
+         =================================================================== -->
+    <div class="container" style="padding-top: 36px; padding-bottom: 70px;">
+      <div class="cat-products-grid cols-4" id="category-products-container">
+        <!-- Rendered dynamically by category-page.js -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===================================================================
+       7. التذييل الرسمي الفاخر (OFFICIAL LUXURY FOOTER)
+       =================================================================== -->
+  <footer class="main-footer">
+    <div class="footer-grid container">
+      <!-- هوية المتجر -->
+      <div class="footer-brand">
+        <h3 data-i18n="footer_brand_title">أطياب للعطور الفاخرة</h3>
+        <div class="sub" data-i18n="footer_brand_sub">ATYAB ROYAL PERFUMES • KSA</div>
+        <p style="font-size: 0.88rem; color: #AAA; line-height: 1.7; margin-bottom: 20px;" data-i18n="footer_brand_desc">
+          دار عطور عربية تأسست عام 1988، تكرس خبرتها في استخلاص أندر أنواع العود والزيوت العطرية النقية لتقديم تجارب حسية ملكية تدوم طويلاً وتليق بأصحاب الفخامة في المملكة.
+        </p>
+        <div style="font-size: 0.8rem; color: #888;" data-i18n="footer_cr">
+          السجل التجاري بالمملكة: 1010894210 | الرقم الضريبي: 30098471200003
+        </div>
+      </div>
+
+      <!-- أقسام المتجر -->
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_sections">أقسام المتجر</h4>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav_home">الرئيسية</a></li>
+          <li><a href="perfumes.html?cat=perfumes" data-i18n="nav_perfume">العطور الملكية</a></li>
+          <li><a href="perfumes.html?cat=oil" data-i18n="nav_oil_perfume">دهن العود والمسك</a></li>
+          <li><a href="perfumes.html?cat=bakhoor" data-i18n="footer_bakhoor">بخور ودخون المجالس</a></li>
+          <li><a href="perfumes.html?cat=cream" data-i18n="nav_cream">كريمات الجسم المعطرة</a></li>
+          <li><a href="perfumes.html?cat=giftset" data-i18n="nav_gift_sets">صناديق الهدايا الفاخرة</a></li>
+        </ul>
+      </div>
+
+      <!-- خدمة العملاء والسياسات -->
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_services">خدمة العملاء</h4>
+        <ul class="footer-links">
+          <li><a href="javascript:void(0)" onclick="openTrackOrderModal()" data-i18n="track_order_btn">تتبع حالة طلبك</a></li>
+          <li><a href="javascript:void(0)" onclick="openStoreLocatorModal()" data-i18n="store_locator_btn">فروعنا بالمملكة</a></li>
+          <li><a href="javascript:void(0)" onclick="openCartDrawer()" data-i18n="footer_link_cart">سلة المشتريات الملكية</a></li>
+          <li><a href="https://wa.me/966500000000" target="_blank" rel="noopener" data-i18n="footer_link_whatsapp">استشارات عطرية واتساب</a></li>
+        </ul>
+      </div>
+
+      <!-- الفروع والتواصل بالمملكة -->
+      <div class="footer-col">
+        <h4 data-i18n="footer_col_boutiques">بوتيكاتنا بالمملكة</h4>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span>📍</span>
+            <span data-i18n="boutique_riyadh"><strong>الرياض:</strong> أبراج العليا، طريق الملك فهد، الطابق الأرضي</span>
+          </div>
+          <div class="contact-item">
+            <span>📍</span>
+            <span data-i18n="boutique_jeddah"><strong>جدة:</strong> رد سي مول، بوابة 4، طريق الملك عبدالعزيز</span>
+          </div>
+          <div class="contact-item">
+            <span>📞</span>
+            <span dir="ltr">+966 50 000 0000</span>
+          </div>
+          <div class="contact-item">
+            <span>✉️</span>
+            <span>concierge@atyab.com.sa</span>
+          </div>
+          <div class="contact-item">
+            <span>⏱️</span>
+            <span data-i18n="boutique_hours">السبت - الخميس: 9:00 ص - 11:00 م</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- أسفل الفوتر وبطاقات الدفع -->
+    <div class="container">
+      <div class="footer-bottom">
+        <div data-i18n="footer_rights">
+          جميع الحقوق محفوظة © 2026 <strong>أطياب للعطور الفاخرة | ATYAB PERFUME KSA</strong>
+        </div>
+
+        <div class="payment-badges">
+          <span data-i18n="payment_methods_title">طرق الدفع المعتمدة بالمملكة:</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">مدى Mada</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">Apple Pay</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;">Visa</span>
+          <span style="background: #222; padding: 4px 10px; border-radius: 4px; color: #FFF; font-size: 0.78rem; border: 1px solid #444;" data-i18n="payment_cod">الدفع عند الاستلام</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       8. قائمة الجوال الجانبية الملكية (SLIDE-OUT LUXURY MOBILE NAV DRAWER)
+       =================================================================== -->
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" onclick="closeMobileNav()" style="visibility: hidden;"></div>
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" style="visibility: hidden;">
+    <div class="mobile-nav-header">
+      <div class="mobile-nav-brand">
+        <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" style="height: 52px; width: auto;" />
+      </div>
+      <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="إغلاق">&times;</button>
+    </div>
+
+    <div class="mobile-nav-body">
+      <!-- مربع بحث الجوال -->
+      <div style="padding: 10px 14px; margin-bottom: 10px;">
+        <div class="hdr-search-box" style="display: flex; width: 100%;">
+          <input type="text" class="hdr-search-input" id="mobile-search-input" placeholder="SEARCH" onkeydown="if(event.key==='Enter'){ openSearchModal(); const mi=document.getElementById('search-input-box'); if(mi){ mi.value=this.value; handleLiveSearch(this.value); } closeMobileNav(); }" />
+          <button class="hdr-search-btn" onclick="openSearchModal(); closeMobileNav();">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <ul class="mobile-nav-list">
+        <li><a href="perfumes.html?cat=perfumes" onclick="closeMobileNav();"><span class="nav-icon">💎</span><span data-i18n="nav_perfume">عطور</span></a></li>
+        <li><a href="perfumes.html?cat=oil" onclick="closeMobileNav();"><span class="nav-icon">🧪</span><span data-i18n="nav_oil_perfume">عطور زيتية</span></a></li>
+        <li><a href="perfumes.html?cat=bakhoor" onclick="closeMobileNav();"><span class="nav-icon">🪵</span><span data-i18n="nav_bakhoor">بخور</span></a></li>
+        <li><a href="perfumes.html?cat=cream" onclick="closeMobileNav();"><span class="nav-icon">🧴</span><span data-i18n="nav_cream">كريم</span> <span class="nav-badge-new" style="font-size:0.7rem; padding: 2px 6px; background: #C59B27; color:#fff; border-radius:4px; margin-right:4px;">جديد</span></a></li>
+        <li><a href="perfumes.html?cat=giftset" onclick="closeMobileNav();"><span class="nav-icon">🎁</span><span data-i18n="nav_gift_sets">أطقم هدايا</span></a></li>
+        <li><a href="#track-order" onclick="openTrackOrderModal(); closeMobileNav(); return false;"><span class="nav-icon">📦</span><span data-i18n="track_order_btn">تتبع طلبك</span></a></li>
+        <li><a href="#store-locator" onclick="openStoreLocatorModal(); closeMobileNav(); return false;"><span class="nav-icon">📍</span><span data-i18n="store_locator_btn">فروعنا بالمملكة</span></a></li>
+      </ul>
+
+      <div class="mobile-nav-divider"></div>
+
+      <!-- تبديل العملة واللغة داخل القائمة -->
+      <div class="mobile-nav-settings">
+        <div class="mobile-setting-item">
+          <span class="setting-label" data-i18n="mobile_lang_label">🌐 اللغة / Language</span>
+          <div class="mobile-lang-switch-btns">
+            <button class="mobile-lang-btn" onclick="switchLanguage('ar'); closeMobileNav();">🇸🇦 العربية</button>
+            <button class="mobile-lang-btn" onclick="switchLanguage('en'); closeMobileNav();">🇬🇧 English</button>
+          </div>
+        </div>
+
+        <div class="mobile-setting-item">
+          <span class="setting-label" data-i18n="mobile_curr_label">💵 العملة / Currency</span>
+          <div class="mobile-currency-btns">
+            <button class="mobile-curr-btn" onclick="setCurrency('SAR'); closeMobileNav();">ر.س (SAR)</button>
+            <button class="mobile-curr-btn" onclick="setCurrency('AED'); closeMobileNav();">د.إ (AED)</button>
+            <button class="mobile-curr-btn" onclick="setCurrency('USD'); closeMobileNav();">$ (USD)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- زر التواصل المباشر عبر واتساب -->
+      <div class="mobile-nav-whatsapp">
+        <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" class="mobile-wa-btn">
+          <span>💬</span>
+          <span data-i18n="mobile_wa_btn">خدمة العملاء الملكية (واتساب)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       9. سلة التسوق الجانبية (SLIDE-OUT CART DRAWER)
+       =================================================================== -->
+  <div class="drawer-backdrop" id="drawer-backdrop" style="visibility: hidden;"></div>
+  <div class="cart-drawer" id="cart-drawer" style="visibility: hidden;">
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span>⚜️</span>
+        <h3 data-i18n="cart_drawer_title">سلة المشتريات الملكية</h3>
+      </div>
+      <button class="drawer-close" onclick="closeCartDrawer()" aria-label="إغلاق">&times;</button>
+    </div>
+
+    <!-- شريط تقدم الشحن المجاني (150 ريال) -->
+    <div class="shipping-meter-box" id="shipping-meter-box">
+      <div class="shipping-meter-label" id="shipping-meter-text">
+        أضف بقيمة <strong class="gold">150 ر.س</strong> للحصول على <strong>شحن مجاني</strong> 🚚
+      </div>
+      <div class="meter-track">
+        <div class="meter-progress" id="shipping-meter-progress"></div>
+      </div>
+    </div>
+
+    <!-- قائمة المنتجات المضافة بالسلة -->
+    <div class="drawer-body" id="cart-drawer-items"></div>
+
+    <!-- أسفل السلة والكوبون والحساب الإجمالي -->
+    <div class="drawer-footer">
+      <div class="coupon-box">
+        <input type="text" id="coupon-input" class="coupon-input" placeholder="كود الخصم (جرب ATYAB10)" data-i18n-placeholder="coupon_placeholder" />
+        <button class="btn-coupon" onclick="applyCoupon()" data-i18n="coupon_btn">تطبيق</button>
+      </div>
+
+      <div class="cart-summary-line">
+        <span data-i18n="subtotal_label">المجموع الفرعي:</span>
+        <strong id="cart-subtotal">0 ر.س</strong>
+      </div>
+      <div class="cart-summary-line">
+        <span data-i18n="discount_label">الخصم الترويجي:</span>
+        <span id="cart-discount" style="color: #27AE60; font-weight: 700;">0 ر.س</span>
+      </div>
+      <div class="cart-summary-line total">
+        <span data-i18n="total_label">المجموع الإجمالي:</span>
+        <strong class="gold" id="cart-total">0 ر.س</strong>
+      </div>
+
+      <button class="btn btn-primary btn-checkout-drawer" onclick="openCheckoutModal()">
+        <span data-i18n="checkout_drawer_btn">المتابعة لإتمام الطلب الملكي</span>
+        <svg class="cta-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       10. النوافذ المنبثقة المشتركة (MODALS: SEARCH, ACCOUNT, TRACKING, ETC.)
+       =================================================================== -->
+  <!-- نافذة تتبع الطلب -->
+  <div class="modal-overlay" id="track-order-modal">
+    <div class="modal-card track-modal-card">
+      <button class="modal-close-btn" onclick="closeTrackOrderModal()" aria-label="إغلاق">&times;</button>
+      <div id="track-modal-card-body"></div>
+    </div>
+  </div>
+
+  <!-- نافذة فروع ومعارض المملكة -->
+  <div class="modal-overlay" id="store-locator-modal">
+    <div class="modal-card stores-modal-card">
+      <button class="modal-close-btn" onclick="closeStoreLocatorModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <span style="font-size: 1.5rem;">📍</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="store_locator_title">معارضنا وفروعنا بالمملكة العربية السعودية</h3>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="store_locator_desc">
+        تفضل بزيارة معارضنا الرسمية في الرياض، جدة، الدمام، مكة المكرمة والمدينة المنورة
+      </p>
+      <div class="stores-branches-grid">
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge" data-i18n="branch_city_riyadh">الرياض</span>
+            <div class="branch-name" data-i18n="branch_name_riyadh">معرض العليا الرئيسي - برج المملكة</div>
+            <div class="branch-address" data-i18n="branch_addr_riyadh">طريق العليا العام، حي الورود، الرياض</div>
+            <div class="branch-hours" data-i18n="branch_hours_riyadh">🕒 يومياً: ٩:٠٠ ص - ١١:٣٠ م</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" data-i18n="branch_map_btn">الموقع على الخريطة</a>
+        </div>
+        <div class="branch-card-item">
+          <div>
+            <span class="branch-city-badge" data-i18n="branch_city_jeddah">جدة</span>
+            <div class="branch-name" data-i18n="branch_name_jeddah">معرض رد سي مول - بوابة 4</div>
+            <div class="branch-address" data-i18n="branch_addr_jeddah">طريق الملك عبدالعزيز، جدة</div>
+            <div class="branch-hours" data-i18n="branch_hours_jeddah">🕒 يومياً: ١٠:٠٠ ص - ١١:٠٠ م</div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline" data-i18n="branch_map_btn">الموقع على الخريطة</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة النظرة السريعة (QUICK VIEW) -->
+  <div class="modal-overlay" id="quickview-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeQuickView()" aria-label="إغلاق">&times;</button>
+      <div id="quickview-body"></div>
+    </div>
+  </div>
+
+  <!-- نافذة قائمة المفضلة -->
+  <div class="modal-overlay" id="wishlist-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeWishlistModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+        <span style="font-size: 1.4rem;">❤️</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;" data-i18n="wishlist_title">قائمة عطورك المفضلة</h3>
+      </div>
+      <div id="wishlist-items-container"></div>
+    </div>
+  </div>
+
+  <!-- نافذة الحساب: دخول أو إنشاء حساب -->
+  <div class="modal-overlay" id="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title">
+    <div class="modal-card account-modal-card">
+      <button class="modal-close-btn" onclick="closeAccountModal()" aria-label="إغلاق">&times;</button>
+      <div class="account-modal-intro">
+        <span class="account-modal-icon">⚜️</span>
+        <div>
+          <span class="section-subtitle" data-i18n="account_eyebrow">بوابتك الملكية</span>
+          <h3 id="account-modal-title" data-i18n="account_title">حساب أطياب</h3>
+          <p data-i18n="account_intro">سجّل دخولك لمتابعة اختياراتك ومشترياتك المفضلة.</p>
+        </div>
+      </div>
+
+      <div class="account-tabs" id="account-tabs" role="tablist">
+        <button class="account-tab active" type="button" role="tab" aria-selected="true" data-account-mode="login" onclick="setAccountMode('login')" data-i18n="account_login_tab">تسجيل الدخول</button>
+        <button class="account-tab" type="button" role="tab" aria-selected="false" data-account-mode="signup" onclick="setAccountMode('signup')" data-i18n="account_signup_tab">إنشاء حساب</button>
+      </div>
+
+      <p class="account-form-message" id="account-form-message" role="status" aria-live="polite"></p>
+
+      <form class="account-panel active" id="account-login-form" data-account-panel="login" onsubmit="handleAccountLogin(event)">
+        <div class="form-group">
+          <label for="account-login-email" data-i18n="account_email_label">البريد الإلكتروني</label>
+          <input type="email" id="account-login-email" class="form-control" required autocomplete="email" data-i18n-placeholder="account_email_placeholder" placeholder="name@example.com" dir="ltr" />
+        </div>
+        <div class="form-group">
+          <label for="account-login-password" data-i18n="account_password_label">كلمة المرور</label>
+          <input type="password" id="account-login-password" class="form-control" required minlength="6" autocomplete="current-password" data-i18n-placeholder="account_password_placeholder" placeholder="6 أحرف على الأقل" />
+        </div>
+        <button type="submit" class="btn btn-primary account-submit" data-i18n="account_login_submit">دخول إلى حسابي</button>
+        <p class="account-switch-copy"><span data-i18n="account_no_account">ليس لديك حساب؟</span> <button type="button" onclick="setAccountMode('signup')" data-i18n="account_signup_tab">إنشاء حساب</button></p>
+      </form>
+
+      <form class="account-panel" id="account-signup-form" data-account-panel="signup" hidden onsubmit="handleAccountSignup(event)">
+        <div class="form-group">
+          <label for="account-signup-name" data-i18n="account_name_label">الاسم الكريم</label>
+          <input type="text" id="account-signup-name" class="form-control" required autocomplete="name" data-i18n-placeholder="account_name_placeholder" placeholder="مثال: محمد بن عبدالله" />
+        </div>
+        <div class="form-group">
+          <label for="account-signup-email" data-i18n="account_email_label">البريد الإلكتروني</label>
+          <input type="email" id="account-signup-email" class="form-control" required autocomplete="email" data-i18n-placeholder="account_email_placeholder" placeholder="name@example.com" dir="ltr" />
+        </div>
+        <div class="account-password-grid">
+          <div class="form-group">
+            <label for="account-signup-password" data-i18n="account_password_label">كلمة المرور</label>
+            <input type="password" id="account-signup-password" class="form-control" required minlength="6" autocomplete="new-password" data-i18n-placeholder="account_password_placeholder" placeholder="6 أحرف على الأقل" />
+          </div>
+          <div class="form-group">
+            <label for="account-signup-confirm-password" data-i18n="account_confirm_password_label">تأكيد كلمة المرور</label>
+            <input type="password" id="account-signup-confirm-password" class="form-control" required minlength="6" autocomplete="new-password" data-i18n-placeholder="account_confirm_password_placeholder" placeholder="أعد كتابة كلمة المرور" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary account-submit" data-i18n="account_signup_submit">إنشاء حسابي</button>
+        <p class="account-switch-copy"><span data-i18n="account_have_account">لديك حساب بالفعل؟</span> <button type="button" onclick="setAccountMode('login')" data-i18n="account_login_tab">تسجيل الدخول</button></p>
+      </form>
+
+      <section class="account-panel account-signed-in" id="account-signed-in-panel" data-account-panel="signed-in" hidden>
+        <span class="account-signed-icon">👑</span>
+        <h4><span data-i18n="account_welcome">أهلاً بك،</span> <span class="account-signed-name"></span></h4>
+        <p data-i18n="account_signed_in_message">تم تسجيل دخولك إلى حساب أطياب.</p>
+        <span class="account-signed-email" dir="ltr"></span>
+        <button type="button" class="btn btn-secondary account-logout" onclick="logoutAccount()" data-i18n="account_logout" style="margin-top:14px;">تسجيل الخروج</button>
+      </section>
+    </div>
+  </div>
+
+  <!-- نافذة مستشار العطور التفاعلي -->
+  <div class="modal-overlay" id="scent-quiz-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeScentQuiz()" aria-label="إغلاق">&times;</button>
+      <div id="quiz-step-container"></div>
+    </div>
+  </div>
+
+  <!-- نافذة البحث المباشر -->
+  <div class="modal-overlay" id="search-modal">
+    <div class="modal-card search-modal-card">
+      <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="إغلاق">&times;</button>
+      <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; margin-bottom: 16px; font-weight: 800;" data-i18n="search_title">
+        البحث في عطور أطياب
+      </h3>
+      <div class="search-input-wrapper">
+        <input type="text" id="search-input-box" class="search-input-field" placeholder="ابحث باسم العطر أو المكونات (مثل: تايقر، نادر، ورد، عود)..." data-i18n-placeholder="search_placeholder" />
+        <span class="search-icon-inside">🔍</span>
+      </div>
+      <div id="live-search-results" style="max-height: 380px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- نافذة إتمام الطلب -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card checkout-modal-card">
+      <button class="modal-close-btn" onclick="closeCheckoutModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span>👑</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800;" data-i18n="checkout_modal_title">إتمام الطلب الملكي والشحن</h3>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="checkout_modal_desc">
+        يرجى إدخال بيانات التوصيل بدقة لضمان وصول طلبك سريعاً وبأمان.
+      </p>
+
+      <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+        <div class="checkout-grid">
+          <div>
+            <div class="form-group">
+              <label for="co-name" data-i18n="co_name_label">الاسم الكريم بالكامل *</label>
+              <input type="text" id="co-name" class="form-control" required placeholder="مثال: محمد بن عبدالله" data-i18n-placeholder="co_name_placeholder" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label for="co-phone" data-i18n="co_phone_label">رقم الجوال السعودي *</label>
+                <input type="tel" id="co-phone" class="form-control" required placeholder="05XXXXXXXX" dir="ltr" />
+              </div>
+              <div class="form-group">
+                <label for="co-email" data-i18n="co_email_label">البريد الإلكتروني *</label>
+                <input type="email" id="co-email" class="form-control" required placeholder="name@example.com" dir="ltr" />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label for="co-city" data-i18n="co_city_label">المدينة بالمملكة *</label>
+                <select id="co-city" class="form-control" required>
+                  <option value="الرياض" selected data-i18n="co_city_riyadh">الرياض / Riyadh</option>
+                  <option value="جدة" data-i18n="co_city_jeddah">جدة / Jeddah</option>
+                  <option value="مكة المكرمة" data-i18n="co_city_makkah">مكة المكرمة / Makkah</option>
+                  <option value="المدينة المنورة" data-i18n="co_city_madinah">المدينة المنورة / Madinah</option>
+                  <option value="الدمام" data-i18n="co_city_dammam">الدمام / Dammam</option>
+                  <option value="الخبر" data-i18n="co_city_khobar">الخبر / Khobar</option>
+                  <option value="أبها" data-i18n="co_city_abha">أبها / Abha</option>
+                  <option value="مدينة أخرى" data-i18n="co_city_other">مدينة أخرى بالمملكة / Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="co-payment" data-i18n="co_payment_label">طريقة الدفع *</label>
+                <select id="co-payment" class="form-control" required>
+                  <option value="mada" selected data-i18n="co_pay_mada">مدى (Mada Debit)</option>
+                  <option value="applepay" data-i18n="co_pay_apple">آبل باي (Apple Pay)</option>
+                  <option value="credit" data-i18n="co_pay_card">بطاقة ائتمانية (Visa / MC)</option>
+                  <option value="cod" data-i18n="co_pay_cod">الدفع عند الاستلام (COD)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="co-address" data-i18n="co_address_label">العنوان الوطني والحي والشارع *</label>
+              <textarea id="co-address" class="form-control" rows="2" required placeholder="مثال: الرياض، حي الملقا، شارع وادي حنيفة، عمارة 4" data-i18n-placeholder="co_address_placeholder"></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div id="checkout-summary-box"></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 14px;" data-i18n="co_submit_btn">
+              تأكيد الطلب وإرسال الشحنة 🚀
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة تأكيد الطلب -->
+  <div class="modal-overlay" id="confirmation-modal">
+    <div class="modal-card">
+      <div id="confirmation-body"></div>
+    </div>
+  </div>
+
+  <!-- حاوية التنبيهات المنبثقة -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- زر خدمة العملاء عبر الواتساب العائم -->
+  <a href="https://wa.me/966500000000" class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="واتساب" data-i18n-title="whatsapp_tooltip">
+    <span class="whatsapp-tooltip" data-i18n="whatsapp_tooltip">مستشار أطياب عبر الواتساب 💬</span>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.991 0-9.05 4.058-9.05 9.05 0 1.602.42 3.109 1.156 4.417l-1.226 4.478 4.606-1.208c1.261.688 2.709 1.081 4.249 1.081 4.991 0 9.05-4.058 9.05-9.05 0-4.992-4.059-9.05-9.05-9.05z"></path>
+    </svg>
+  </a>
+
+  <!-- Scripts: Language dictionary, Catalog data, App engine, Category logic -->
+  <script src="js/translations.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/category-page.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initCategoryPage("perfumes");
+      if (typeof switchLanguage === "function" && typeof state !== "undefined") {
+        switchLanguage(state.language, false);
+      }
+    });
+  </script>
+</body>
+</html>
