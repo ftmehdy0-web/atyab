@@ -4,7 +4,7 @@
  * All images preserve the authentic company bottles, logos, labels, and calligraphy.
  */
 
-const ATYAB_PRODUCTS = [
+const BASE_ATYAB_PRODUCTS = [
   {
     id: "atyab-tiger-oud",
     slug: "tiger-oud",
@@ -2386,7 +2386,207 @@ function getProductLocalized(product, lang = "ar") {
   };
 }
 
-const AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
+// Global dynamic products assignment
+/**
+ * Dynamic Unified Products Catalog Engine
+ * Automatically merges built-in catalog with custom added/updated/deleted products.
+ */
+function getUnifiedProductsCatalog() {
+  let list = Array.isArray(BASE_ATYAB_PRODUCTS) ? [...BASE_ATYAB_PRODUCTS] : [];
+
+  // 1. Filter out deleted products (allows removing both custom and default products)
+  try {
+    const deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
+    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+      const delSet = new Set(deletedIds);
+      list = list.filter(p => !delSet.has(p.id));
+    }
+  } catch (e) {
+    console.warn("Error reading atyab_deleted_product_ids:", e);
+  }
+
+  // 2. Apply modifications to existing products
+  try {
+    const updatedMap = JSON.parse(localStorage.getItem("atyab_updated_products") || "{}");
+    if (updatedMap && typeof updatedMap === "object") {
+      list = list.map(p => updatedMap[p.id] ? { ...p, ...updatedMap[p.id] } : p);
+    }
+  } catch (e) {
+    console.warn("Error reading atyab_updated_products:", e);
+  }
+
+  // 3. Prepend custom newly created products
+  try {
+    const customList = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    if (Array.isArray(customList) && customList.length > 0) {
+      // Avoid duplicates with custom products
+      const customIds = new Set(customList.map(c => c.id));
+      list = [...customList, ...list.filter(p => !customIds.has(p.id))];
+    }
+  } catch (e) {
+    console.warn("Error reading atyab_custom_products:", e);
+  }
+
+  return list;
+}
+
+// Global mutable reference
+let ATYAB_PRODUCTS = getUnifiedProductsCatalog();
+let AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
+
+/**
+ * Re-reads catalog from storage and refreshes all global references
+ */
+function refreshAtyabProducts() {
+  ATYAB_PRODUCTS = getUnifiedProductsCatalog();
+  AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
+  if (typeof window !== "undefined") {
+    window.ATYAB_PRODUCTS = ATYAB_PRODUCTS;
+    window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
+    try {
+      window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { products: ATYAB_PRODUCTS } }));
+    } catch {}
+  }
+  return ATYAB_PRODUCTS;
+}
+
+/**
+ * Save custom product (Add or update)
+ */
+function saveCustomProductToStorage(product) {
+  try {
+    let custom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    if (!Array.isArray(custom)) custom = [];
+
+    // Ensure isCustom flag
+    product.isCustom = true;
+    product.updatedAt = new Date().toISOString();
+
+    const existingIdx = custom.findIndex(p => p.id === product.id);
+    if (existingIdx > -1) {
+      custom[existingIdx] = { ...custom[existingIdx], ...product };
+    } else {
+      product.createdAt = product.createdAt || new Date().toISOString();
+      custom.unshift(product);
+    }
+
+    localStorage.setItem("atyab_custom_products", JSON.stringify(custom));
+
+    // Also remove from deleted list if previously deleted
+    let deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
+    if (Array.isArray(deletedIds) && deletedIds.includes(product.id)) {
+      deletedIds = deletedIds.filter(id => id !== product.id);
+      localStorage.setItem("atyab_deleted_product_ids", JSON.stringify(deletedIds));
+    }
+
+    refreshAtyabProducts();
+    return { success: true, product };
+  } catch (err) {
+    console.error("Failed to save custom product:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Update an existing product (custom or built-in)
+ */
+function updateProductInStorage(productId, updates) {
+  try {
+    let custom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    const customIdx = custom.findIndex(p => p.id === productId);
+
+    if (customIdx > -1) {
+      custom[customIdx] = { ...custom[customIdx], ...updates, updatedAt: new Date().toISOString() };
+      localStorage.setItem("atyab_custom_products", JSON.stringify(custom));
+    } else {
+      let updatedMap = JSON.parse(localStorage.getItem("atyab_updated_products") || "{}");
+      updatedMap[productId] = { ...(updatedMap[productId] || {}), ...updates, updatedAt: new Date().toISOString() };
+      localStorage.setItem("atyab_updated_products", JSON.stringify(updatedMap));
+    }
+
+    refreshAtyabProducts();
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to update product:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Delete / Remove product from catalog
+ */
+function deleteProductFromStorage(productId) {
+  try {
+    // 1. Remove from custom products
+    let custom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    if (Array.isArray(custom)) {
+      custom = custom.filter(p => p.id !== productId);
+      localStorage.setItem("atyab_custom_products", JSON.stringify(custom));
+    }
+
+    // 2. Add to deleted IDs (hides both base & custom)
+    let deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
+    if (!Array.isArray(deletedIds)) deletedIds = [];
+    if (!deletedIds.includes(productId)) {
+      deletedIds.push(productId);
+      localStorage.setItem("atyab_deleted_product_ids", JSON.stringify(deletedIds));
+    }
+
+    // 3. Clean up updated map
+    let updatedMap = JSON.parse(localStorage.getItem("atyab_updated_products") || "{}");
+    if (updatedMap[productId]) {
+      delete updatedMap[productId];
+      localStorage.setItem("atyab_updated_products", JSON.stringify(updatedMap));
+    }
+
+    refreshAtyabProducts();
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to delete product:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Restore all default catalog products
+ */
+function restoreDefaultCatalogInStorage() {
+  try {
+    localStorage.removeItem("atyab_deleted_product_ids");
+    localStorage.removeItem("atyab_updated_products");
+    refreshAtyabProducts();
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.BASE_ATYAB_PRODUCTS = BASE_ATYAB_PRODUCTS;
+  window.ATYAB_PRODUCTS = ATYAB_PRODUCTS;
+  window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
+  window.getUnifiedProductsCatalog = getUnifiedProductsCatalog;
+  window.refreshAtyabProducts = refreshAtyabProducts;
+  window.saveCustomProductToStorage = saveCustomProductToStorage;
+  window.updateProductInStorage = updateProductInStorage;
+  window.deleteProductFromStorage = deleteProductFromStorage;
+  window.restoreDefaultCatalogInStorage = restoreDefaultCatalogInStorage;
+
+  // React instantly to cross-tab product changes
+  window.addEventListener("storage", (e) => {
+    if (
+      e.key === "atyab_custom_products" ||
+      e.key === "atyab_deleted_product_ids" ||
+      e.key === "atyab_updated_products"
+    ) {
+      refreshAtyabProducts();
+      if (typeof renderProducts === "function") renderProducts();
+      if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+      if (typeof renderShowcase === "function") renderShowcase();
+      if (typeof renderProductsManagement === "function") renderProductsManagement();
+    }
+  });
+}
 if (typeof window !== "undefined") {
   window.ATYAB_PRODUCTS = ATYAB_PRODUCTS;
   window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;

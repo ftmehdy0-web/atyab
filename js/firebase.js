@@ -67,6 +67,27 @@ function initFirebase() {
     
     if (typeof firebase.firestore === "function") {
       firebaseDbInstance = firebase.firestore();
+
+      // Cloud Product Catalog Background Sync
+      setTimeout(async () => {
+        try {
+          const cloudProducts = await firebaseGetAllProducts();
+          if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
+            const localCustom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+            const localMap = new Map(localCustom.map(p => [p.id, p]));
+            cloudProducts.forEach(cp => {
+              if (cp && cp.id) localMap.set(cp.id, { ...(localMap.get(cp.id) || {}), ...cp });
+            });
+            localStorage.setItem("atyab_custom_products", JSON.stringify(Array.from(localMap.values())));
+            if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+            if (typeof renderProducts === "function") renderProducts();
+            if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+            if (typeof renderProductsManagement === "function") renderProductsManagement();
+          }
+        } catch (e) {
+          console.warn("Background product sync notice:", e);
+        }
+      }, 500);
     }
 
     return {
@@ -391,6 +412,84 @@ async function firebaseGetCart(email) {
   }
 }
 
+/**
+ * 8. Firestore Product Management (Cloud Sync for Products)
+ */
+async function firebaseSaveProduct(product) {
+  if (!isFirebaseConfigured()) return { success: true, isLocal: true };
+  const db = getFirebaseDb();
+  if (!db) return { success: true, isLocal: true };
+
+  try {
+    await db.collection("products").doc(product.id).set({
+      ...product,
+      syncedAt: new Date().toISOString()
+    });
+    console.log(`[Firebase Live Sync] Product ${product.id} synced to Firestore.`);
+    return { success: true };
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not save product to Firestore:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function firebaseDeleteProduct(productId) {
+  if (!isFirebaseConfigured()) return { success: true, isLocal: true };
+  const db = getFirebaseDb();
+  if (!db) return { success: true, isLocal: true };
+
+  try {
+    await db.collection("products").doc(productId).delete();
+    console.log(`[Firebase Live Sync] Product ${productId} deleted from Firestore.`);
+    return { success: true };
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not delete product from Firestore:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function firebaseGetAllProducts() {
+  if (!isFirebaseConfigured()) return [];
+  const db = getFirebaseDb();
+  if (!db) return [];
+
+  try {
+    const snapshot = await db.collection("products").get();
+    const products = [];
+    snapshot.forEach(doc => products.push(doc.data()));
+    return products;
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not fetch products from Firestore:", err);
+    return [];
+  }
+}
+
+let firestoreProductsUnsubscribe = null;
+function firebaseSubscribeToProducts(onUpdate) {
+  if (!isFirebaseConfigured()) return null;
+  const db = getFirebaseDb();
+  if (!db) return null;
+
+  try {
+    if (firestoreProductsUnsubscribe) {
+      firestoreProductsUnsubscribe();
+    }
+    firestoreProductsUnsubscribe = db.collection("products").onSnapshot((snapshot) => {
+      const products = [];
+      snapshot.forEach(doc => products.push(doc.data()));
+      if (typeof onUpdate === "function") {
+        onUpdate(products);
+      }
+    }, (err) => {
+      console.warn("[Firebase Live Sync] Product snapshot listener notice:", err);
+    });
+    return firestoreProductsUnsubscribe;
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Failed to attach product listener:", err);
+    return null;
+  }
+}
+
 // Global exports for browser window
 if (typeof window !== "undefined") {
   window.isFirebaseConfigured = isFirebaseConfigured;
@@ -407,4 +506,8 @@ if (typeof window !== "undefined") {
   window.firebaseUpdateOrderStatus = firebaseUpdateOrderStatus;
   window.firebaseSaveCart = firebaseSaveCart;
   window.firebaseGetCart = firebaseGetCart;
+  window.firebaseSaveProduct = firebaseSaveProduct;
+  window.firebaseDeleteProduct = firebaseDeleteProduct;
+  window.firebaseGetAllProducts = firebaseGetAllProducts;
+  window.firebaseSubscribeToProducts = firebaseSubscribeToProducts;
 }

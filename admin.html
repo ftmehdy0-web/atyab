@@ -43,6 +43,12 @@
           </div>
         </div>
 
+        <!-- Quick Dedicated Add Product Action -->
+        <button type="button" class="btn-header-action btn-header-gold" onclick="openProductEditorModal()" title="Upload and publish a new product to the website">
+          <span>✨</span>
+          <span>+ Add Product</span>
+        </button>
+
         <!-- Quick Storefront Link -->
         <a href="index.html" target="_blank" class="btn-header-action" title="Open Storefront in New Tab">
           <span>🛍️</span>
@@ -70,6 +76,22 @@
     </div>
   </header>
 
+  <!-- Top Executive View Switcher Navigation Tabs -->
+  <div class="admin-view-nav-wrapper">
+    <div class="admin-view-nav-container">
+      <button type="button" class="admin-nav-tab-btn active" id="tab-btn-orders" onclick="switchAdminView('orders')">
+        <span class="tab-btn-icon">📦</span>
+        <span class="tab-btn-text">Orders & Live Analytics</span>
+        <span class="tab-btn-badge" id="nav-orders-count">0</span>
+      </button>
+      <button type="button" class="admin-nav-tab-btn" id="tab-btn-products" onclick="switchAdminView('products')">
+        <span class="tab-btn-icon">👑</span>
+        <span class="tab-btn-text">Product Catalog & Categories</span>
+        <span class="tab-btn-badge" id="nav-products-count">19</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Main Dashboard Container -->
   <main class="admin-main">
 
@@ -84,8 +106,12 @@
       </div>
     </div>
 
-    <!-- Executive KPI Metrics Row -->
-    <section class="kpi-grid">
+    <!-- ===================================================================
+         VIEW 1: EXECUTIVE ORDERS & LIVE ANALYTICS
+         =================================================================== -->
+    <div id="admin-view-orders" class="admin-view-pane active">
+      <!-- Executive KPI Metrics Row -->
+      <section class="kpi-grid">
       <!-- Total Gross Revenue -->
       <div class="kpi-card revenue-kpi">
         <div class="kpi-top">
@@ -324,6 +350,178 @@
         </table>
       </div>
     </section>
+    </div><!-- End of admin-view-orders -->
+
+    <!-- ===================================================================
+         VIEW 2: DEDICATED PRODUCT CATALOG & INVENTORY HUB
+         =================================================================== -->
+    <div id="admin-view-products" class="admin-view-pane" style="display: none;">
+      <section class="products-management-section">
+        
+        <!-- Catalog Header Banner & Actions -->
+        <div class="products-catalog-banner">
+          <div class="catalog-banner-info">
+            <div class="catalog-banner-icon">👑</div>
+            <div>
+              <div class="catalog-banner-title">Product Catalog & Inventory Publisher</div>
+              <div class="catalog-banner-sub">
+                Upload from PC, publish live to customer storefront, organize by category, edit pricing, or remove products instantly.
+              </div>
+            </div>
+          </div>
+          <div class="catalog-banner-actions">
+            <button type="button" class="btn-primary-action btn-header-gold" onclick="openProductEditorModal()">
+              <span>➕</span>
+              <span>Add New Product</span>
+            </button>
+            <button type="button" class="btn-secondary-action" onclick="refreshProductsManagementUI()" title="Refresh products catalog">
+              <span>🔄</span>
+              <span>Refresh</span>
+            </button>
+            <button type="button" class="btn-secondary-action" onclick="handleRestoreDefaultCatalog()" title="Restore all original catalog items">
+              <span>↩️</span>
+              <span>Restore Defaults</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Category KPI Summary Cards -->
+        <div class="category-kpi-grid">
+          <div class="category-kpi-card active-filter" data-cat-filter="all" onclick="filterProductsByCategory('all', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">All Creations</span>
+              <span class="cat-kpi-icon">👑</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-all">0</div>
+          </div>
+
+          <div class="category-kpi-card" data-cat-filter="perfumes" onclick="filterProductsByCategory('perfumes', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">Perfumes</span>
+              <span class="cat-kpi-icon">🧴</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-perfumes">0</div>
+          </div>
+
+          <div class="category-kpi-card" data-cat-filter="bakhoor" onclick="filterProductsByCategory('bakhoor', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">Bakhoor & Incense</span>
+              <span class="cat-kpi-icon">🕌</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-bakhoor">0</div>
+          </div>
+
+          <div class="category-kpi-card" data-cat-filter="oil" onclick="filterProductsByCategory('oil', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">Oils & Attars</span>
+              <span class="cat-kpi-icon">💎</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-oil">0</div>
+          </div>
+
+          <div class="category-kpi-card" data-cat-filter="cream" onclick="filterProductsByCategory('cream', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">Body Creams</span>
+              <span class="cat-kpi-icon">✨</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-cream">0</div>
+          </div>
+
+          <div class="category-kpi-card" data-cat-filter="giftset" onclick="filterProductsByCategory('giftset', this)">
+            <div class="cat-kpi-top">
+              <span class="cat-kpi-label">VIP Gift Sets</span>
+              <span class="cat-kpi-icon">🎁</span>
+            </div>
+            <div class="cat-kpi-count" id="cat-count-giftset">0</div>
+          </div>
+        </div>
+
+        <!-- Products Toolbar & Filter Tabs -->
+        <div class="products-toolbar-card">
+          <div class="products-toolbar-top">
+            <div class="products-search-wrapper">
+              <span class="products-search-icon">🔍</span>
+              <input type="text" id="admin-product-search" placeholder="Search by name (Arabic / English), notes, SKU, price..." oninput="handleProductSearch(this.value)" />
+            </div>
+
+            <div class="products-toolbar-actions">
+              <select id="admin-product-sort" class="select-filter" onchange="handleProductSort(this.value)" style="min-width: 170px;">
+                <option value="newest">Sort: Newest First</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+
+              <div class="view-toggle-group">
+                <button type="button" class="btn-view-toggle active" id="btn-toggle-table" onclick="setProductViewMode('table')" title="Table View">
+                  <span>☰</span>
+                  <span>Table</span>
+                </button>
+                <button type="button" class="btn-view-toggle" id="btn-toggle-grid" onclick="setProductViewMode('grid')" title="Visual Cards Grid View">
+                  <span>⊞</span>
+                  <span>Cards</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="products-category-tabs">
+            <button type="button" class="prod-cat-tab active" data-pill-cat="all" onclick="filterProductsByCategory('all', this)">
+              <span>👑</span>
+              <span>All Products</span>
+            </button>
+            <button type="button" class="prod-cat-tab" data-pill-cat="perfumes" onclick="filterProductsByCategory('perfumes', this)">
+              <span>🧴</span>
+              <span>Luxury Perfumes</span>
+            </button>
+            <button type="button" class="prod-cat-tab" data-pill-cat="bakhoor" onclick="filterProductsByCategory('bakhoor', this)">
+              <span>🕌</span>
+              <span>Bakhoor & Incense</span>
+            </button>
+            <button type="button" class="prod-cat-tab" data-pill-cat="oil" onclick="filterProductsByCategory('oil', this)">
+              <span>💎</span>
+              <span>Perfume Oils & Attars</span>
+            </button>
+            <button type="button" class="prod-cat-tab" data-pill-cat="cream" onclick="filterProductsByCategory('cream', this)">
+              <span>✨</span>
+              <span>Body Creams</span>
+            </button>
+            <button type="button" class="prod-cat-tab" data-pill-cat="giftset" onclick="filterProductsByCategory('giftset', this)">
+              <span>🎁</span>
+              <span>Royal Gift Sets</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Products Master Table -->
+        <div class="products-table-card" id="products-table-container">
+          <div class="table-responsive">
+            <table class="products-data-table">
+              <thead>
+                <tr>
+                  <th style="min-width: 280px;">Product & Images</th>
+                  <th>Category</th>
+                  <th>Price & Savings</th>
+                  <th>Bottle / Size</th>
+                  <th>Live Status</th>
+                  <th style="min-width: 220px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Products Cards Grid (Alternative Visual Mode) -->
+        <div id="products-cards-grid" class="products-cards-grid" style="display: none;">
+          <!-- Populated dynamically -->
+        </div>
+
+      </section>
+    </div><!-- End of admin-view-products -->
   </main>
 
   <!-- ===================================================================
@@ -514,6 +712,238 @@
             <button type="submit" class="btn-primary-action">🔥 Save & Activate Live Sync</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 3: PRODUCT CREATOR & EDITOR MODAL (PC UPLOAD & BILINGUAL)
+       =================================================================== -->
+  <div class="modal-overlay-bg" id="product-editor-modal">
+    <div class="modal-window product-modal-window">
+      <div class="modal-header-bar">
+        <div class="modal-title-text">
+          <span id="editor-modal-icon">✨</span>
+          <span id="editor-modal-title">Upload & Publish Product to Storefront</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeProductEditorModal()">&times;</button>
+      </div>
+
+      <form id="product-editor-form" onsubmit="handleProductEditorSubmit(event)">
+        <input type="hidden" id="prod-edit-id" value="" />
+        <div class="product-editor-split">
+          
+          <!-- LEFT COLUMN: Image Upload from PC & Storefront Live Preview -->
+          <div class="product-editor-left">
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--gold-pale); margin-bottom: 6px;">
+                Product Image (Upload from PC) *
+              </label>
+
+              <!-- Interactive PC Dropzone -->
+              <div class="image-dropzone-container" id="prod-dropzone" onclick="triggerProductFileInput()">
+                <input type="file" id="prod-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleProductFileInputChange(this.files)" />
+                
+                <div class="dropzone-empty-content" id="dropzone-empty-state">
+                  <span class="dropzone-icon">📁</span>
+                  <div class="dropzone-label-main">Click to Browse or Drag Image from PC</div>
+                  <div class="dropzone-sub">Supports PNG, JPG, WebP</div>
+                  <div class="dropzone-badge-optimize">⚡ Auto-compressed for ultra-fast loading</div>
+                </div>
+
+                <div class="dropzone-preview-container" id="dropzone-preview-box">
+                  <img id="dropzone-preview-img" class="dropzone-preview-thumb" src="" alt="Product Preview" />
+                  <div class="dropzone-preview-meta">
+                    <span id="dropzone-file-name">image.jpg</span>
+                    <span id="dropzone-file-size" style="color: var(--gold-pale); font-weight: 700;">85 KB</span>
+                  </div>
+                  <div class="dropzone-preview-actions" onclick="event.stopPropagation()">
+                    <button type="button" class="btn-dropzone-action" onclick="triggerProductFileInput()">Change Image</button>
+                    <button type="button" class="btn-dropzone-action btn-dropzone-remove" onclick="removeProductUploadedImage()">Remove</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fallback Web Image URL input -->
+              <div style="margin-top: 10px;">
+                <label for="prod-form-image-url" style="font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">
+                  Or paste existing image path / web URL:
+                </label>
+                <input type="text" id="prod-form-image-url" placeholder="assets/images/... or https://..." oninput="handleImageUrlInput(this.value)" style="font-size: 0.8rem; padding: 7px 10px;" />
+              </div>
+            </div>
+
+            <!-- Live Customer Storefront Card Replica Preview -->
+            <div class="live-preview-box">
+              <div class="live-preview-title">
+                <span>👁️ Live Storefront Preview</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">Real-time</span>
+              </div>
+              <div class="live-preview-card-replica">
+                <div class="replica-img-wrap">
+                  <img id="replica-card-img" class="replica-img" src="assets/images/tiger_oud.jpg" alt="Preview" />
+                  <span id="replica-card-badge" class="replica-badge">الأكثر طلباً</span>
+                </div>
+                <div class="replica-info">
+                  <div id="replica-card-name-ar" class="replica-name-ar">اسم العطر بالعربية</div>
+                  <div id="replica-card-name-en" class="replica-name-en">English Perfume Name</div>
+                  <div class="replica-price-row">
+                    <span style="font-size: 0.74rem; color: var(--text-muted);">السعر الرسمي:</span>
+                    <span id="replica-card-price" class="replica-price-val">40 SAR</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Product Information Form -->
+          <div class="product-editor-right">
+            
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="prod-form-category">Product Category *</label>
+                <select id="prod-form-category" required onchange="handleCategorySelectChange(this.value)">
+                  <option value="perfumes">🧴 العطور الملكية (Luxury Perfumes)</option>
+                  <option value="bakhoor">🕌 بخور ودخون المجالس (Bakhoor & Incense)</option>
+                  <option value="oil">💎 دهن العود والمسك المركز (Perfume Oils & Attars)</option>
+                  <option value="cream">✨ كريمات الجسم المعطرة (Perfumed Body Creams)</option>
+                  <option value="giftset">🎁 صناديق الإهداء الفاخرة (VIP Gift Sets)</option>
+                </select>
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-family">Fragrance Family / Note Tag</label>
+                <input type="text" id="prod-form-family" placeholder="e.g. عود شرقي أصيل / Oriental Oud" oninput="updateLivePreview()" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="prod-form-name-ar">Product Name (Arabic) *</label>
+                <input type="text" id="prod-form-name-ar" required placeholder="مثال: عطر أطياب رويال عنبر" dir="rtl" oninput="updateLivePreview()" />
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-name-en">Product Name (English) *</label>
+                <input type="text" id="prod-form-name-en" required placeholder="e.g. Atyab Royal Amber" dir="ltr" oninput="updateLivePreview()" />
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div class="form-group-item">
+                <label for="prod-form-price">Selling Price (SAR) *</label>
+                <input type="number" id="prod-form-price" min="1" step="0.5" required placeholder="40" oninput="updateLivePreview()" />
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-original-price">Original Price (SAR)</label>
+                <input type="number" id="prod-form-original-price" min="1" step="0.5" placeholder="60" oninput="updateLivePreview()" />
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-size">Bottle Volume / Size</label>
+                <input type="text" id="prod-form-size" placeholder="e.g. 100 ml / 110 ml" oninput="updateLivePreview()" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="prod-form-badge">Promotional Ribbon Badge</label>
+                <select id="prod-form-badge" onchange="updateLivePreview()">
+                  <option value="الأكثر طلباً">الأكثر طلباً (Most Popular)</option>
+                  <option value="جديد">جديد (New Arrival)</option>
+                  <option value="إصدار حصري">إصدار حصري (Exclusive Edition)</option>
+                  <option value="خصم خاص">خصم خاص (Special Offer)</option>
+                  <option value="فوحان أسطوري">فوحان أسطوري (Legendary Sillage)</option>
+                  <option value="none">بدون وسم (No Badge)</option>
+                </select>
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-concentration">Concentration (التركيز)</label>
+                <input type="text" id="prod-form-concentration" placeholder="e.g. أو دو بارفان رويال (Eau De Parfum)" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="prod-form-subtitle-ar">Short Subtitle / Notes (Arabic)</label>
+                <input type="text" id="prod-form-subtitle-ar" placeholder="مثال: عود كمبودي بري مع مسك أبيض وورد طائفي" dir="rtl" />
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-subtitle-en">Short Subtitle / Notes (English)</label>
+                <input type="text" id="prod-form-subtitle-en" placeholder="e.g. Cambodian Oud with White Musk & Taif Rose" dir="ltr" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group-item">
+                <label for="prod-form-longevity">Longevity & Sillage (الثبات والفوحان)</label>
+                <input type="text" id="prod-form-longevity" placeholder="e.g. 18+ ساعة / فوحان ملكي" />
+              </div>
+
+              <div class="form-group-item">
+                <label for="prod-form-season">Season & Occasion (المناسبة)</label>
+                <input type="text" id="prod-form-season" placeholder="e.g. المناسبات الفاخرة والرسمية" />
+              </div>
+            </div>
+
+            <div class="form-group-item">
+              <label for="prod-form-desc-ar">Product Story & Description (Arabic)</label>
+              <textarea id="prod-form-desc-ar" rows="3" placeholder="وصف كامل ومفصل لقصة الصياغة وطريقة التطيب بالمنتج..." dir="rtl"></textarea>
+            </div>
+
+            <div class="form-group-item">
+              <label for="prod-form-desc-en">Product Story & Description (English)</label>
+              <textarea id="prod-form-desc-en" rows="2" placeholder="Full product description and olfactory story..." dir="ltr"></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-secondary-action" onclick="closeProductEditorModal()">Cancel</button>
+          <button type="submit" class="btn-primary-action btn-header-gold" id="btn-submit-product">
+            <span>✨</span>
+            <span id="btn-submit-product-label">Publish Product to Website</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 4: DELETE PRODUCT CONFIRMATION MODAL
+       =================================================================== -->
+  <div class="modal-overlay-bg" id="delete-product-modal">
+    <div class="modal-window" style="max-width: 480px;">
+      <div class="modal-header-bar">
+        <div class="modal-title-text" style="color: #F87171;">
+          <span>🗑️</span>
+          <span>Remove Product from Website</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeDeleteProductModal()">&times;</button>
+      </div>
+
+      <div class="delete-confirm-box">
+        <div class="delete-warn-icon">⚠️</div>
+        <h4 style="color: #FFF; font-size: 1.15rem; font-weight: 800;">Confirm Product Removal</h4>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+          Are you sure you want to remove this fragrance from the store? It will be immediately unpublished from all customer category pages.
+        </p>
+
+        <div class="delete-product-meta-card" id="delete-modal-preview">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer-bar" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-secondary-action" onclick="closeDeleteProductModal()">Cancel</button>
+        <button type="button" class="btn-primary-action" style="background: #EF4444; border-color: #F87171;" onclick="executeDeleteProduct()">
+          <span>🗑️</span>
+          <span>Yes, Remove Product</span>
+        </button>
       </div>
     </div>
   </div>

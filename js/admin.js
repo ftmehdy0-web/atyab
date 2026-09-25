@@ -53,7 +53,18 @@ const adminState = {
   cityFilter: "all",
   activeOrder: null,
   lastKnownOrderCount: 0,
-  lastKnownOrdersHash: ""
+  lastKnownOrdersHash: "",
+  // Dedicated Product Catalog State
+  activeView: "orders",
+  productCategory: "all",
+  productSearch: "",
+  productSort: "newest",
+  productViewMode: "table",
+  currentUploadedImageDataUrl: null,
+  currentUploadedFileName: "",
+  currentUploadedFileSizeKB: 0,
+  editingProductId: null,
+  deletingProductId: null
 };
 
 // ===================================================================
@@ -312,6 +323,7 @@ function initDashboard() {
   renderDashboard();
   startLiveSyncEngine();
   initFirebaseAdminIntegration();
+  initProductManagement();
 }
 
 function renderDashboard() {
@@ -319,6 +331,7 @@ function renderDashboard() {
   renderLiveAnalytics();
   renderFilterTabs();
   renderOrdersTable();
+  updateTopNavCounts();
 }
 
 /**
@@ -930,18 +943,22 @@ function closeOrderModal() {
 // ===================================================================
 // 6. MANUAL ORDER CREATION MODAL
 // ===================================================================
-function openNewOrderModal() {
-  const modal = document.getElementById("new-order-modal");
-  if (!modal) return;
-
+function populateManualOrderProductSelect() {
   const productSelect = document.getElementById("manual-product-select");
-  if (productSelect && window.ATYAB_PRODUCTS) {
-    productSelect.innerHTML = window.ATYAB_PRODUCTS.map(
+  const prods = typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : [];
+  if (productSelect && prods.length > 0) {
+    productSelect.innerHTML = prods.map(
       (p) => `<option value="${p.id}" data-price="${p.priceSAR}" data-name="${escapeHTML(p.nameEn || p.name)}" data-img="${p.image}">${p.nameEn || p.name} — ${p.priceSAR} SAR</option>`
     ).join("");
     updateManualPriceCalculation();
   }
+}
 
+function openNewOrderModal() {
+  const modal = document.getElementById("new-order-modal");
+  if (!modal) return;
+
+  populateManualOrderProductSelect();
   modal.classList.add("active");
 }
 
@@ -1539,6 +1556,867 @@ function handleClearFirebaseConfig() {
     showToast("Firebase Reset", "Switched back to local authentication mode.");
   }
 }
+
+// ===================================================================
+// 8. DEDICATED PRODUCT CATALOG & INVENTORY MANAGEMENT SYSTEM
+// ===================================================================
+
+/**
+ * Switch Executive Views (Orders vs Product Catalog)
+ */
+function switchAdminView(viewName) {
+  adminState.activeView = viewName;
+  const ordersTab = document.getElementById("tab-btn-orders");
+  const productsTab = document.getElementById("tab-btn-products");
+  const ordersPane = document.getElementById("admin-view-orders");
+  const productsPane = document.getElementById("admin-view-products");
+
+  if (viewName === "products") {
+    if (ordersTab) ordersTab.classList.remove("active");
+    if (productsTab) productsTab.classList.add("active");
+    if (ordersPane) ordersPane.style.display = "none";
+    if (productsPane) productsPane.style.display = "block";
+    renderProductsManagement();
+  } else {
+    if (productsTab) productsTab.classList.remove("active");
+    if (ordersTab) ordersTab.classList.add("active");
+    if (productsPane) productsPane.style.display = "none";
+    if (ordersPane) ordersPane.style.display = "block";
+    renderDashboard();
+  }
+}
+
+/**
+ * Update top-level badges for Orders and Products
+ */
+function updateTopNavCounts() {
+  const ordersBadge = document.getElementById("nav-orders-count");
+  if (ordersBadge) {
+    ordersBadge.textContent = adminState.orders.length;
+  }
+  const productsBadge = document.getElementById("nav-products-count");
+  if (productsBadge) {
+    const prods = (typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []));
+    productsBadge.textContent = prods.length;
+  }
+}
+
+/**
+ * Initialize Product Catalog features and event bindings
+ */
+function initProductManagement() {
+  // Check URL hash for direct tab linking
+  if (window.location.hash === "#products") {
+    switchAdminView("products");
+  }
+
+  // Setup drag-and-drop on PC upload dropzone
+  const dropzone = document.getElementById("prod-dropzone");
+  if (dropzone) {
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove("dragover");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processProductImageFile(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  // Listen for catalog updates from other tabs
+  window.addEventListener("atyab_products_updated", () => {
+    updateTopNavCounts();
+    if (adminState.activeView === "products") {
+      renderProductsManagement();
+    }
+  });
+
+  updateTopNavCounts();
+}
+
+/**
+ * Render the dedicated Products Management Hub
+ */
+function renderProductsManagement() {
+  const allProducts = typeof window.ATYAB_PRODUCTS !== "undefined" 
+    ? window.ATYAB_PRODUCTS 
+    : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
+
+  // 1. Calculate & Render Category KPI Counts
+  const totalCount = allProducts.length;
+  const perfumesCount = allProducts.filter(p => p.category === "perfumes").length;
+  const bakhoorCount = allProducts.filter(p => p.category === "bakhoor" || p.category === "dakhoon").length;
+  const oilCount = allProducts.filter(p => p.category === "oil").length;
+  const creamCount = allProducts.filter(p => p.category === "cream").length;
+  const giftsetCount = allProducts.filter(p => p.category === "giftset").length;
+
+  const countAllEl = document.getElementById("cat-count-all");
+  const countPerfumesEl = document.getElementById("cat-count-perfumes");
+  const countBakhoorEl = document.getElementById("cat-count-bakhoor");
+  const countOilEl = document.getElementById("cat-count-oil");
+  const countCreamEl = document.getElementById("cat-count-cream");
+  const countGiftsetEl = document.getElementById("cat-count-giftset");
+
+  if (countAllEl) countAllEl.textContent = totalCount;
+  if (countPerfumesEl) countPerfumesEl.textContent = perfumesCount;
+  if (countBakhoorEl) countBakhoorEl.textContent = bakhoorCount;
+  if (countOilEl) countOilEl.textContent = oilCount;
+  if (countCreamEl) countCreamEl.textContent = creamCount;
+  if (countGiftsetEl) countGiftsetEl.textContent = giftsetCount;
+
+  updateTopNavCounts();
+
+  // 2. Filter by Category
+  let filtered = [...allProducts];
+  if (adminState.productCategory && adminState.productCategory !== "all") {
+    if (adminState.productCategory === "bakhoor") {
+      filtered = filtered.filter(p => p.category === "bakhoor" || p.category === "dakhoon");
+    } else {
+      filtered = filtered.filter(p => p.category === adminState.productCategory);
+    }
+  }
+
+  // 3. Search Filter
+  if (adminState.productSearch && adminState.productSearch.trim() !== "") {
+    const q = adminState.productSearch.toLowerCase().trim();
+    filtered = filtered.filter(p => {
+      const txt = `${p.name || ""} ${p.nameEn || ""} ${p.englishName || ""} ${p.subtitle || ""} ${p.subtitleEn || ""} ${p.family || ""} ${p.familyEn || ""} ${p.id || ""}`.toLowerCase();
+      return txt.includes(q);
+    });
+  }
+
+  // 4. Sort
+  if (adminState.productSort === "price-asc") {
+    filtered.sort((a, b) => (a.priceSAR || 0) - (b.priceSAR || 0));
+  } else if (adminState.productSort === "price-desc") {
+    filtered.sort((a, b) => (b.priceSAR || 0) - (a.priceSAR || 0));
+  } else if (adminState.productSort === "name-asc") {
+    filtered.sort((a, b) => (a.nameEn || a.name || "").localeCompare(b.nameEn || b.name || ""));
+  } else {
+    // "newest" - newly added custom products first
+    filtered.sort((a, b) => {
+      if (a.isCustom && !b.isCustom) return -1;
+      if (!a.isCustom && b.isCustom) return 1;
+      return 0;
+    });
+  }
+
+  // 5. Render either Table or Cards Grid
+  if (adminState.productViewMode === "grid") {
+    renderProductsGrid(filtered);
+  } else {
+    renderProductsTable(filtered);
+  }
+}
+
+/**
+ * Render products in master table view
+ */
+function renderProductsTable(products) {
+  const tableContainer = document.getElementById("products-table-container");
+  const gridContainer = document.getElementById("products-cards-grid");
+  const tbody = document.getElementById("products-table-body");
+
+  if (tableContainer) tableContainer.style.display = "block";
+  if (gridContainer) gridContainer.style.display = "none";
+  if (!tbody) return;
+
+  if (products.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 48px 20px;">
+          <div style="font-size: 2.2rem; margin-bottom: 10px;">🏷️</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #FFF; margin-bottom: 6px;">No Products Found in This Category</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px;">Click "Add New Product" to upload and publish a product to this category.</div>
+          <button type="button" class="btn-primary-action btn-header-gold" onclick="openProductEditorModal()">
+            <span>➕</span>
+            <span>Add New Product Now</span>
+          </button>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = products.map((prod) => {
+    const isCustom = Boolean(prod.isCustom);
+    const catClass = `cat-tag-${prod.category || "perfumes"}`;
+    const catNameMap = {
+      perfumes: "🧴 Perfumes",
+      bakhoor: "🕌 Bakhoor",
+      dakhoon: "🕌 Dakhoon",
+      oil: "💎 Perfume Oil",
+      cream: "✨ Body Cream",
+      giftset: "🎁 Gift Set"
+    };
+    const catDisplayName = catNameMap[prod.category] || prod.category;
+
+    const discountPill = prod.originalPriceSAR && prod.originalPriceSAR > prod.priceSAR
+      ? `<span class="prod-save-pill">-${Math.round(((prod.originalPriceSAR - prod.priceSAR) / prod.originalPriceSAR) * 100)}%</span>`
+      : "";
+
+    const origPriceDisplay = prod.originalPriceSAR && prod.originalPriceSAR > prod.priceSAR
+      ? `<span class="prod-orig-price">${prod.originalPriceSAR} SAR</span>`
+      : "";
+
+    const volume = prod.defaultSize || (prod.sizes && prod.sizes[0]) || "100 ml";
+
+    return `
+      <tr data-product-id="${prod.id}">
+        <td>
+          <div class="product-cell-thumb-wrap">
+            <div class="product-thumb-container">
+              <img src="${prod.image || 'assets/images/tiger_oud.jpg'}" alt="${prod.nameEn || prod.name}" class="product-thumb-img" onerror="this.src='assets/images/tiger_oud.jpg'" />
+            </div>
+            <div class="product-cell-titles">
+              <span class="prod-title-ar">${prod.name}</span>
+              <span class="prod-title-en">${prod.englishName || prod.nameEn || prod.name}</span>
+              <span class="prod-subtitle-text" title="${prod.subtitle || ''}">${prod.subtitle || prod.family || ''}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="cat-tag-pill ${catClass}">${catDisplayName}</span>
+          ${isCustom ? `<div style="font-size: 0.68rem; color: var(--gold-pale); font-weight: 700; margin-top: 4px;">✨ Admin Uploaded</div>` : ''}
+        </td>
+        <td>
+          <div class="prod-pricing-cell">
+            <span class="prod-curr-price">${prod.priceSAR} SAR</span>
+            <div class="prod-orig-price-wrap">
+              ${origPriceDisplay}
+              ${discountPill}
+            </div>
+          </div>
+        </td>
+        <td>
+          <span style="font-weight: 600; color: var(--text-secondary); font-size: 0.84rem;">${volume}</span>
+        </td>
+        <td>
+          <span class="prod-status-live">
+            <span class="prod-status-dot"></span>
+            <span>Live on Website</span>
+          </span>
+        </td>
+        <td>
+          <div class="prod-actions-group">
+            <button type="button" class="btn-prod-action" onclick="viewProductInStore('${prod.id}')" title="View live page on website">
+              <span>👁️</span>
+              <span>View</span>
+            </button>
+            <button type="button" class="btn-prod-action btn-action-edit" onclick="openProductEditorModal('${prod.id}')" title="Edit product pricing and details">
+              <span>✏️</span>
+              <span>Edit</span>
+            </button>
+            <button type="button" class="btn-prod-action btn-action-delete" onclick="confirmDeleteProduct('${prod.id}')" title="Remove product from store">
+              <span>🗑️</span>
+              <span>Remove</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+/**
+ * Render products in visual cards grid view
+ */
+function renderProductsGrid(products) {
+  const tableContainer = document.getElementById("products-table-container");
+  const gridContainer = document.getElementById("products-cards-grid");
+
+  if (tableContainer) tableContainer.style.display = "none";
+  if (gridContainer) gridContainer.style.display = "grid";
+  if (!gridContainer) return;
+
+  if (products.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg);">
+        <div style="font-size: 2.2rem; margin-bottom: 10px;">🏷️</div>
+        <div style="font-size: 1.05rem; font-weight: 700; color: #FFF; margin-bottom: 6px;">No Products Found</div>
+        <button type="button" class="btn-primary-action btn-header-gold" onclick="openProductEditorModal()">
+          <span>➕</span>
+          <span>Add New Product</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  gridContainer.innerHTML = products.map((prod) => {
+    const isCustom = Boolean(prod.isCustom);
+    const catClass = `cat-tag-${prod.category || "perfumes"}`;
+    const badgeText = prod.badge || prod.badgeEn || (isCustom ? "جديد" : "");
+
+    return `
+      <div class="prod-grid-card" data-product-id="${prod.id}">
+        <div class="prod-grid-media">
+          <img src="${prod.image || 'assets/images/tiger_oud.jpg'}" alt="${prod.nameEn || prod.name}" class="prod-grid-img" onerror="this.src='assets/images/tiger_oud.jpg'" />
+          ${badgeText ? `<span class="prod-grid-badge">${badgeText}</span>` : ''}
+        </div>
+        <div class="prod-grid-body">
+          <div class="prod-grid-body-top">
+            <span class="cat-tag-pill ${catClass}" style="align-self: flex-start; margin-bottom: 4px;">${prod.category}</span>
+            <div style="font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: #FFF; direction: rtl; text-align: right;">${prod.name}</div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--gold-pale);">${prod.englishName || prod.nameEn || ''}</div>
+          </div>
+          <div class="prod-grid-footer">
+            <div>
+              <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--gold-vibrant);">${prod.priceSAR} SAR</div>
+              ${prod.originalPriceSAR ? `<span style="font-size: 0.74rem; color: var(--text-muted); text-decoration: line-through;">${prod.originalPriceSAR} SAR</span>` : ''}
+            </div>
+            <div class="prod-actions-group">
+              <button type="button" class="btn-prod-action" onclick="viewProductInStore('${prod.id}')" title="View">👁️</button>
+              <button type="button" class="btn-prod-action btn-action-edit" onclick="openProductEditorModal('${prod.id}')" title="Edit">✏️</button>
+              <button type="button" class="btn-prod-action btn-action-delete" onclick="confirmDeleteProduct('${prod.id}')" title="Remove">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/**
+ * Filter products by category tab
+ */
+function filterProductsByCategory(cat, element) {
+  adminState.productCategory = cat;
+
+  // Update Category KPI Cards active state
+  document.querySelectorAll(".category-kpi-card").forEach(c => {
+    c.classList.toggle("active-filter", c.getAttribute("data-cat-filter") === cat);
+  });
+
+  // Update Category Filter Pills
+  document.querySelectorAll(".prod-cat-tab").forEach(p => {
+    p.classList.toggle("active", p.getAttribute("data-pill-cat") === cat);
+  });
+
+  renderProductsManagement();
+}
+
+function handleProductSearch(val) {
+  adminState.productSearch = val;
+  renderProductsManagement();
+}
+
+function handleProductSort(val) {
+  adminState.productSort = val;
+  renderProductsManagement();
+}
+
+function setProductViewMode(mode) {
+  adminState.productViewMode = mode;
+  const btnTable = document.getElementById("btn-toggle-table");
+  const btnGrid = document.getElementById("btn-toggle-grid");
+  if (btnTable) btnTable.classList.toggle("active", mode === "table");
+  if (btnGrid) btnGrid.classList.toggle("active", mode === "grid");
+  renderProductsManagement();
+}
+
+function refreshProductsManagementUI() {
+  if (typeof refreshAtyabProducts === "function") {
+    refreshAtyabProducts();
+  }
+  renderProductsManagement();
+  showToast("Catalog Refreshed", "Product catalog reloaded successfully.");
+}
+
+/**
+ * Image Upload & Compression Handlers
+ */
+function triggerProductFileInput() {
+  const fileInput = document.getElementById("prod-file-input");
+  if (fileInput) fileInput.click();
+}
+
+function handleProductFileInputChange(files) {
+  if (!files || files.length === 0) return;
+  processProductImageFile(files[0]);
+}
+
+function processProductImageFile(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    showToast("Invalid File", "Please select a valid image file (PNG, JPG, WebP).");
+    return;
+  }
+
+  showToast("Optimizing Image...", "Compressing product image from PC for instant storefront loading.");
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 1000;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, width, height);
+
+      let dataUrl = "";
+      try {
+        dataUrl = canvas.toDataURL("image/webp", 0.85);
+      } catch {
+        dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      }
+
+      const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+
+      adminState.currentUploadedImageDataUrl = dataUrl;
+      adminState.currentUploadedFileName = file.name;
+      adminState.currentUploadedFileSizeKB = sizeKB;
+
+      // Update dropzone UI
+      const emptyState = document.getElementById("dropzone-empty-state");
+      const previewBox = document.getElementById("dropzone-preview-box");
+      const previewImg = document.getElementById("dropzone-preview-img");
+      const fileNameEl = document.getElementById("dropzone-file-name");
+      const fileSizeEl = document.getElementById("dropzone-file-size");
+      const urlInput = document.getElementById("prod-form-image-url");
+
+      if (emptyState) emptyState.style.display = "none";
+      if (previewBox) previewBox.style.display = "flex";
+      if (previewImg) previewImg.src = dataUrl;
+      if (fileNameEl) fileNameEl.textContent = file.name;
+      if (fileSizeEl) fileSizeEl.textContent = `${sizeKB} KB (Optimized)`;
+      if (urlInput) urlInput.value = "";
+
+      updateLivePreview();
+      showToast("Image Ready!", `Optimized to ${sizeKB} KB. Ready to publish.`);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeProductUploadedImage() {
+  adminState.currentUploadedImageDataUrl = null;
+  adminState.currentUploadedFileName = "";
+  adminState.currentUploadedFileSizeKB = 0;
+
+  const emptyState = document.getElementById("dropzone-empty-state");
+  const previewBox = document.getElementById("dropzone-preview-box");
+  const fileInput = document.getElementById("prod-file-input");
+
+  if (emptyState) emptyState.style.display = "flex";
+  if (previewBox) previewBox.style.display = "none";
+  if (fileInput) fileInput.value = "";
+
+  updateLivePreview();
+}
+
+function handleImageUrlInput(url) {
+  if (url && url.trim()) {
+    adminState.currentUploadedImageDataUrl = url.trim();
+    updateLivePreview();
+  }
+}
+
+function handleCategorySelectChange(cat) {
+  updateLivePreview();
+}
+
+/**
+ * Updates the live miniature replica card in the modal as admin types
+ */
+function updateLivePreview() {
+  const nameAr = document.getElementById("prod-form-name-ar")?.value.trim() || "اسم العطر بالعربية";
+  const nameEn = document.getElementById("prod-form-name-en")?.value.trim() || "English Perfume Name";
+  const price = document.getElementById("prod-form-price")?.value || "40";
+  const badgeSelect = document.getElementById("prod-form-badge");
+  const badgeVal = badgeSelect?.value || "الأكثر طلباً";
+
+  const cardImg = document.getElementById("replica-card-img");
+  const cardBadge = document.getElementById("replica-card-badge");
+  const cardNameAr = document.getElementById("replica-card-name-ar");
+  const cardNameEn = document.getElementById("replica-card-name-en");
+  const cardPrice = document.getElementById("replica-card-price");
+
+  if (cardNameAr) cardNameAr.textContent = nameAr;
+  if (cardNameEn) cardNameEn.textContent = nameEn;
+  if (cardPrice) cardPrice.textContent = `${price} SAR`;
+
+  if (cardBadge) {
+    if (badgeVal === "none") {
+      cardBadge.style.display = "none";
+    } else {
+      cardBadge.style.display = "inline-block";
+      cardBadge.textContent = badgeVal;
+    }
+  }
+
+  if (cardImg) {
+    if (adminState.currentUploadedImageDataUrl) {
+      cardImg.src = adminState.currentUploadedImageDataUrl;
+    } else {
+      const category = document.getElementById("prod-form-category")?.value || "perfumes";
+      if (category === "bakhoor") cardImg.src = "assets/images/backhoor.jpg";
+      else if (category === "oil") cardImg.src = "assets/images/angles/tiger_oud_cap.jpg";
+      else cardImg.src = "assets/images/tiger_oud.jpg";
+    }
+  }
+}
+
+/**
+ * Open Modal to Add or Edit Product
+ */
+function openProductEditorModal(productId = null) {
+  const modal = document.getElementById("product-editor-modal");
+  if (!modal) return;
+
+  adminState.editingProductId = productId;
+  const modalTitle = document.getElementById("editor-modal-title");
+  const submitBtnLabel = document.getElementById("btn-submit-product-label");
+
+  if (productId) {
+    // Edit existing product
+    const allProducts = typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : [];
+    const prod = allProducts.find(p => p.id === productId);
+    if (!prod) return;
+
+    if (modalTitle) modalTitle.textContent = `Edit Product: ${prod.englishName || prod.name}`;
+    if (submitBtnLabel) submitBtnLabel.textContent = "Save Changes & Update Website";
+
+    document.getElementById("prod-edit-id").value = prod.id;
+    document.getElementById("prod-form-category").value = prod.category || "perfumes";
+    document.getElementById("prod-form-family").value = prod.family || "";
+    document.getElementById("prod-form-name-ar").value = prod.name || "";
+    document.getElementById("prod-form-name-en").value = prod.englishName || prod.nameEn || "";
+    document.getElementById("prod-form-price").value = prod.priceSAR || 40;
+    document.getElementById("prod-form-original-price").value = prod.originalPriceSAR || "";
+    document.getElementById("prod-form-size").value = prod.defaultSize || (prod.sizes && prod.sizes[0]) || "";
+    document.getElementById("prod-form-badge").value = prod.badge || "الأكثر طلباً";
+    document.getElementById("prod-form-concentration").value = prod.concentration || "";
+    document.getElementById("prod-form-subtitle-ar").value = prod.subtitle || "";
+    document.getElementById("prod-form-subtitle-en").value = prod.subtitleEn || "";
+    document.getElementById("prod-form-longevity").value = prod.longevity || "";
+    document.getElementById("prod-form-season").value = prod.season || "";
+    document.getElementById("prod-form-desc-ar").value = prod.description || "";
+    document.getElementById("prod-form-desc-en").value = prod.descriptionEn || "";
+
+    adminState.currentUploadedImageDataUrl = prod.image || null;
+    const urlInput = document.getElementById("prod-form-image-url");
+    if (urlInput) urlInput.value = prod.image && !prod.image.startsWith("data:") ? prod.image : "";
+
+    const emptyState = document.getElementById("dropzone-empty-state");
+    const previewBox = document.getElementById("dropzone-preview-box");
+    const previewImg = document.getElementById("dropzone-preview-img");
+    const fileNameEl = document.getElementById("dropzone-file-name");
+    const fileSizeEl = document.getElementById("dropzone-file-size");
+
+    if (prod.image) {
+      if (emptyState) emptyState.style.display = "none";
+      if (previewBox) previewBox.style.display = "flex";
+      if (previewImg) previewImg.src = prod.image;
+      if (fileNameEl) fileNameEl.textContent = prod.image.startsWith("data:") ? "Current Product Image" : prod.image.split("/").pop();
+      if (fileSizeEl) fileSizeEl.textContent = "Saved";
+    } else {
+      if (emptyState) emptyState.style.display = "flex";
+      if (previewBox) previewBox.style.display = "none";
+    }
+  } else {
+    // Add new product
+    if (modalTitle) modalTitle.textContent = "Upload & Publish Product to Storefront";
+    if (submitBtnLabel) submitBtnLabel.textContent = "Publish Product to Website";
+
+    document.getElementById("prod-edit-id").value = "";
+    document.getElementById("product-editor-form").reset();
+
+    // Default to active category filter if specified
+    if (adminState.productCategory && adminState.productCategory !== "all") {
+      document.getElementById("prod-form-category").value = adminState.productCategory;
+    } else {
+      document.getElementById("prod-form-category").value = "perfumes";
+    }
+
+    document.getElementById("prod-form-price").value = "40";
+    document.getElementById("prod-form-original-price").value = "60";
+    document.getElementById("prod-form-size").value = "قارورة 100 مل (الحجم الرسمي)";
+    document.getElementById("prod-form-badge").value = "الأكثر طلباً";
+    document.getElementById("prod-form-concentration").value = "أو دو بارفان رويال (ثبات عالي)";
+    document.getElementById("prod-form-longevity").value = "18+ ساعة (فوحان ملكي)";
+
+    removeProductUploadedImage();
+  }
+
+  updateLivePreview();
+  modal.style.display = "flex";
+}
+
+function closeProductEditorModal() {
+  const modal = document.getElementById("product-editor-modal");
+  if (modal) modal.style.display = "none";
+  adminState.editingProductId = null;
+}
+
+/**
+ * Handle Product Form Submission & Live Publishing
+ */
+async function handleProductEditorSubmit(e) {
+  e.preventDefault();
+
+  const editId = document.getElementById("prod-edit-id")?.value;
+  const category = document.getElementById("prod-form-category")?.value || "perfumes";
+  const family = document.getElementById("prod-form-family")?.value.trim() || "توليفة ملكية فاخرة";
+  const nameAr = document.getElementById("prod-form-name-ar")?.value.trim();
+  const nameEn = document.getElementById("prod-form-name-en")?.value.trim();
+  const priceSAR = parseFloat(document.getElementById("prod-form-price")?.value) || 40;
+  const originalPriceSAR = parseFloat(document.getElementById("prod-form-original-price")?.value) || Math.round(priceSAR * 1.5);
+  const size = document.getElementById("prod-form-size")?.value.trim() || "قارورة 100 مل";
+  const badge = document.getElementById("prod-form-badge")?.value || "الأكثر طلباً";
+  const concentration = document.getElementById("prod-form-concentration")?.value.trim() || "أو دو بارفان رويال";
+  const subtitleAr = document.getElementById("prod-form-subtitle-ar")?.value.trim() || `${nameAr} - نفحات شرقية ساحرة وفوحان ملكي`;
+  const subtitleEn = document.getElementById("prod-form-subtitle-en")?.value.trim() || `${nameEn} - Royal Oriental Signature Scent`;
+  const longevity = document.getElementById("prod-form-longevity")?.value.trim() || "18+ ساعة";
+  const season = document.getElementById("prod-form-season")?.value.trim() || "المناسبات الفاخرة والرسمية";
+  const descAr = document.getElementById("prod-form-desc-ar")?.value.trim() || `صُمم هذا الابتكار العطري الفاخر ليعكس عراقة التراث وجمال التوليفات الملكية المترفة. يدوم طويلاً بفوحان آسر يفرض حضوره في أرقى الأمسيات.`;
+  const descEn = document.getElementById("prod-form-desc-en")?.value.trim() || `Handcrafted with meticulous dedication to haute perfumery. Marrying noble orientals to bestow a commanding presence at grand receptions.`;
+
+  // Image resolution
+  let image = adminState.currentUploadedImageDataUrl || document.getElementById("prod-form-image-url")?.value.trim();
+  if (!image) {
+    if (category === "bakhoor") image = "assets/images/backhoor.jpg";
+    else if (category === "oil") image = "assets/images/angles/tiger_oud_cap.jpg";
+    else image = "assets/images/tiger_oud.jpg";
+  }
+
+  // Generate unique slug & id
+  const slug = (nameEn.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")) || "perfume";
+  const id = editId || `atyab-${slug}-${Date.now().toString(36)}`;
+
+  const savePercent = originalPriceSAR > priceSAR 
+    ? `${Math.round(((originalPriceSAR - priceSAR) / originalPriceSAR) * 100)}%`
+    : "25%";
+
+  const productData = {
+    id,
+    slug: editId ? (id.replace("atyab-", "")) : slug,
+    name: nameAr,
+    englishName: nameEn,
+    nameEn: nameEn,
+    subtitle: subtitleAr,
+    subtitleEn: subtitleEn,
+    category,
+    family,
+    familyEn: family,
+    priceSAR,
+    originalPriceSAR,
+    isMinPrice: true,
+    rating: 4.9,
+    reviewsCount: 145,
+    badge: badge === "none" ? "" : badge,
+    badgeEn: badge === "none" ? "" : badge,
+    badgeType: "royal",
+    image,
+    gallery: [
+      {
+        src: image,
+        titleAr: "الواجهة الرسمية للزجاجة",
+        titleEn: "Official Bottle Front View",
+        badgeAr: "الأصلية 100%",
+        badgeEn: "100% Authentic"
+      }
+    ],
+    sizes: [size],
+    sizesEn: [size],
+    defaultSize: size,
+    defaultSizeEn: size,
+    sizeVariants: [
+      {
+        size,
+        sizeEn: size,
+        priceSAR,
+        originalPriceSAR,
+        savePercent,
+        sku: `AYT-${slug.toUpperCase().slice(0, 6)}`,
+        stockNoteAr: "متوفر بالمستودع - الرياض",
+        stockNoteEn: "In Stock - Express Dispatch",
+        isPopular: true
+      }
+    ],
+    concentration,
+    concentrationEn: concentration,
+    gender: "للجنسين / هيبة وفخامة",
+    genderEn: "Unisex / Majestic Elegance",
+    longevity,
+    longevityEn: longevity,
+    sillage: "أثر ملكي عميق يملأ القاعات",
+    sillageEn: "Deep, Commanding & Room-Filling",
+    season,
+    seasonEn: season,
+    timeOfDay: "المساء والأمسيات الفاخرة",
+    timeOfDayEn: "Evening & Grand Occasions",
+    description: descAr,
+    descriptionEn: descEn,
+    isCustom: true,
+    updatedAt: new Date().toISOString()
+  };
+
+  const submitBtn = document.getElementById("btn-submit-product");
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>⏳</span><span>Publishing...</span>`;
+  }
+
+  // 1. Save to local unified storage engine
+  if (typeof saveCustomProductToStorage === "function") {
+    saveCustomProductToStorage(productData);
+  }
+
+  // 2. Cloud Firestore Sync if Firebase is configured
+  if (typeof firebaseSaveProduct === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+    try {
+      await firebaseSaveProduct(productData);
+    } catch (err) {
+      console.warn("Firestore product save notice:", err);
+    }
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `<span>✨</span><span>Publish Product to Website</span>`;
+  }
+
+  closeProductEditorModal();
+  renderProductsManagement();
+  populateManualOrderProductSelect();
+  updateTopNavCounts();
+
+  showToast(
+    editId ? "Product Updated!" : "Product Published Live!",
+    `"${nameEn}" is now live in "${category}" on the customer storefront.`
+  );
+}
+
+/**
+ * Product Deletion & Removal
+ */
+function confirmDeleteProduct(productId) {
+  const allProducts = typeof window.ATYAB_PRODUCTS !== "undefined" ? window.ATYAB_PRODUCTS : [];
+  const prod = allProducts.find(p => p.id === productId);
+  if (!prod) return;
+
+  adminState.deletingProductId = productId;
+
+  const previewEl = document.getElementById("delete-modal-preview");
+  if (previewEl) {
+    previewEl.innerHTML = `
+      <img src="${prod.image || 'assets/images/tiger_oud.jpg'}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);" onerror="this.src='assets/images/tiger_oud.jpg'" />
+      <div>
+        <div style="font-weight: 800; color: #FFF; font-size: 0.95rem;">${prod.englishName || prod.name}</div>
+        <div style="font-size: 0.78rem; color: var(--gold-pale);">${prod.priceSAR} SAR • Category: ${prod.category}</div>
+      </div>
+    `;
+  }
+
+  const modal = document.getElementById("delete-product-modal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeDeleteProductModal() {
+  const modal = document.getElementById("delete-product-modal");
+  if (modal) modal.style.display = "none";
+  adminState.deletingProductId = null;
+}
+
+async function executeDeleteProduct() {
+  const productId = adminState.deletingProductId;
+  if (!productId) return;
+
+  // 1. Delete locally
+  if (typeof deleteProductFromStorage === "function") {
+    deleteProductFromStorage(productId);
+  }
+
+  // 2. Cloud Firestore Sync
+  if (typeof firebaseDeleteProduct === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+    try {
+      await firebaseDeleteProduct(productId);
+    } catch (err) {
+      console.warn("Firestore delete notice:", err);
+    }
+  }
+
+  closeDeleteProductModal();
+  renderProductsManagement();
+  populateManualOrderProductSelect();
+  updateTopNavCounts();
+
+  showToast("Product Removed", "The product has been removed and unpublished from the website.");
+}
+
+function handleRestoreDefaultCatalog() {
+  if (confirm("Restore all original ATYAB catalog items? Any custom products you uploaded will remain safe.")) {
+    if (typeof restoreDefaultCatalogInStorage === "function") {
+      restoreDefaultCatalogInStorage();
+    }
+    renderProductsManagement();
+    populateManualOrderProductSelect();
+    updateTopNavCounts();
+    showToast("Defaults Restored", "All original royal products have been restored to the catalog.");
+  }
+}
+
+function viewProductInStore(productId) {
+  window.open(`product.html?id=${productId}`, "_blank");
+}
+
+// Window bindings for all Product Management handlers
+window.switchAdminView = switchAdminView;
+window.updateTopNavCounts = updateTopNavCounts;
+window.initProductManagement = initProductManagement;
+window.renderProductsManagement = renderProductsManagement;
+window.renderProductsTable = renderProductsTable;
+window.renderProductsGrid = renderProductsGrid;
+window.filterProductsByCategory = filterProductsByCategory;
+window.handleProductSearch = handleProductSearch;
+window.handleProductSort = handleProductSort;
+window.setProductViewMode = setProductViewMode;
+window.refreshProductsManagementUI = refreshProductsManagementUI;
+window.triggerProductFileInput = triggerProductFileInput;
+window.handleProductFileInputChange = handleProductFileInputChange;
+window.processProductImageFile = processProductImageFile;
+window.removeProductUploadedImage = removeProductUploadedImage;
+window.handleImageUrlInput = handleImageUrlInput;
+window.handleCategorySelectChange = handleCategorySelectChange;
+window.updateLivePreview = updateLivePreview;
+window.openProductEditorModal = openProductEditorModal;
+window.closeProductEditorModal = closeProductEditorModal;
+window.handleProductEditorSubmit = handleProductEditorSubmit;
+window.confirmDeleteProduct = confirmDeleteProduct;
+window.closeDeleteProductModal = closeDeleteProductModal;
+window.executeDeleteProduct = executeDeleteProduct;
+window.handleRestoreDefaultCatalog = handleRestoreDefaultCatalog;
+window.viewProductInStore = viewProductInStore;
 
 // Bootstrap dashboard on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
