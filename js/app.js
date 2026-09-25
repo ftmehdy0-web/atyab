@@ -34,12 +34,12 @@ function readStoredCart() {
     try {
       const raw = localStorage.getItem(userKey);
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch { }
   }
   try {
     const raw = localStorage.getItem("atyab_guest_cart") || localStorage.getItem("atyab_cart");
     if (raw) return JSON.parse(raw);
-  } catch {}
+  } catch { }
   return [];
 }
 
@@ -108,7 +108,7 @@ function toggleHdrCountry(event) {
 function selectHdrCountry(countryCode, currency) {
   state.country = countryCode;
   localStorage.setItem("atyab_country", countryCode);
-  
+
   const currentLabel = document.getElementById("hdr-country-current");
   if (currentLabel) currentLabel.textContent = countryCode;
 
@@ -756,7 +756,7 @@ function syncNavLinksLanguage(lang) {
         }
         const newSearch = sp.toString();
         a.setAttribute("href", newSearch ? `${base}?${newSearch}` : base);
-      } catch (e) {}
+      } catch (e) { }
     }
   });
 }
@@ -860,7 +860,7 @@ let scrollObserver = null;
 
 function initScrollReveal() {
   const selector = ".showcase-item, .cherished-card, .lux-cat-card, .chapter-card, .product-card, .trust-card, .category-bubble-card, .review-card, .pdp-tier-block, .pdp-accord-item, .spotlight-banner-wide, .scent-finder-banner, .mastery-section, .reveal-on-scroll";
-  
+
   if (!("IntersectionObserver" in window)) {
     document.querySelectorAll(selector).forEach(el => {
       el.classList.add("revealed");
@@ -1295,7 +1295,7 @@ function addToCart(productId, size, quantity = 1) {
 
   saveCart();
   updateCartUI();
-  
+
   // Trigger badge bounce animation
   document.querySelectorAll(".cart-count-badge").forEach(badge => {
     badge.classList.remove("badge-bounce");
@@ -1809,7 +1809,7 @@ async function handleAccountLogin(event) {
       if (storedUserRaw) {
         userProfile = JSON.parse(storedUserRaw);
       }
-    } catch {}
+    } catch { }
     if (!userProfile && state.account && state.account.email.toLowerCase() === email) {
       userProfile = state.account;
     }
@@ -1822,7 +1822,7 @@ async function handleAccountLogin(event) {
   saveAccount(userProfile);
   try {
     localStorage.setItem(`atyab_user_${email}`, JSON.stringify(userProfile));
-  } catch {}
+  } catch { }
 
   // LOAD USER-SCOPED CART (Saved exclusively for this user):
   const userCartRaw = localStorage.getItem(`atyab_cart_${email}`);
@@ -1885,7 +1885,7 @@ async function handleAccountSignup(event) {
   saveAccount(userProfile);
   try {
     localStorage.setItem(`atyab_user_${email}`, JSON.stringify(userProfile));
-  } catch {}
+  } catch { }
 
   // User starts with their own fresh/saved cart
   state.cart = [];
@@ -2583,7 +2583,7 @@ function setupEventListeners() {
             localMap.set(co.id, co);
           });
           localStorage.setItem("atyab_orders", JSON.stringify(Array.from(localMap.values())));
-        } catch {}
+        } catch { }
       }
       refreshActiveOrderTracking();
     });
@@ -2596,4 +2596,3 @@ function setupEventListeners() {
     });
   }
 }
-

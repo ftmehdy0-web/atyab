@@ -27,6 +27,7 @@ $urls = @(
   "http://127.0.0.1:8080/assets/images/angles/moon_flower_cap.jpg",
   "http://127.0.0.1:8080/assets/images/ahmed_logo.svg",
   "http://127.0.0.1:8080/assets/images/atyab_logo.svg",
+  "http://127.0.0.1:8080/assets/images/atyab_logo.png",
   "http://127.0.0.1:8080/assets/images/angles/backhoor_jar.jpg"
 )
 

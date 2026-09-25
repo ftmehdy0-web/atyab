@@ -45,11 +45,7 @@ while ($listener.IsListening) {
             $response.ContentType = $mime
             $response.ContentLength64 = $bytes.Length
 
-            if ($path.EndsWith(".html") -or $path -eq "/index.html") {
-                $response.Headers.Add("Cache-Control", "no-cache")
-            } else {
-                $response.Headers.Add("Cache-Control", "public, max-age=86400")
-            }
+            $response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate")
 
             if ($request.HttpMethod -ne "HEAD") {
                 $response.OutputStream.Write($bytes, 0, $bytes.Length)
@@ -62,7 +58,7 @@ while ($listener.IsListening) {
                 $response.OutputStream.Write($err, 0, $err.Length)
             }
         }
-        $response.OutputStream.Close()
+        $response.Close()
     } catch {
         # continue on client disconnect
     }

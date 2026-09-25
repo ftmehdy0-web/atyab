@@ -25,6 +25,8 @@
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/images/atyab_logo.png" />
+  <link rel="shortcut icon" href="assets/images/favicon.ico" />
   <title>عطور أطياب الملكية | المتجر الرسمي بالمملكة العربية السعودية</title>
   <meta name="description"
     content="تسوق أفخم العطور الشرقية ودهن العود الملكي من أطياب للعطور بالمملكة العربية السعودية. مكونات طبيعية نقية وثبات يدوم طويلاً." />
@@ -110,65 +112,8 @@
           </svg>
         </button>
 
-        <!-- الجانب الأيسر: الأيقونات (السلة، الفروع، الحساب) + مربع البحث -->
+        <!-- الجانب الأيسر: قوائم اختيار اللغة والدولة + مربع البحث -->
         <div class="header-left-tools">
-          <div class="header-icons-cluster">
-            <!-- 1. أيقونة سلة المشتريات مع الشارة الذهبية المطابقة للصورة المرجعية -->
-            <button class="hdr-icon-btn hdr-cart-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية"
-              aria-label="السلة" data-i18n-title="cart_tooltip">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
-              </svg>
-              <span class="cart-badge-subtle cart-count-badge">0</span>
-            </button>
-
-            <!-- 2. أيقونة تحديد الفروع والمعارض (STORE LOCATOR) -->
-            <button class="hdr-icon-btn" onclick="openStoreLocatorModal()" title="فروعنا بالمملكة"
-              aria-label="فروعنا بالمملكة" data-i18n-title="store_locator_btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </button>
-
-            <!-- 3. أيقونة الحساب الشخصي (USER ACCOUNT) -->
-            <button class="hdr-icon-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()"
-              title="حسابي" aria-label="حسابي" data-i18n-title="account_tooltip">
-              <svg id="account-action-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
-            </button>
-          </div>
-
-          <!-- مربع البحث المستطيل بنص SEARCH والعدسة (DESKTOP SEARCH BOX) -->
-          <div class="hdr-search-box">
-            <input type="text" class="hdr-search-input" id="hdr-search-input" placeholder="SEARCH" aria-label="Search"
-              data-i18n-placeholder="header_search_placeholder"
-              onkeydown="if(event.key==='Enter') handleHeaderSearch()" />
-            <button class="hdr-search-btn" onclick="handleHeaderSearch()" aria-label="Search" title="Search">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- الوسط: شعار أطياب للعطور الملكي المصمم على طراز أحمد المغربي الفاخر -->
-        <a href="index.html" class="header-center-branding" aria-label="أطياب للعطور | ATYAB PERFUME">
-          <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" class="brand-emblem-logo-img" />
-        </a>
-
-        <!-- الجانب الأيمن: قوائم اختيار اللغة والدولة (RIGHT TOOLS: LANG & COUNTRY) -->
-        <div class="header-right-tools">
           <!-- قائمة تبديل اللغة (عربي ∨ / English ∨) -->
           <div class="hdr-dropdown-wrapper" id="hdr-lang-dropdown">
             <button class="hdr-dropdown-trigger" onclick="toggleHdrLang(event)"
@@ -226,6 +171,63 @@
                 <span class="check-icon">✓</span>
               </button>
             </div>
+          </div>
+
+          <!-- مربع البحث المستطيل بنص SEARCH والعدسة (DESKTOP SEARCH BOX) -->
+          <div class="hdr-search-box">
+            <input type="text" class="hdr-search-input" id="hdr-search-input" placeholder="SEARCH" aria-label="Search"
+              data-i18n-placeholder="header_search_placeholder"
+              onkeydown="if(event.key==='Enter') handleHeaderSearch()" />
+            <button class="hdr-search-btn" onclick="handleHeaderSearch()" aria-label="Search" title="Search">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- الوسط: شعار أطياب للعطور الملكي مُمَركَز في المنتصف تماماً -->
+        <a href="index.html" class="header-center-branding" aria-label="أطياب للعطور | ATYAB PERFUME">
+          <img src="assets/images/atyab_logo.png" alt="أطياب للعطور | ATYAB PERFUME" class="brand-emblem-logo-img" />
+        </a>
+
+        <!-- الجانب الأيمن: الفروع، تسجيل الدخول/الحساب، وسلة المشتريات -->
+        <div class="header-right-tools">
+          <div class="header-icons-cluster">
+            <!-- 1. أيقونة تحديد الفروع والمعارض (STORE LOCATOR) -->
+            <button class="hdr-icon-btn hdr-store-btn" onclick="openStoreLocatorModal()" title="فروعنا بالمملكة"
+              aria-label="فروعنا بالمملكة" data-i18n-title="store_locator_btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </button>
+
+            <!-- 2. أيقونة الحساب الشخصي وتسجيل الدخول (USER ACCOUNT / LOGIN) -->
+            <button class="hdr-icon-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()"
+              title="حسابي" aria-label="حسابي" data-i18n-title="account_tooltip">
+              <svg id="account-action-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span class="account-initial" id="account-action-initial" hidden aria-hidden="true"></span>
+            </button>
+
+            <!-- 3. أيقونة سلة المشتريات الملكية (CART) مع الشارة الذهبية -->
+            <button class="hdr-icon-btn hdr-cart-btn" onclick="openCartDrawer()" title="سلة المشتريات الملكية"
+              aria-label="السلة" data-i18n-title="cart_tooltip">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              <span class="cart-badge-subtle cart-count-badge">0</span>
+            </button>
           </div>
         </div>
       </div>
@@ -422,7 +424,7 @@
   <div class="mobile-nav-drawer" id="mobile-nav-drawer" style="visibility: hidden;">
     <div class="mobile-nav-header">
       <div class="mobile-nav-brand">
-        <img src="assets/images/atyab_logo.svg" alt="أطياب للعطور | ATYAB PERFUME" style="height: 52px; width: auto;" />
+        <img src="assets/images/atyab_logo.png" alt="أطياب للعطور | ATYAB PERFUME" style="height: 52px; width: auto;" />
       </div>
       <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="إغلاق">&times;</button>
     </div>

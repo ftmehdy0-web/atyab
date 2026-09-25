@@ -363,15 +363,24 @@ button {
   min-height: 94px;
   padding: 10px 0 8px;
   gap: clamp(16px, 2.5vw, 40px);
+  position: relative;
+  direction: ltr !important; /* Visual Left = Search/Locale, Center = Logo, Right = Location/Account/Cart */
 }
 
-/* 1. قسم اللغة والدولة (LOCALE & COUNTRY SECTION) */
-.header-locale-section {
+/* 1. قسم اللغة والدولة والبحث في الجانب الأيسر */
+.header-locale-section,
+.header-left-tools {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 1.5vw, 20px);
+  gap: clamp(10px, 1.4vw, 20px);
   flex: 1 1 0%;
+  min-width: 0;
   justify-content: flex-start;
+}
+
+.header-left-tools .hdr-dropdown-menu {
+  left: 0;
+  right: auto;
 }
 
 /* مبدل اللغة المنفصل (Segmented Language Pill Toggle) */
@@ -592,7 +601,7 @@ html[dir="rtl"] .btn-badge {
   color: #B88A28;
 }
 
-/* القسم الأوسط: الشعار الرسمي لأطياب للعطور بحجم أكبر وأوضح */
+/* القسم الأوسط: الشعار الرسمي لأطياب للعطور مُمَركَز بدقة مطلقة في المنتصف */
 .header-center-branding {
   display: flex;
   flex-direction: column;
@@ -601,28 +610,73 @@ html[dir="rtl"] .btn-badge {
   text-decoration: none;
   flex: 0 0 auto;
   padding: 4px 16px;
+  margin: 0 auto;
 }
 
 .brand-emblem-logo-img {
-  height: clamp(96px, 7.5vw, 120px);
+  height: clamp(90px, 7vw, 115px);
   width: auto;
-  max-width: 260px;
+  aspect-ratio: 1 / 1;
+  max-width: 240px;
   object-fit: contain;
   display: block;
-  transition: transform 0.25s ease;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.14));
 }
 
 .brand-emblem-logo-img:hover {
-  transform: scale(1.03);
+  transform: scale(1.04);
+  filter: drop-shadow(0 6px 20px rgba(184, 138, 40, 0.35));
 }
 
-/* الجانب الأيمن: قوائم اختيار اللغة (عربي ∨) والدولة (KSA ∨) */
+/* الجانب الأيمن: الفروع، تسجيل الدخول / الحساب، وسلة المشتريات */
+.header-actions-section,
 .header-right-tools {
   display: flex;
   align-items: center;
-  gap: clamp(18px, 2vw, 32px);
+  gap: clamp(12px, 1.5vw, 22px);
   flex: 1 1 0%;
+  min-width: 0;
   justify-content: flex-end;
+}
+
+.header-icons-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hdr-icon-btn,
+.hdr-btn-circle {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #ECECEC;
+  color: #1A1A1A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 0;
+}
+
+.hdr-icon-btn:hover,
+.hdr-btn-circle:hover {
+  background: #111111;
+  color: #FFFFFF;
+  border-color: #111111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hdr-icon-btn:hover svg,
+.hdr-btn-circle:hover svg {
+  stroke: #FFFFFF;
 }
 
 .hdr-dropdown-wrapper {
@@ -3550,83 +3604,171 @@ html[dir="ltr"] .mobile-nav-list li a:active {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    min-height: 64px !important;
-    height: auto !important;
-    padding: 6px 0 !important;
-    gap: 8px !important;
+    min-height: 60px !important;
+    height: 60px !important;
+    padding: 4px 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     position: relative !important;
     box-sizing: border-box !important;
+    direction: ltr !important; /* Left = Menu, Center = Logo, Right = Location/Account/Cart */
   }
 
-  /* الركن الأول: زر القائمة الجانبية الهامبرغر */
+  /* الركن الأول: زر القائمة الجانبية الهامبرغر على اليسار */
   .menu-toggle {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 40px !important;
-    height: 40px !important;
-    flex: 0 0 40px !important;
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
     order: 1 !important;
     margin: 0 !important;
-    background: transparent !important;
-    border: none !important;
+    background: #FFFFFF !important;
+    border: 1px solid #ECECEC !important;
+    border-radius: 50% !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     color: #111111 !important;
     cursor: pointer !important;
+    z-index: 5 !important;
+    transition: all 0.2s ease !important;
   }
 
-  /* الركن الأوسط: شعار أطياب للعطور بالمنتصف تماماً */
+  .menu-toggle:active {
+    transform: scale(0.95);
+    background: #F5F5F5 !important;
+  }
+
+  /* الركن الأوسط: شعار أطياب للعطور بالمنتصف تماماً (True Absolute Center) */
   .header-center-branding {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    flex: 1 1 auto !important;
-    order: 2 !important;
-    margin: 0 auto !important;
-    padding: 0 4px !important;
-    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+    text-decoration: none !important;
   }
 
   .brand-emblem-logo-img {
-    height: 56px !important;
-    width: auto !important;
-    max-width: 130px !important;
+    height: 50px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
     margin: 0 auto !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) !important;
+    transition: transform 0.25s ease !important;
   }
 
-  /* إخفاء قسم اللغة والدولة من الشريط العلوي للجوال (متاح بالكامل داخل قائمة الجوال) */
+  .brand-emblem-logo-img:active {
+    transform: scale(0.96) !important;
+  }
+
+  /* إخفاء قسم اللغة والدولة والبحث المكتبي من شريط الجوال */
   .header-locale-section,
-  .header-right-tools {
+  .header-left-tools {
     display: none !important;
   }
 
-  /* الركن الثالث: قسم الأزرار المنفصل على الجوال */
+  /* الركن الثالث: قسم الأزرار (الفروع، الحساب، السلة) على الجانب الأيمن */
   .header-actions-section,
-  .header-left-tools {
+  .header-right-tools {
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
     flex: 0 0 auto !important;
     order: 3 !important;
     margin: 0 !important;
-    gap: 4px !important;
+    gap: 6px !important;
+    z-index: 5 !important;
   }
 
+  .header-icons-cluster,
   .header-buttons-cluster {
+    display: inline-flex !important;
+    align-items: center !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    gap: 4px !important;
+    gap: 6px !important;
   }
 
+  .hdr-icon-btn,
   .hdr-btn-circle {
-    width: 38px !important;
-    height: 38px !important;
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    border: 1px solid #ECECEC !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #1A1A1A !important;
+    padding: 0 !important;
+    position: relative !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .hdr-icon-btn:active,
+  .hdr-btn-circle:active {
+    transform: scale(0.94) !important;
+    background: #F5F5F5 !important;
+  }
+
+  .hdr-icon-btn svg,
+  .hdr-btn-circle svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  /* إظهار زر الفروع والحساب والسلة بانسجام تام على الجوال */
+  .hdr-store-btn {
+    display: inline-flex !important;
+  }
+
+  .account-action-btn {
+    display: inline-flex !important;
+  }
+
+  .hdr-cart-btn {
+    display: inline-flex !important;
+    width: 36px !important;
+    height: 36px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    position: relative !important;
+  }
+
+  .cart-badge-subtle,
+  .cart-count-badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -2px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    border-radius: 999px !important;
+    background: #B88A28 !important;
+    color: #FFFFFF !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 3px !important;
+    line-height: 1 !important;
+    border: 1.5px solid #FFFFFF !important;
   }
 
   /* إخفاء مربع البحث المكتبي على الجوال (متوفر في نافذة البحث وقائمة الجوال) */
@@ -3634,14 +3776,12 @@ html[dir="ltr"] .mobile-nav-list li a:active {
     display: none !important;
   }
 
-  .hdr-cart-btn {
-    display: inline-flex !important;
-    width: 38px !important;
-    height: 38px !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 2px !important;
-    position: relative !important;
+  /* تنسيق شعار أطياب الدائري في القائمة الجانبية للجوال */
+  .mobile-nav-brand img {
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
   }
 
   /* شريط تصنيفات العطور القابل للتمرير الأفقي بسلاسة */
@@ -4183,6 +4323,49 @@ html[dir="ltr"] .mobile-nav-list li a:active {
 
   .pdp-qty-val {
     width: 36px;
+  }
+}
+
+@media (max-width: 380px) {
+  .main-header .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .menu-toggle {
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
+  }
+
+  .menu-toggle svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .brand-emblem-logo-img {
+    height: 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+  }
+
+  .header-actions-section,
+  .header-right-tools,
+  .header-icons-cluster {
+    gap: 4px !important;
+  }
+
+  .hdr-icon-btn,
+  .hdr-btn-circle {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .hdr-icon-btn svg,
+  .hdr-btn-circle svg {
+    width: 15px !important;
+    height: 15px !important;
   }
 }
 
