@@ -968,7 +968,7 @@ function updateManualPriceCalculation() {
 function handleManualOrderSubmit(event) {
   event.preventDefault();
   const name = document.getElementById("manual-name")?.value.trim() || "VIP Walk-in Client";
-  const phone = document.getElementById("manual-phone")?.value.trim() || "0500000000";
+  const phone = document.getElementById("manual-phone")?.value.trim() || "0558879839";
   const city = document.getElementById("manual-city")?.value || "Riyadh";
   const address = document.getElementById("manual-address")?.value.trim() || "Direct Store Pickup";
   const paymentMethod = document.getElementById("manual-payment")?.value || "mada";

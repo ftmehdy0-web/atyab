@@ -531,9 +531,9 @@
       </div>
 
       <!-- صف ثاني للأقسام بعرض ممتد -->
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 24px;">
+      <div class="lux-cat-grid-secondary">
         <!-- 4. بخور ودخون المجالس -->
-        <a href="perfumes.html?cat=bakhoor" class="lux-cat-card" style="height: 320px;">
+        <a href="perfumes.html?cat=bakhoor" class="lux-cat-card">
           <img src="assets/images/dakhoon.jpg" alt="بخور ودخون المجالس" class="lux-cat-bg" loading="lazy" />
           <div class="lux-cat-overlay"></div>
           <div class="lux-cat-content">
@@ -545,7 +545,7 @@
         </a>
 
         <!-- 5. صناديق الهدايا الفاخرة -->
-        <a href="perfumes.html?cat=giftset" class="lux-cat-card" style="height: 320px;">
+        <a href="perfumes.html?cat=giftset" class="lux-cat-card">
           <img src="assets/images/gift_set.jpg" alt="صناديق الهدايا الفاخرة" class="lux-cat-bg" loading="lazy" />
           <div class="lux-cat-overlay"></div>
           <div class="lux-cat-content">
@@ -562,20 +562,20 @@
   <!-- ===================================================================
        6. تسليط الضوء على كريمات الجسم المخملية (CREAMS SPOTLIGHT WITH DIRECT ADD TO CART)
        =================================================================== -->
-  <section class="creams-spotlight-section" style="padding: 80px 0; background: linear-gradient(180deg, #FBF9F6 0%, #FFFFFF 100%); border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+  <section class="creams-spotlight-section">
     <div class="container">
-      <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 40px;">
+      <div class="creams-spotlight-header">
         <div>
-          <span style="font-family: var(--font-calligraphy); font-size: 1.15rem; color: var(--gold-deep); display: block; margin-bottom: 6px;" data-i18n="creams_spotlight_badge">جديد وحصري لعام ٢٠٢٦</span>
-          <h2 style="font-family: var(--font-arabic-title); font-size: 2.2rem; font-weight: 900; color: #111;" data-i18n="creams_spotlight_title">كريمات الجسم المعطرة الفاخرة</h2>
-          <p style="font-size: 0.95rem; color: #666; margin-top: 6px;" data-i18n="creams_spotlight_desc">ملمس حريري وترطيب يدوم 24 ساعة؛ أضف عطرك المفضل بصيغة كريم فاخر مباشرة لسلتك.</p>
+          <span class="creams-spotlight-badge" data-i18n="creams_spotlight_badge">جديد وحصري لعام ٢٠٢٦</span>
+          <h2 class="creams-spotlight-title" data-i18n="creams_spotlight_title">كريمات الجسم المعطرة الفاخرة</h2>
+          <p class="creams-spotlight-desc" data-i18n="creams_spotlight_desc">ملمس حريري وترطيب يدوم 24 ساعة؛ أضف عطرك المفضل بصيغة كريم فاخر مباشرة لسلتك.</p>
         </div>
-        <a href="perfumes.html?cat=cream" class="btn btn-secondary" style="padding: 10px 22px; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;">
+        <a href="perfumes.html?cat=cream" class="btn btn-secondary creams-spotlight-cta">
           <span data-i18n="creams_spotlight_cta">عرض صفحة الكريمات المستقلة ←</span>
         </a>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+      <div class="creams-spotlight-grid">
         <!-- كريم 1: عود وورد -->
         <div class="cherished-card">
           <div class="cherished-card-media">
@@ -718,32 +718,32 @@
   <!-- ===================================================================
        8. ربع قرن من الإتقان والعراقة (25+ YEARS OF MASTERY & HERITAGE)
        =================================================================== -->
-  <section class="mastery-section" style="padding: 80px 0; background: #161412; color: #FFFFFF; position: relative; overflow: hidden;">
+  <section class="mastery-section">
     <div class="container" style="position: relative; z-index: 2;">
-      <div style="text-align: center; max-width: 680px; margin: 0 auto 50px;">
-        <span style="font-family: var(--font-calligraphy); font-size: 1.25rem; color: var(--gold-vibrant); display: block; margin-bottom: 8px;" data-i18n="mastery_subtitle">عراقة متأصلة منذ عام ١٩٨٨</span>
-        <h2 style="font-family: var(--font-arabic-title); font-size: 2.5rem; font-weight: 900; color: #FFF; margin-bottom: 12px;" data-i18n="mastery_title">أكثر من 25 عاماً من الإتقان العطري</h2>
-        <p style="font-size: 0.95rem; color: rgba(255, 255, 255, 0.78); line-height: 1.7;" data-i18n="mastery_desc">
+      <div class="mastery-header">
+        <span class="mastery-subtitle" data-i18n="mastery_subtitle">عراقة متأصلة منذ عام ١٩٨٨</span>
+        <h2 class="mastery-title" data-i18n="mastery_title">أكثر من 25 عاماً من الإتقان العطري</h2>
+        <p class="mastery-desc" data-i18n="mastery_desc">
           مسيرة حافلة بالشغف والابتكار في عالم العطور الخليجية الفاخرة؛ ننتقي أندر أخشاب العود ونقطر أنقى قطرات الورد لنقدم لعملائنا في المملكة تحفاً عطرية تدوم في الذاكرة.
         </p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;">
-        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(197, 155, 39, 0.3); border-radius: 12px; padding: 30px 20px;">
-          <strong style="font-size: 2.8rem; font-weight: 900; color: var(--gold-vibrant); display: block; margin-bottom: 6px;" data-i18n="mastery_stat1_num">+25</strong>
-          <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); font-weight: 700;" data-i18n="mastery_stat1_text">عاماً من الريادة والعراقة</span>
+      <div class="mastery-stats-grid">
+        <div class="mastery-stat-card">
+          <strong class="mastery-stat-num" data-i18n="mastery_stat1_num">+25</strong>
+          <span class="mastery-stat-text" data-i18n="mastery_stat1_text">عاماً من الريادة والعراقة</span>
         </div>
-        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(197, 155, 39, 0.3); border-radius: 12px; padding: 30px 20px;">
-          <strong style="font-size: 2.8rem; font-weight: 900; color: var(--gold-vibrant); display: block; margin-bottom: 6px;" data-i18n="mastery_stat2_num">+150</strong>
-          <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); font-weight: 700;" data-i18n="mastery_stat2_text">توليفة عطرية ملكية حصرية</span>
+        <div class="mastery-stat-card">
+          <strong class="mastery-stat-num" data-i18n="mastery_stat2_num">+150</strong>
+          <span class="mastery-stat-text" data-i18n="mastery_stat2_text">توليفة عطرية ملكية حصرية</span>
         </div>
-        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(197, 155, 39, 0.3); border-radius: 12px; padding: 30px 20px;">
-          <strong style="font-size: 2.8rem; font-weight: 900; color: var(--gold-vibrant); display: block; margin-bottom: 6px;" data-i18n="mastery_stat3_num">100%</strong>
-          <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); font-weight: 700;" data-i18n="mastery_stat3_text">زيوت وخلاصات طبيعية نقية</span>
+        <div class="mastery-stat-card">
+          <strong class="mastery-stat-num" data-i18n="mastery_stat3_num">100%</strong>
+          <span class="mastery-stat-text" data-i18n="mastery_stat3_text">زيوت وخلاصات طبيعية نقية</span>
         </div>
-        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(197, 155, 39, 0.3); border-radius: 12px; padding: 30px 20px;">
-          <strong style="font-size: 2.8rem; font-weight: 900; color: var(--gold-vibrant); display: block; margin-bottom: 6px;" data-i18n="mastery_stat4_num">+500K</strong>
-          <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); font-weight: 700;" data-i18n="mastery_stat4_text">عميل يثقون بأطياب في الخليج</span>
+        <div class="mastery-stat-card">
+          <strong class="mastery-stat-num" data-i18n="mastery_stat4_num">+500K</strong>
+          <span class="mastery-stat-text" data-i18n="mastery_stat4_text">عميل يثقون بأطياب في الخليج</span>
         </div>
       </div>
     </div>
@@ -977,7 +977,7 @@
           <li><a href="#" onclick="alert('نوفر ضمان ذهبي للاستبدال والاسترجاع خلال ٧ أيام من الاستلام'); return false;" data-i18n="footer_link_warranty">الضمان الذهبي والاسترجاع</a></li>
           <li><a href="#" onclick="openCartDrawer(); return false;" data-i18n="footer_link_cart">متابعة حالة سلة المشتريات</a></li>
           <li><a href="#" onclick="openSearchModal(); return false;" data-i18n="footer_link_search">البحث في الكتالوج</a></li>
-          <li><a href="https://wa.me/966500000000" target="_blank" data-i18n="footer_link_whatsapp">التواصل عبر الواتساب</a></li>
+          <li><a href="https://wa.me/966558879839" target="_blank" rel="noopener noreferrer" data-i18n="footer_link_whatsapp">التواصل عبر الواتساب</a></li>
         </ul>
       </div>
 
@@ -995,7 +995,7 @@
           </div>
           <div class="contact-item">
             <span>📞</span>
-            <span dir="ltr">+966 50 000 0000</span>
+            <a href="tel:+966558879839" dir="ltr" style="color: inherit; text-decoration: none;">+966 55 887 9839</a>
           </div>
           <div class="contact-item">
             <span>✉️</span>
@@ -1088,7 +1088,7 @@
 
       <!-- زر التواصل المباشر عبر واتساب -->
       <div class="mobile-nav-whatsapp">
-        <a href="https://wa.me/966500000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D9%84%D9%83%D9%8A%D8%A9" target="_blank" rel="noopener noreferrer" class="mobile-wa-btn">
+        <a href="https://wa.me/966558879839?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D9%84%D9%83%D9%8A%D8%A9" target="_blank" rel="noopener noreferrer" class="mobile-wa-btn">
           <span>💬</span>
           <span data-i18n="mobile_wa_btn">خدمة العملاء الملكية (واتساب)</span>
         </a>
@@ -1441,7 +1441,7 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- زر خدمة العملاء عبر الواتساب العائم (WHATSAPP CONCIERGE) -->
-  <a href="https://wa.me/966500000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8" 
+  <a href="https://wa.me/966558879839?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%B9%D8%B7%D9%88%D8%B1%20%D8%A3%D8%B7%D9%8A%D8%A7%D8%A8" 
      class="whatsapp-float" 
      target="_blank" 
      rel="noopener noreferrer" 

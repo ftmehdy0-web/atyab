@@ -69,6 +69,14 @@ html {
   direction: rtl;
   scrollbar-width: thin;
   scrollbar-color: var(--gold-primary) #141414;
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* شريط التمرير الفاخر لمحرّكات Webkit (Chrome, Safari, Edge) */
@@ -107,10 +115,10 @@ html {
    =================================================================== */
 @keyframes kenBurnsZoom {
   0% {
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
   }
   100% {
-    transform: scale(1.07);
+    transform: scale(1.05) translateZ(0);
   }
 }
 
@@ -988,7 +996,8 @@ html[dir="rtl"] .hdr-dropdown-menu {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
+  backface-visibility: hidden;
   transition: transform 0.3s ease;
 }
 
@@ -5618,44 +5627,44 @@ html[dir="ltr"] .pdp-lightbox-close {
    =================================================================== */
 .reveal-item {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: translateY(22px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-item.revealed {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 
 .reveal-fade {
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-fade.revealed {
   opacity: 1;
+  will-change: auto;
 }
 
 .reveal-scale {
   opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: scale(0.94);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-scale.revealed {
   opacity: 1;
   transform: scale(1);
+  will-change: auto;
 }
 
-.delay-1 { transition-delay: 0.08s; }
-.delay-2 { transition-delay: 0.16s; }
-.delay-3 { transition-delay: 0.24s; }
-.delay-4 { transition-delay: 0.32s; }
-.delay-5 { transition-delay: 0.40s; }
-.delay-6 { transition-delay: 0.48s; }
+.delay-1 { transition-delay: 0.04s; }
+.delay-2 { transition-delay: 0.08s; }
+.delay-3 { transition-delay: 0.12s; }
+.delay-4 { transition-delay: 0.16s; }
+.delay-5 { transition-delay: 0.20s; }
+.delay-6 { transition-delay: 0.24s; }
 
 /* نبضة السعر التفاعلية (DYNAMIC PRICE BUMP) */
 .price-bump {
@@ -5760,10 +5769,56 @@ html[dir="ltr"] .pdp-lightbox-close {
   gap: 24px;
 }
 @media (max-width: 1024px) {
-  .cherished-grid { grid-template-columns: repeat(2, 1fr); }
+  .cherished-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
-@media (max-width: 600px) {
-  .cherished-grid { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+  .cherished-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .cherished-card-content {
+    padding: 12px 10px;
+  }
+  .cherished-item-title {
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+  .cherished-item-notes {
+    font-size: 0.72rem;
+    margin-bottom: 8px;
+    min-height: auto;
+    -webkit-line-clamp: 1;
+  }
+  .cherished-item-price-row {
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+  .cherished-current-price {
+    font-size: 1rem;
+  }
+  .cherished-old-price {
+    font-size: 0.75rem;
+  }
+  .btn-cherished-cart {
+    padding: 9px 8px;
+    font-size: 0.76rem;
+    border-radius: 6px;
+  }
+}
+@media (max-width: 360px) {
+  .cherished-grid {
+    gap: 8px;
+  }
+  .cherished-card-content {
+    padding: 8px 6px;
+  }
+  .cherished-item-title {
+    font-size: 0.82rem;
+  }
+  .btn-cherished-cart {
+    padding: 7px 4px;
+    font-size: 0.7rem;
+  }
 }
 
 .cherished-card {
@@ -5922,6 +5977,39 @@ html[dir="ltr"] .pdp-lightbox-close {
 @media (max-width: 900px) {
   .lux-cat-grid { grid-template-columns: 1fr; }
 }
+
+.lux-cat-grid-secondary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+.lux-cat-grid-secondary .lux-cat-card {
+  height: 320px;
+}
+@media (max-width: 900px) {
+  .lux-cat-grid-secondary {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .lux-cat-card,
+  .lux-cat-grid-secondary .lux-cat-card {
+    height: 240px;
+  }
+  .lux-cat-content {
+    padding: 20px 18px !important;
+  }
+  .lux-cat-name {
+    font-size: 1.35rem !important;
+  }
+  .lux-cat-desc {
+    font-size: 0.78rem !important;
+    margin-bottom: 10px !important;
+  }
+}
 .lux-cat-card {
   position: relative;
   height: 380px;
@@ -5998,6 +6086,161 @@ html[dir="ltr"] .pdp-lightbox-close {
 .lux-cat-card:hover .lux-cat-cta-link {
   border-bottom-color: var(--gold-vibrant);
   gap: 12px;
+}
+
+/* ===================================================================
+   قسم كريمات الجسم المعطرة الفاخرة (CREAMS SPOTLIGHT SECTION)
+   =================================================================== */
+.creams-spotlight-section {
+  padding: 70px 0;
+  background: linear-gradient(180deg, #FBF9F6 0%, #FFFFFF 100%);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+.creams-spotlight-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.creams-spotlight-badge {
+  font-family: var(--font-calligraphy);
+  font-size: 1.15rem;
+  color: var(--gold-deep);
+  display: block;
+  margin-bottom: 6px;
+}
+.creams-spotlight-title {
+  font-family: var(--font-arabic-title);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 900;
+  color: #111111;
+}
+.creams-spotlight-desc {
+  font-size: clamp(0.82rem, 2vw, 0.95rem);
+  color: #666666;
+  margin-top: 6px;
+}
+.creams-spotlight-cta {
+  padding: 10px 22px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.creams-spotlight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+@media (max-width: 991px) {
+  .creams-spotlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .creams-spotlight-section {
+    padding: 38px 0;
+  }
+  .creams-spotlight-header {
+    margin-bottom: 20px;
+  }
+  .creams-spotlight-cta {
+    width: 100%;
+    justify-content: center;
+  }
+  .creams-spotlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .creams-spotlight-grid {
+    gap: 8px;
+  }
+}
+
+/* ===================================================================
+   قسم ربع قرن من الإتقان والعراقة (MASTERY & HERITAGE SECTION)
+   =================================================================== */
+.mastery-section {
+  padding: 80px 0;
+  background: #161412;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+}
+.mastery-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 46px;
+}
+.mastery-subtitle {
+  font-family: var(--font-calligraphy);
+  font-size: 1.25rem;
+  color: var(--gold-vibrant);
+  display: block;
+  margin-bottom: 8px;
+}
+.mastery-title {
+  font-family: var(--font-arabic-title);
+  font-size: clamp(1.7rem, 4.5vw, 2.5rem);
+  font-weight: 900;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+.mastery-desc {
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+}
+.mastery-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+.mastery-stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 155, 39, 0.3);
+  border-radius: 12px;
+  padding: 28px 18px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.mastery-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-vibrant);
+}
+.mastery-stat-num {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--gold-vibrant);
+  display: block;
+  margin-bottom: 6px;
+}
+.mastery-stat-text {
+  font-size: clamp(0.78rem, 2vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+}
+@media (max-width: 768px) {
+  .mastery-section {
+    padding: 42px 0;
+  }
+  .mastery-header {
+    margin-bottom: 26px;
+  }
+  .mastery-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .mastery-stat-card {
+    padding: 18px 12px;
+  }
 }
 
 /* ===================================================================
@@ -6144,10 +6387,20 @@ html[dir="ltr"] .pdp-lightbox-close {
   .cat-products-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 860px) {
-  .cat-products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .cat-products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding-top: 24px; }
 }
 @media (max-width: 540px) {
-  .cat-products-grid { grid-template-columns: 1fr; }
+  .cat-products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding-top: 16px; }
+  .cat-card-body { padding: 12px 10px; }
+  .cat-card-title { font-size: 0.95rem; }
+  .cat-card-meta-line { font-size: 0.72rem; }
+  .cat-price-current { font-size: 1rem; }
+  .cat-btn-add-cart { padding: 9px 8px; font-size: 0.76rem; border-radius: 6px; }
+}
+@media (max-width: 360px) {
+  .cat-products-grid { gap: 8px; }
+  .cat-card-body { padding: 10px 8px; }
+  .cat-card-title { font-size: 0.88rem; }
 }
 
 /* ÙƒØ§Ø±Øª Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ù…Ø­Ø³Ù‘Ù† Ù…Ø¹ Ø¥Ø¶Ø§ÙØ© ÙÙˆØ±ÙŠØ© Ù„Ù„Ø³Ù„Ø© */

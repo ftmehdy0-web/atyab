@@ -13,18 +13,92 @@ function initCategoryPage(defaultCategory = "perfumes") {
   const params = new URLSearchParams(window.location.search);
   const urlCat = params.get("cat") || defaultCategory;
   currentCategoryFilter = urlCat;
+  currentSubTag = "all";
 
-  // Set active header category nav link
+  // Set active header category nav link - match strictly by dataset.cat or explicit cat query
   document.querySelectorAll(".category-nav-menu .cat-nav-link").forEach(link => {
     link.classList.remove("active");
-    if (link.dataset.cat === urlCat || link.getAttribute("href")?.includes(urlCat)) {
+    const linkCat = link.dataset.cat || (link.getAttribute("href")?.match(/[?&]cat=([^&]+)/)?.[1]);
+    if (linkCat === urlCat) {
       link.classList.add("active");
     }
   });
 
   updateCategoryPageHeader();
   renderCategoryProducts();
+  attachCategoryNavListeners();
 }
+
+/**
+ * Enable smooth, seamless in-page switching between fragrance categories
+ */
+function attachCategoryNavListeners() {
+  document.querySelectorAll(".category-nav-menu .cat-nav-link[data-cat]").forEach(link => {
+    if (link.dataset.hasListener) return;
+    link.dataset.hasListener = "true";
+    link.addEventListener("click", (e) => {
+      const cat = link.dataset.cat;
+      if (!cat) return;
+      e.preventDefault();
+      switchCategoryTab(cat);
+    });
+  });
+}
+
+function switchCategoryTab(cat) {
+  if (currentCategoryFilter === cat && currentSubTag === "all") return;
+  currentCategoryFilter = cat;
+  currentSubTag = "all";
+
+  const url = new URL(window.location);
+  url.searchParams.set("cat", cat);
+  if (typeof state !== "undefined" && state.language === "en") {
+    url.searchParams.set("lang", "en");
+  }
+  window.history.pushState({ cat }, "", url);
+
+  document.querySelectorAll(".category-nav-menu .cat-nav-link").forEach(link => {
+    const linkCat = link.dataset.cat || (link.getAttribute("href")?.match(/[?&]cat=([^&]+)/)?.[1]);
+    link.classList.toggle("active", linkCat === cat);
+  });
+
+  // Smooth fade-in transition
+  const container = document.getElementById("category-products-container");
+  if (container) {
+    container.style.opacity = "0";
+    container.style.transform = "translateY(10px)";
+    container.style.transition = "opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)";
+  }
+
+  updateCategoryPageHeader();
+
+  setTimeout(() => {
+    renderCategoryProducts();
+    if (container) {
+      container.style.opacity = "1";
+      container.style.transform = "translateY(0)";
+    }
+  }, 100);
+
+  const heroSection = document.querySelector(".cat-page-hero");
+  if (heroSection) {
+    heroSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+// Handle browser Back / Forward buttons without full page reloads
+window.addEventListener("popstate", () => {
+  const params = new URLSearchParams(window.location.search);
+  const cat = params.get("cat") || "perfumes";
+  currentCategoryFilter = cat;
+  currentSubTag = "all";
+  document.querySelectorAll(".category-nav-menu .cat-nav-link").forEach(link => {
+    const linkCat = link.dataset.cat || (link.getAttribute("href")?.match(/[?&]cat=([^&]+)/)?.[1]);
+    link.classList.toggle("active", linkCat === cat);
+  });
+  updateCategoryPageHeader();
+  renderCategoryProducts();
+});
 
 /**
  * Updates page headers, breadcrumbs, descriptions and filter pills in both EN & AR

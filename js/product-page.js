@@ -314,7 +314,7 @@ function renderPurchaseBox(lp) {
         ? `Hello Atyab Fragrance Concierge, I would like to order ${lp.displayName} (${cleanVolume}) at ${rawPriceText} from the official store.`
         : `مرحباً مستشار أطياب، أود طلب ${lp.displayName} (${cleanVolume}) بسعر ${rawPriceText} من المتجر الرسمي.`
     );
-    const waUrl = `https://wa.me/966500000000?text=${waText}`;
+    const waUrl = `https://wa.me/966558879839?text=${waText}`;
 
     actionsContainer.innerHTML = `
       <div class="pdp-action-row">
