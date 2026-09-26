@@ -482,6 +482,7 @@
         <li><a href="perfumes.html?cat=cream" onclick="closeMobileNav();"><span class="nav-icon">🧴</span><span data-i18n="nav_cream">كريم</span> <span class="nav-badge-new" style="font-size:0.7rem; padding: 2px 6px; background: #C59B27; color:#fff; border-radius:4px; margin-right:4px;">جديد</span></a></li>
         <li><a href="perfumes.html?cat=giftset" onclick="closeMobileNav();"><span class="nav-icon">🎁</span><span data-i18n="nav_gift_sets">أطقم هدايا</span></a></li>
         <li><a href="#track-order" onclick="openTrackOrderModal(); closeMobileNav(); return false;"><span class="nav-icon">📦</span><span data-i18n="track_order_btn">تتبع طلبك</span></a></li>
+        <li><a href="#account" onclick="openAccountModal(); closeMobileNav(); return false;"><span class="nav-icon">👤</span><span data-i18n="nav_account">حسابي / تسجيل الدخول</span></a></li>
       </ul>
 
       <div class="mobile-nav-divider"></div>
@@ -709,6 +710,20 @@
       <p class="account-form-message" id="account-form-message" role="status" aria-live="polite"></p>
 
       <form class="account-panel active" id="account-login-form" data-account-panel="login" onsubmit="handleAccountLogin(event)">
+        <!-- زر تسجيل الدخول السريع عبر جوجل (Google One-Click Authentication) -->
+        <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+          <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span data-i18n="google_auth_btn">المتابعة باستخدام Google</span>
+        </button>
+        <div class="account-auth-divider">
+          <span data-i18n="auth_divider_or">أو عبر البريد الإلكتروني</span>
+        </div>
+
         <div class="form-group">
           <label for="account-login-email" data-i18n="account_email_label">البريد الإلكتروني</label>
           <input type="email" id="account-login-email" class="form-control" required autocomplete="email" data-i18n-placeholder="account_email_placeholder" placeholder="name@example.com" dir="ltr" />
@@ -722,6 +737,20 @@
       </form>
 
       <form class="account-panel" id="account-signup-form" data-account-panel="signup" hidden onsubmit="handleAccountSignup(event)">
+        <!-- زر التسجيل السريع عبر جوجل (Google One-Click Authentication) -->
+        <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+          <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span data-i18n="google_auth_btn">المتابعة باستخدام Google</span>
+        </button>
+        <div class="account-auth-divider">
+          <span data-i18n="auth_divider_or">أو عبر البريد الإلكتروني</span>
+        </div>
+
         <div class="form-group">
           <label for="account-signup-name" data-i18n="account_name_label">الاسم الكريم</label>
           <input type="text" id="account-signup-name" class="form-control" required autocomplete="name" data-i18n-placeholder="account_name_placeholder" placeholder="مثال: محمد بن عبدالله" />

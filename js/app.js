@@ -2146,6 +2146,69 @@ async function handleAccountSignup(event) {
   showToast(t("account_signup_success_title"), t("account_signup_success_msg", { name }), "✨");
 }
 
+/**
+ * One-Tap / Popup Google Authentication Handler
+ */
+async function handleGoogleSignIn() {
+  const btns = document.querySelectorAll(".btn-google-auth");
+  btns.forEach(b => {
+    b.disabled = true;
+    b.style.opacity = "0.75";
+  });
+
+  try {
+    if (typeof firebaseAuthSignInWithGoogle !== "function") {
+      if (typeof initFirebase === "function") initFirebase();
+    }
+    if (typeof firebaseAuthSignInWithGoogle !== "function") {
+      showAccountMessage(state.language === "en" ? "Firebase Authentication service is loading..." : "جاري تحميل خدمة تسجيل الدخول...");
+      return;
+    }
+
+    const res = await firebaseAuthSignInWithGoogle();
+    if (res && res.success) {
+      if (res.isRedirecting) return;
+
+      const user = res.user;
+      const userProfile = {
+        uid: user.uid,
+        name: user.displayName || user.email.split("@")[0],
+        email: user.email,
+        photoURL: user.photoURL || null
+      };
+
+      saveAccount(userProfile);
+      try {
+        localStorage.setItem(`atyab_user_${user.email}`, JSON.stringify(userProfile));
+      } catch { }
+
+      // Load user-scoped cart
+      const userCartRaw = localStorage.getItem(`atyab_cart_${user.email}`);
+      state.cart = userCartRaw ? JSON.parse(userCartRaw) : (state.cart || []);
+      saveCart();
+      updateCartUI();
+
+      closeAccountModal();
+      showToast(
+        t("account_login_success_title") || (state.language === "en" ? "Welcome!" : "أهلاً بك"),
+        t("account_login_success_msg", { name: userProfile.name }) || `Welcome ${userProfile.name}`,
+        "👑"
+      );
+    } else if (res && res.error) {
+      showAccountMessage(res.error);
+    }
+  } catch (err) {
+    console.error("Google Sign-In Error:", err);
+    showAccountMessage(err.message || "Google Authentication failed");
+  } finally {
+    btns.forEach(b => {
+      b.disabled = false;
+      b.style.opacity = "1";
+    });
+  }
+}
+window.handleGoogleSignIn = handleGoogleSignIn;
+
 function logoutAccount() {
   state.account = null;
   localStorage.removeItem("atyab_account");

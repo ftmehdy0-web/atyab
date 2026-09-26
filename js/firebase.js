@@ -183,6 +183,18 @@ function getFirebaseErrorMessage(code, lang = "ar") {
       return isEn 
         ? "Network error. Please check your internet connection."
         : "تعذر الاتصال بالخادم. يُرجى التحقق من اتصالك بالإنترنت.";
+    case "auth/unauthorized-domain":
+      return isEn
+        ? "This domain is not authorized in Firebase Console. Please add this domain under Firebase > Authentication > Settings > Authorized domains."
+        : "هذا النطاق غير مصرح به في Firebase Console. يُرجى إضافة رابط الموقع في لوحة فايربيس (Authentication > Settings > Authorized domains).";
+    case "auth/account-exists-with-different-credential":
+      return isEn
+        ? "An account already exists with the same email address using different sign-in credentials."
+        : "يوجد حساب مسجل مسبقاً بنفس البريد الإلكتروني عبر وسيلة دخول أخرى.";
+    case "auth/cancelled-popup-request":
+      return isEn
+        ? "The sign-in popup request was cancelled."
+        : "تم إلغاء طلب تسجيل الدخول.";
     default:
       return isEn 
         ? `Authentication failed (${code || "unknown error"}).`
@@ -263,6 +275,77 @@ async function firebaseAuthSignIn(email, password) {
     };
   } catch (error) {
     console.error("Firebase Sign In Error:", error);
+    const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
+    return {
+      success: false,
+      error: getFirebaseErrorMessage(error.code, lang),
+      code: error.code
+    };
+  }
+// 5.1 Sign In With Google (تسجيل الدخول والمتابعة عبر جوجل)
+async function firebaseAuthSignInWithGoogle() {
+  if (!isFirebaseConfigured()) {
+    return { success: false, error: "Firebase is not configured." };
+  }
+
+  const auth = getFirebaseAuth();
+  if (!auth) {
+    return { success: false, error: "Firebase Auth service not ready." };
+  }
+
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope("profile");
+    provider.addScope("email");
+
+    const userCredential = await auth.signInWithPopup(provider);
+    const user = userCredential.user;
+
+    // Save profile record in Firestore
+    const db = getFirebaseDb();
+    if (db && user) {
+      db.collection("users").doc(user.uid).set({
+        name: user.displayName || user.email.split("@")[0],
+        email: user.email,
+        photoURL: user.photoURL || null,
+        provider: "google",
+        lastLoginAt: new Date().toISOString()
+      }, { merge: true }).catch(() => {});
+    }
+
+    return {
+      success: true,
+      user: {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || user.email.split("@")[0],
+        photoURL: user.photoURL || null
+      }
+    };
+  } catch (error) {
+    console.error("Firebase Google Sign-In Error:", error);
+    if (error.code === "auth/popup-closed-by-user") {
+      const isEn = (typeof state !== "undefined" && state.language === "en");
+      return { 
+        success: false, 
+        error: isEn ? "Google sign-in popup was closed before completing." : "تم إغلاق نافذة تسجيل دخول جوجل قبل الإكمال.", 
+        code: error.code 
+      };
+    }
+    if (error.code === "auth/popup-blocked") {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider);
+        return { success: true, isRedirecting: true };
+      } catch (redirErr) {
+        const isEn = (typeof state !== "undefined" && state.language === "en");
+        return { 
+          success: false, 
+          error: isEn ? "Popup blocked by browser. Please allow popups." : "تم حظر النافذة المنبثقة من قِبل المتصفح. يُرجى السماح بالنوافذ المنبثقة.", 
+          code: error.code 
+        };
+      }
+    }
     const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
     return {
       success: false,
@@ -528,6 +611,7 @@ if (typeof window !== "undefined") {
   window.getFirebaseDb = getFirebaseDb;
   window.firebaseAuthSignUp = firebaseAuthSignUp;
   window.firebaseAuthSignIn = firebaseAuthSignIn;
+  window.firebaseAuthSignInWithGoogle = firebaseAuthSignInWithGoogle;
   window.firebaseAuthSignOut = firebaseAuthSignOut;
   window.firebaseCreateOrder = firebaseCreateOrder;
   window.firebaseGetAllOrders = firebaseGetAllOrders;
