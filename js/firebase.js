@@ -6,14 +6,15 @@
  */
 
 // 1. Firebase Project Configuration
-// Either set here or configure via Admin Modal ('atyab_firebase_config' in localStorage)
+// Project: atyab-ee869 (Official ATYAB Perfumes Cloud Project)
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyC4qLDcJTPkJDYWJsSddKyLn2ZVl04fUe4",
+  authDomain: "atyab-ee869.firebaseapp.com",
+  projectId: "atyab-ee869",
+  storageBucket: "atyab-ee869.firebasestorage.app",
+  messagingSenderId: "1089523266130",
+  appId: "1:1089523266130:web:caa7a127da4428fe68a58b",
+  measurementId: "G-2DQRHH2X0R"
 };
 
 function getFirebaseConfig() {
@@ -21,7 +22,9 @@ function getFirebaseConfig() {
     const custom = localStorage.getItem("atyab_firebase_config");
     if (custom) {
       const parsed = JSON.parse(custom);
-      if (parsed.apiKey && parsed.projectId) return parsed;
+      if (parsed && parsed.apiKey && parsed.projectId && parsed.apiKey.startsWith("AIzaSy")) {
+        return parsed;
+      }
     }
   } catch {}
   return DEFAULT_FIREBASE_CONFIG;
@@ -30,6 +33,7 @@ function getFirebaseConfig() {
 function isFirebaseConfigured() {
   const cfg = getFirebaseConfig();
   return Boolean(
+    cfg &&
     cfg.apiKey &&
     cfg.apiKey.trim() !== "" &&
     cfg.apiKey !== "PASTE_YOUR_API_KEY_HERE" &&
@@ -61,8 +65,31 @@ function initFirebase() {
       firebaseAppInstance = firebase.app();
     }
     
+    if (typeof firebase.analytics === "function" && cfg.measurementId) {
+      try {
+        firebase.analytics();
+      } catch (e) {
+        console.warn("Analytics notice:", e);
+      }
+    }
+
     if (typeof firebase.auth === "function") {
       firebaseAuthInstance = firebase.auth();
+      // Listen for authenticated user state changes
+      try {
+        firebaseAuthInstance.onAuthStateChanged((user) => {
+          if (user && typeof state !== "undefined" && !state.account) {
+            const profile = {
+              uid: user.uid,
+              name: user.displayName || user.email.split("@")[0],
+              email: user.email
+            };
+            if (typeof saveAccount === "function") {
+              saveAccount(profile);
+            }
+          }
+        });
+      } catch (e) {}
     }
     
     if (typeof firebase.firestore === "function") {
@@ -492,6 +519,8 @@ function firebaseSubscribeToProducts(onUpdate) {
 
 // Global exports for browser window
 if (typeof window !== "undefined") {
+  window.DEFAULT_FIREBASE_CONFIG = DEFAULT_FIREBASE_CONFIG;
+  window.FIREBASE_CONFIG = DEFAULT_FIREBASE_CONFIG;
   window.isFirebaseConfigured = isFirebaseConfigured;
   window.getFirebaseConfig = getFirebaseConfig;
   window.initFirebase = initFirebase;

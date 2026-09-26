@@ -4,6 +4,40 @@
  * ATYAB PERFUMES - Luxury Multilingual E-Commerce Logic & State Management
  */
 
+// ===================================================================
+// FIREBASE LIVE BACKEND & AUTHENTICATION CONFIGURATION
+// Project: atyab-ee869 (Official ATYAB Perfumes Cloud Project)
+// ===================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyC4qLDcJTPkJDYWJsSddKyLn2ZVl04fUe4",
+  authDomain: "atyab-ee869.firebaseapp.com",
+  projectId: "atyab-ee869",
+  storageBucket: "atyab-ee869.firebasestorage.app",
+  messagingSenderId: "1089523266130",
+  appId: "1:1089523266130:web:caa7a127da4428fe68a58b",
+  measurementId: "G-2DQRHH2X0R"
+};
+
+if (typeof window !== "undefined") {
+  window.firebaseConfig = firebaseConfig;
+  window.FIREBASE_CONFIG = firebaseConfig;
+  // Initialize Firebase immediately if compat SDK is loaded
+  if (typeof firebase !== "undefined" && typeof firebase.initializeApp === "function") {
+    try {
+      if (!firebase.apps || firebase.apps.length === 0) {
+        window.firebaseApp = firebase.initializeApp(firebaseConfig);
+      } else {
+        window.firebaseApp = firebase.app();
+      }
+      if (typeof firebase.analytics === "function") {
+        window.firebaseAnalytics = firebase.analytics();
+      }
+    } catch (e) {
+      console.warn("Direct Firebase app initialization notice:", e);
+    }
+  }
+}
+
 // دوال التخزين المحلي الآمنة لتفادي أخطاء الحماية في المتصفحات (SAFE STORAGE HELPERS)
 function safeGetStorage(key, fallback = null) {
   try {
@@ -952,6 +986,7 @@ function setCurrency(curr) {
 // تهيئة المتجر عند تحميل الصفحة (DOM INITIALIZATION)
 // ===================================================================
 function initApp() {
+  try { if (typeof initFirebase === "function") initFirebase(); } catch (e) { console.warn("initFirebase error:", e); }
   try { initHeader(); } catch (e) { console.warn("initHeader error:", e); }
   try { initHeroSlider(); } catch (e) { console.warn("initHeroSlider error:", e); }
   try { switchLanguage(state.language, false, false); } catch (e) { console.warn("switchLanguage error:", e); }
@@ -1285,7 +1320,6 @@ function renderCreamsSpotlight() {
   const container = document.getElementById("creams-spotlight-items");
   if (!container) return;
 
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
   const allProds = typeof getUnifiedProductsCatalog === "function"
     ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
@@ -1339,7 +1373,6 @@ function renderProducts() {
   const grid = document.getElementById("products-grid");
   if (!grid) return;
 
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
   const allProds = typeof getUnifiedProductsCatalog === "function"
     ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
@@ -2119,6 +2152,10 @@ function logoutAccount() {
   localStorage.removeItem("aytyab_account");
   localStorage.removeItem("atyab_admin_session");
   sessionStorage.removeItem("atyab_admin_session");
+
+  if (typeof firebaseAuthSignOut === "function") {
+    firebaseAuthSignOut().catch(() => { });
+  }
 
   // As requested: "jaise hi logged out ho waise hi site normal ho jae without uska data"
   // Completely reset cart and session data to clean guest mode

@@ -844,14 +844,19 @@ function handleReviewSubmit(e) {
 }
 
 // Live catalog sync listener
-window.addEventListener("atyab_products_updated", () => {
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  if (typeof initProductPage === "function") initProductPage();
-});
+let pdpSyncDebounceTimer = null;
+function handlePdpLiveSync() {
+  if (pdpSyncDebounceTimer) clearTimeout(pdpSyncDebounceTimer);
+  pdpSyncDebounceTimer = setTimeout(() => {
+    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+    if (typeof initProductPage === "function") initProductPage();
+  }, 60);
+}
+
+window.addEventListener("atyab_products_updated", handlePdpLiveSync);
 
 window.addEventListener("storage", (e) => {
   if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
-    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-    if (typeof initProductPage === "function") initProductPage();
+    handlePdpLiveSync();
   }
 });

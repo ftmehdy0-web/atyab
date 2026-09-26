@@ -581,16 +581,20 @@ window.sortCategoryProducts = sortCategoryProducts;
 window.setCategoryGridLayout = setCategoryGridLayout;
 
 // Instant live sync when products are added, edited, or removed from admin panel
-window.addEventListener("atyab_products_updated", () => {
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  if (typeof updateCategoryPageHeader === "function") updateCategoryPageHeader();
-  if (typeof renderCategoryProducts === "function") renderCategoryProducts();
-});
-
-window.addEventListener("storage", (e) => {
-  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+let catSyncDebounceTimer = null;
+function handleCategoryLiveSync() {
+  if (catSyncDebounceTimer) clearTimeout(catSyncDebounceTimer);
+  catSyncDebounceTimer = setTimeout(() => {
     if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
     if (typeof updateCategoryPageHeader === "function") updateCategoryPageHeader();
     if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+  }, 60);
+}
+
+window.addEventListener("atyab_products_updated", handleCategoryLiveSync);
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+    handleCategoryLiveSync();
   }
 });
