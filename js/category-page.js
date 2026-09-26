@@ -54,6 +54,8 @@ function switchCategoryTab(cat) {
   url.searchParams.set("cat", cat);
   if (typeof state !== "undefined" && state.language === "en") {
     url.searchParams.set("lang", "en");
+  } else {
+    url.searchParams.delete("lang");
   }
   window.history.pushState({ cat }, "", url);
 
@@ -569,7 +571,6 @@ function setCategoryGridLayout(layout) {
   }
 }
 
-// Global expose
 window.initCategoryPage = initCategoryPage;
 window.renderCategoryProducts = renderCategoryProducts;
 window.updateCategoryPageHeader = updateCategoryPageHeader;
@@ -578,3 +579,18 @@ window.handleCardDirectAddToCart = handleCardDirectAddToCart;
 window.filterCategoryByTag = filterCategoryByTag;
 window.sortCategoryProducts = sortCategoryProducts;
 window.setCategoryGridLayout = setCategoryGridLayout;
+
+// Instant live sync when products are added, edited, or removed from admin panel
+window.addEventListener("atyab_products_updated", () => {
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  if (typeof updateCategoryPageHeader === "function") updateCategoryPageHeader();
+  if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+    if (typeof updateCategoryPageHeader === "function") updateCategoryPageHeader();
+    if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+  }
+});

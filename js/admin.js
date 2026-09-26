@@ -10,29 +10,61 @@
 // If not authenticated via the website sign-in modal, redirect to home.
 // ===================================================================
 const REQUIRED_EMAIL = "admin@gmail.com";
+const REQUIRED_PASS = "123456";
 
 function verifyAdminSession() {
   const sessionRaw = localStorage.getItem("atyab_admin_session") || sessionStorage.getItem("atyab_admin_session");
   if (!sessionRaw) {
-    window.location.replace("index.html");
+    showAdminLoginGate();
     return false;
   }
   try {
     const session = JSON.parse(sessionRaw);
     if (!session || !session.email || session.email.toLowerCase() !== REQUIRED_EMAIL) {
-      window.location.replace("index.html");
+      showAdminLoginGate();
       return false;
     }
     return true;
   } catch (e) {
-    window.location.replace("index.html");
+    showAdminLoginGate();
     return false;
   }
 }
 
-// Immediate verification on script parse
-if (!verifyAdminSession()) {
-  throw new Error("Access Denied: Admin session required.");
+function showAdminLoginGate() {
+  const gate = document.getElementById("admin-login-gate");
+  if (gate) {
+    gate.style.display = "flex";
+  }
+}
+
+function handleAdminGateLogin(e) {
+  if (e) e.preventDefault();
+  const emailInput = document.getElementById("gate-email");
+  const passInput = document.getElementById("gate-password");
+  const errEl = document.getElementById("gate-error-msg");
+
+  const email = emailInput?.value?.trim().toLowerCase() || "";
+  const pass = passInput?.value?.trim() || "";
+
+  if (email === REQUIRED_EMAIL && pass === REQUIRED_PASS) {
+    const adminSession = {
+      email: REQUIRED_EMAIL,
+      role: "super_admin",
+      loggedInAt: new Date().toISOString()
+    };
+    localStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+    sessionStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+    const gate = document.getElementById("admin-login-gate");
+    if (gate) gate.style.display = "none";
+    initDashboard();
+    showToast("Access Granted", "Welcome to ATYAB Executive Hub.");
+  } else {
+    if (errEl) {
+      errEl.textContent = "Invalid passcode. Please enter 123456.";
+      errEl.style.display = "block";
+    }
+  }
 }
 
 // Known legacy demo order IDs to purge from previous sessions
@@ -45,7 +77,7 @@ const LEGACY_FAKE_ORDER_IDS = [
   "ATY-KSA-402918"
 ];
 
-// Admin Application State (Starts clean, 0 fake orders)
+// Admin Application State
 const adminState = {
   orders: [],
   currentFilter: "all",
@@ -60,12 +92,12 @@ const adminState = {
   productSearch: "",
   productSort: "newest",
   productViewMode: "table",
-  currentUploadedImageDataUrl: null,
-  currentUploadedFileName: "",
-  currentUploadedFileSizeKB: 0,
+  productImages: [], // array of { src, name, sizeKB } up to 5 photos
   editingProductId: null,
   deletingProductId: null
 };
+
+window.adminState = adminState;
 
 // ===================================================================
 // 2. STORAGE & REAL-TIME SYNCHRONIZATION
@@ -1568,21 +1600,44 @@ function switchAdminView(viewName) {
   adminState.activeView = viewName;
   const ordersTab = document.getElementById("tab-btn-orders");
   const productsTab = document.getElementById("tab-btn-products");
+  const headerBtn = document.getElementById("btn-header-manage-products");
   const ordersPane = document.getElementById("admin-view-orders");
   const productsPane = document.getElementById("admin-view-products");
 
   if (viewName === "products") {
     if (ordersTab) ordersTab.classList.remove("active");
     if (productsTab) productsTab.classList.add("active");
-    if (ordersPane) ordersPane.style.display = "none";
-    if (productsPane) productsPane.style.display = "block";
+    if (headerBtn) headerBtn.classList.add("active");
+    if (ordersPane) {
+      ordersPane.classList.remove("active");
+      ordersPane.style.display = "none";
+    }
+    if (productsPane) {
+      productsPane.classList.add("active");
+      productsPane.style.display = "block";
+    }
     renderProductsManagement();
+    try { window.location.hash = "products"; } catch(e) {}
+    
+    // Smooth scroll to catalog
+    const banner = document.querySelector(".products-catalog-banner");
+    if (banner) {
+      banner.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   } else {
     if (productsTab) productsTab.classList.remove("active");
+    if (headerBtn) headerBtn.classList.remove("active");
     if (ordersTab) ordersTab.classList.add("active");
-    if (productsPane) productsPane.style.display = "none";
-    if (ordersPane) ordersPane.style.display = "block";
+    if (productsPane) {
+      productsPane.classList.remove("active");
+      productsPane.style.display = "none";
+    }
+    if (ordersPane) {
+      ordersPane.classList.add("active");
+      ordersPane.style.display = "block";
+    }
     renderDashboard();
+    try { window.location.hash = "orders"; } catch(e) {}
   }
 }
 
@@ -1634,7 +1689,7 @@ function initProductManagement() {
       e.stopPropagation();
       dropzone.classList.remove("dragover");
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        processProductImageFile(e.dataTransfer.files[0]);
+        handleProductFilesInputChange(e.dataTransfer.files);
       }
     });
   }
@@ -1940,109 +1995,176 @@ function refreshProductsManagementUI() {
 }
 
 /**
- * Image Upload & Compression Handlers
+ * ===================================================================
+ * 5-IMAGE MULTI-PHOTO UPLOAD & GALLERY MANAGEMENT SYSTEM
+ * ===================================================================
  */
 function triggerProductFileInput() {
   const fileInput = document.getElementById("prod-file-input");
   if (fileInput) fileInput.click();
 }
 
-function handleProductFileInputChange(files) {
+function handleProductFilesInputChange(files) {
   if (!files || files.length === 0) return;
-  processProductImageFile(files[0]);
-}
+  const fileList = Array.from(files);
+  const currentCount = adminState.productImages.length;
+  const remainingSlots = 5 - currentCount;
 
-function processProductImageFile(file) {
-  if (!file || !file.type.startsWith("image/")) {
-    showToast("Invalid File", "Please select a valid image file (PNG, JPG, WebP).");
+  if (remainingSlots <= 0) {
+    showToast("Limit Reached", "Maximum 5 product photos allowed. Remove one to add another.");
     return;
   }
 
-  showToast("Optimizing Image...", "Compressing product image from PC for instant storefront loading.");
+  const toProcess = fileList.slice(0, remainingSlots);
+  showToast("Optimizing Images...", `Processing ${toProcess.length} photo(s) for fast loading.`);
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      const maxDim = 1000;
-      let width = img.width;
-      let height = img.height;
+  let processedCount = 0;
+  toProcess.forEach((file) => {
+    if (!file || !file.type.startsWith("image/")) {
+      processedCount++;
+      return;
+    }
 
-      if (width > maxDim || height > maxDim) {
-        if (width > height) {
-          height = Math.round((height * maxDim) / width);
-          width = maxDim;
-        } else {
-          width = Math.round((width * maxDim) / height);
-          height = maxDim;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 900;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
         }
-      }
 
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(img, 0, 0, width, height);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, width, height);
 
-      let dataUrl = "";
-      try {
-        dataUrl = canvas.toDataURL("image/webp", 0.85);
-      } catch {
-        dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-      }
+        let dataUrl = "";
+        try {
+          dataUrl = canvas.toDataURL("image/webp", 0.82);
+        } catch {
+          dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        }
 
-      const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+        const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
 
-      adminState.currentUploadedImageDataUrl = dataUrl;
-      adminState.currentUploadedFileName = file.name;
-      adminState.currentUploadedFileSizeKB = sizeKB;
+        if (adminState.productImages.length < 5) {
+          adminState.productImages.push({
+            src: dataUrl,
+            name: file.name,
+            sizeKB
+          });
+        }
 
-      // Update dropzone UI
-      const emptyState = document.getElementById("dropzone-empty-state");
-      const previewBox = document.getElementById("dropzone-preview-box");
-      const previewImg = document.getElementById("dropzone-preview-img");
-      const fileNameEl = document.getElementById("dropzone-file-name");
-      const fileSizeEl = document.getElementById("dropzone-file-size");
-      const urlInput = document.getElementById("prod-form-image-url");
-
-      if (emptyState) emptyState.style.display = "none";
-      if (previewBox) previewBox.style.display = "flex";
-      if (previewImg) previewImg.src = dataUrl;
-      if (fileNameEl) fileNameEl.textContent = file.name;
-      if (fileSizeEl) fileSizeEl.textContent = `${sizeKB} KB (Optimized)`;
-      if (urlInput) urlInput.value = "";
-
-      updateLivePreview();
-      showToast("Image Ready!", `Optimized to ${sizeKB} KB. Ready to publish.`);
+        processedCount++;
+        if (processedCount === toProcess.length) {
+          renderImageSlots();
+          updateLivePreview();
+          showToast("Photos Added!", `${adminState.productImages.length} of 5 photos ready.`);
+        }
+      };
+      img.src = e.target.result;
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  });
 }
 
-function removeProductUploadedImage() {
-  adminState.currentUploadedImageDataUrl = null;
-  adminState.currentUploadedFileName = "";
-  adminState.currentUploadedFileSizeKB = 0;
+function renderImageSlots() {
+  const container = document.getElementById("product-image-slots-grid");
+  const badge = document.getElementById("prod-images-count-badge");
+  const emptyDropzoneState = document.getElementById("dropzone-empty-state");
 
-  const emptyState = document.getElementById("dropzone-empty-state");
-  const previewBox = document.getElementById("dropzone-preview-box");
-  const fileInput = document.getElementById("prod-file-input");
-
-  if (emptyState) emptyState.style.display = "flex";
-  if (previewBox) previewBox.style.display = "none";
-  if (fileInput) fileInput.value = "";
-
-  updateLivePreview();
-}
-
-function handleImageUrlInput(url) {
-  if (url && url.trim()) {
-    adminState.currentUploadedImageDataUrl = url.trim();
-    updateLivePreview();
+  const count = adminState.productImages.length;
+  if (badge) {
+    badge.textContent = `${count} / 5 Photos`;
   }
+
+  if (emptyDropzoneState) {
+    emptyDropzoneState.style.display = count >= 5 ? "none" : "flex";
+  }
+
+  if (!container) return;
+
+  let slotsHtml = "";
+  for (let i = 0; i < 5; i++) {
+    const item = adminState.productImages[i];
+    if (item) {
+      const isCover = (i === 0);
+      slotsHtml += `
+        <div class="image-slot-item has-image ${isCover ? 'is-cover' : ''}" title="${isCover ? 'Main Cover Photo' : `Angle Photo ${i + 1}`}">
+          ${isCover ? '<span class="slot-cover-tag">👑 Cover</span>' : `<span class="slot-number-tag">#${i + 1}</span>`}
+          <img src="${item.src}" alt="Photo ${i + 1}" class="slot-img-preview" />
+          <div class="slot-hover-overlay" onclick="event.stopPropagation()">
+            ${!isCover ? `<button type="button" class="btn-slot-ctrl" onclick="setSlotAsCover(${i})">👑 Make Cover</button>` : ''}
+            <button type="button" class="btn-slot-ctrl btn-slot-delete" onclick="removeSlotImage(${i})">🗑️ Remove</button>
+          </div>
+        </div>
+      `;
+    } else {
+      slotsHtml += `
+        <div class="image-slot-item is-empty" onclick="triggerProductFileInput()" title="Add Photo ${i + 1} (PNG, JPG, WebP)">
+          <div class="slot-empty-content">
+            <span class="slot-empty-icon">+</span>
+            <span>Slot ${i + 1}</span>
+            <span style="font-size: 0.6rem; color: var(--gold-pale);">${i === 0 ? '(Cover)' : '(Angle)'}</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  container.innerHTML = slotsHtml;
+}
+
+function setSlotAsCover(index) {
+  if (index <= 0 || index >= adminState.productImages.length) return;
+  const chosen = adminState.productImages.splice(index, 1)[0];
+  adminState.productImages.unshift(chosen);
+  renderImageSlots();
+  updateLivePreview();
+  showToast("Cover Updated", "Primary display photo set.");
+}
+
+function removeSlotImage(index) {
+  if (index < 0 || index >= adminState.productImages.length) return;
+  adminState.productImages.splice(index, 1);
+  renderImageSlots();
+  updateLivePreview();
+  showToast("Photo Removed", "Photo removed from gallery.");
+}
+
+function addUploadedImageUrl() {
+  const input = document.getElementById("prod-form-image-url");
+  const url = input?.value?.trim();
+  if (!url) {
+    showToast("URL Required", "Please enter an image path or web URL.");
+    return;
+  }
+  if (adminState.productImages.length >= 5) {
+    showToast("Limit Reached", "Maximum 5 photos allowed. Remove a photo first.");
+    return;
+  }
+  adminState.productImages.push({
+    src: url,
+    name: url.split("/").pop() || "Web Image",
+    sizeKB: 0
+  });
+  input.value = "";
+  renderImageSlots();
+  updateLivePreview();
+  showToast("Photo Added", "Image added from URL.");
 }
 
 function handleCategorySelectChange(cat) {
@@ -2079,12 +2201,14 @@ function updateLivePreview() {
   }
 
   if (cardImg) {
-    if (adminState.currentUploadedImageDataUrl) {
-      cardImg.src = adminState.currentUploadedImageDataUrl;
+    if (adminState.productImages.length > 0 && adminState.productImages[0].src) {
+      cardImg.src = adminState.productImages[0].src;
     } else {
       const category = document.getElementById("prod-form-category")?.value || "perfumes";
-      if (category === "bakhoor") cardImg.src = "assets/images/backhoor.jpg";
+      if (category === "bakhoor" || category === "dakhoon") cardImg.src = "assets/images/backhoor.jpg";
       else if (category === "oil") cardImg.src = "assets/images/angles/tiger_oud_cap.jpg";
+      else if (category === "cream") cardImg.src = "assets/images/cream_oud_roses.jpg";
+      else if (category === "giftset") cardImg.src = "assets/images/gift_set.jpg";
       else cardImg.src = "assets/images/tiger_oud.jpg";
     }
   }
@@ -2127,25 +2251,21 @@ function openProductEditorModal(productId = null) {
     document.getElementById("prod-form-desc-ar").value = prod.description || "";
     document.getElementById("prod-form-desc-en").value = prod.descriptionEn || "";
 
-    adminState.currentUploadedImageDataUrl = prod.image || null;
-    const urlInput = document.getElementById("prod-form-image-url");
-    if (urlInput) urlInput.value = prod.image && !prod.image.startsWith("data:") ? prod.image : "";
-
-    const emptyState = document.getElementById("dropzone-empty-state");
-    const previewBox = document.getElementById("dropzone-preview-box");
-    const previewImg = document.getElementById("dropzone-preview-img");
-    const fileNameEl = document.getElementById("dropzone-file-name");
-    const fileSizeEl = document.getElementById("dropzone-file-size");
-
-    if (prod.image) {
-      if (emptyState) emptyState.style.display = "none";
-      if (previewBox) previewBox.style.display = "flex";
-      if (previewImg) previewImg.src = prod.image;
-      if (fileNameEl) fileNameEl.textContent = prod.image.startsWith("data:") ? "Current Product Image" : prod.image.split("/").pop();
-      if (fileSizeEl) fileSizeEl.textContent = "Saved";
+    // Load existing images (up to 5) into slots
+    if (Array.isArray(prod.gallery) && prod.gallery.length > 0) {
+      adminState.productImages = prod.gallery.slice(0, 5).map((g, idx) => ({
+        src: g.src || g,
+        name: g.titleEn || (idx === 0 ? "Cover Photo" : `Angle Photo ${idx + 1}`),
+        sizeKB: 0
+      }));
+    } else if (prod.image) {
+      adminState.productImages = [{
+        src: prod.image,
+        name: "Cover Photo",
+        sizeKB: 0
+      }];
     } else {
-      if (emptyState) emptyState.style.display = "flex";
-      if (previewBox) previewBox.style.display = "none";
+      adminState.productImages = [];
     }
   } else {
     // Add new product
@@ -2155,7 +2275,6 @@ function openProductEditorModal(productId = null) {
     document.getElementById("prod-edit-id").value = "";
     document.getElementById("product-editor-form").reset();
 
-    // Default to active category filter if specified
     if (adminState.productCategory && adminState.productCategory !== "all") {
       document.getElementById("prod-form-category").value = adminState.productCategory;
     } else {
@@ -2169,9 +2288,10 @@ function openProductEditorModal(productId = null) {
     document.getElementById("prod-form-concentration").value = "أو دو بارفان رويال (ثبات عالي)";
     document.getElementById("prod-form-longevity").value = "18+ ساعة (فوحان ملكي)";
 
-    removeProductUploadedImage();
+    adminState.productImages = [];
   }
 
+  renderImageSlots();
   updateLivePreview();
   modal.classList.add("active");
   modal.style.display = "flex";
@@ -2215,12 +2335,36 @@ async function handleProductEditorSubmit(e) {
   const descAr = document.getElementById("prod-form-desc-ar")?.value.trim() || `صُمم هذا الابتكار العطري الفاخر ليعكس عراقة التراث وجمال التوليفات الملكية المترفة. يدوم طويلاً بفوحان آسر يفرض حضوره في أرقى الأمسيات.`;
   const descEn = document.getElementById("prod-form-desc-en")?.value.trim() || `Handcrafted with meticulous dedication to haute perfumery. Marrying noble orientals to bestow a commanding presence at grand receptions.`;
 
-  // Image resolution
-  let image = adminState.currentUploadedImageDataUrl || document.getElementById("prod-form-image-url")?.value.trim();
-  if (!image) {
-    if (category === "bakhoor") image = "assets/images/backhoor.jpg";
-    else if (category === "oil") image = "assets/images/angles/tiger_oud_cap.jpg";
-    else image = "assets/images/tiger_oud.jpg";
+  // Image & Gallery resolution (up to 5 images)
+  const categoryFallbackMap = {
+    bakhoor: "assets/images/backhoor.jpg",
+    dakhoon: "assets/images/dakhoon.jpg",
+    oil: "assets/images/angles/tiger_oud_cap.jpg",
+    cream: "assets/images/cream_oud_roses.jpg",
+    giftset: "assets/images/gift_set.jpg"
+  };
+  const fallbackImg = categoryFallbackMap[category] || "assets/images/tiger_oud.jpg";
+
+  const primaryImage = (adminState.productImages.length > 0 && adminState.productImages[0].src)
+    ? adminState.productImages[0].src
+    : fallbackImg;
+
+  const gallery = adminState.productImages.map((img, idx) => ({
+    src: img.src,
+    titleAr: idx === 0 ? "الواجهة الرئيسية للزجاجة" : `لقطة زاوية ${idx + 1}`,
+    titleEn: idx === 0 ? "Official Bottle Front View" : `Product Angle ${idx + 1}`,
+    badgeAr: idx === 0 ? "الأصلية 100%" : "تفاصيل ملكية",
+    badgeEn: idx === 0 ? "100% Authentic" : "Royal Details"
+  }));
+
+  if (gallery.length === 0) {
+    gallery.push({
+      src: primaryImage,
+      titleAr: "الواجهة الرئيسية للزجاجة",
+      titleEn: "Official Bottle Front View",
+      badgeAr: "الأصلية 100%",
+      badgeEn: "100% Authentic"
+    });
   }
 
   // Generate unique slug & id
@@ -2250,16 +2394,8 @@ async function handleProductEditorSubmit(e) {
     badge: badge === "none" ? "" : badge,
     badgeEn: badge === "none" ? "" : badge,
     badgeType: "royal",
-    image,
-    gallery: [
-      {
-        src: image,
-        titleAr: "الواجهة الرسمية للزجاجة",
-        titleEn: "Official Bottle Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
-      }
-    ],
+    image: primaryImage,
+    gallery,
     sizes: [size],
     sizesEn: [size],
     defaultSize: size,
@@ -2327,7 +2463,7 @@ async function handleProductEditorSubmit(e) {
 
   showToast(
     editId ? "Product Updated!" : "Product Published Live!",
-    `"${nameEn}" is now live in "${category}" on the customer storefront.`
+    `"${nameEn}" is now live with ${gallery.length} photo(s) on the customer storefront.`
   );
 }
 
@@ -2429,10 +2565,11 @@ window.handleProductSort = handleProductSort;
 window.setProductViewMode = setProductViewMode;
 window.refreshProductsManagementUI = refreshProductsManagementUI;
 window.triggerProductFileInput = triggerProductFileInput;
-window.handleProductFileInputChange = handleProductFileInputChange;
-window.processProductImageFile = processProductImageFile;
-window.removeProductUploadedImage = removeProductUploadedImage;
-window.handleImageUrlInput = handleImageUrlInput;
+window.handleProductFilesInputChange = handleProductFilesInputChange;
+window.renderImageSlots = renderImageSlots;
+window.setSlotAsCover = setSlotAsCover;
+window.removeSlotImage = removeSlotImage;
+window.addUploadedImageUrl = addUploadedImageUrl;
 window.handleCategorySelectChange = handleCategorySelectChange;
 window.updateLivePreview = updateLivePreview;
 window.openProductEditorModal = openProductEditorModal;
@@ -2443,6 +2580,7 @@ window.closeDeleteProductModal = closeDeleteProductModal;
 window.executeDeleteProduct = executeDeleteProduct;
 window.handleRestoreDefaultCatalog = handleRestoreDefaultCatalog;
 window.viewProductInStore = viewProductInStore;
+window.handleAdminGateLogin = handleAdminGateLogin;
 
 // Bootstrap dashboard on DOM ready
 document.addEventListener("DOMContentLoaded", () => {

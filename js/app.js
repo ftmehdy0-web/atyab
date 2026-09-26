@@ -4,10 +4,70 @@
  * ATYAB PERFUMES - Luxury Multilingual E-Commerce Logic & State Management
  */
 
-// حالة التطبيق (Application State)
-const urlParams = new URLSearchParams(window.location.search);
-const paramLang = urlParams.get("lang");
-const initialLang = (paramLang === "ar" || paramLang === "en") ? paramLang : (localStorage.getItem("atyab_language") || localStorage.getItem("aytyab_language") || "ar");
+// دوال التخزين المحلي الآمنة لتفادي أخطاء الحماية في المتصفحات (SAFE STORAGE HELPERS)
+function safeGetStorage(key, fallback = null) {
+  try {
+    const val = localStorage.getItem(key);
+    return val !== null && val !== undefined ? val : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeSetStorage(key, val) {
+  try {
+    localStorage.setItem(key, val);
+  } catch (e) {}
+}
+
+function safeRemoveStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {}
+}
+
+// دالة الكشف المتقدم عن اللغة المختارة من رابط المتصفح أو التفضيل المخزن
+function detectInitialLanguage() {
+  try {
+    let rawLang = null;
+    // 1. فحص وسيط الاستعلام في الرابط (Search Query Parameters)
+    if (window.location.search) {
+      const sp = new URLSearchParams(window.location.search);
+      rawLang = sp.get("lang");
+    }
+    // 2. فحص الوسم أو المعامل بعد الهاش (Hash Query Parameters)
+    if (!rawLang && window.location.hash) {
+      const hashMatch = window.location.hash.match(/[?&#]lang=([a-zA-Z-]+)/i);
+      if (hashMatch) rawLang = hashMatch[1];
+    }
+    // 3. المعايرة والتحقق من القيمة
+    if (rawLang) {
+      const clean = rawLang.trim().toLowerCase();
+      if (clean.startsWith("en")) {
+        safeSetStorage("atyab_language", "en");
+        safeSetStorage("aytyab_language", "en");
+        return "en";
+      }
+      if (clean.startsWith("ar")) {
+        safeSetStorage("atyab_language", "ar");
+        safeSetStorage("aytyab_language", "ar");
+        return "ar";
+      }
+    }
+    // 4. استرجاع التفضيل السابق من التخزين المحلي
+    const stored = safeGetStorage("atyab_language") || safeGetStorage("aytyab_language");
+    if (stored) {
+      const cleanStored = stored.trim().toLowerCase();
+      if (cleanStored.startsWith("en")) return "en";
+      if (cleanStored.startsWith("ar")) return "ar";
+    }
+  } catch (e) {
+    console.warn("Language detection fallback:", e);
+  }
+  return "ar";
+}
+
+const initialLang = detectInitialLanguage();
 
 // The storefront is static, so this is a local profile only—not production authentication.
 // Passwords are deliberately never written to localStorage.
@@ -107,7 +167,7 @@ function toggleHdrCountry(event) {
 
 function selectHdrCountry(countryCode, currency) {
   state.country = countryCode;
-  localStorage.setItem("atyab_country", countryCode);
+  safeSetStorage("atyab_country", countryCode);
 
   const currentLabel = document.getElementById("hdr-country-current");
   if (currentLabel) currentLabel.textContent = countryCode;
@@ -119,13 +179,8 @@ function selectHdrCountry(countryCode, currency) {
   const dropdown = document.getElementById("hdr-country-dropdown");
   dropdown?.classList.remove("open");
 
-  if (currency && state.currency !== currency) {
-    state.currency = currency;
-    localStorage.setItem("atyab_currency", currency);
-    renderProducts();
-    renderShowcase();
-    updateCartUI();
-    showToast(state.language === "ar" ? `تم تحديث الدولة إلى ${countryCode}` : `Region set to ${countryCode}`);
+  if (currency) {
+    setCurrency(currency);
   }
 }
 
@@ -487,7 +542,7 @@ function renderTrackOrderResult(trackingNum) {
         </div>
         ${order.items.map(item => `
           <div class="track-order-item-chip">
-            <img src="${item.image || 'assets/images/mashair.jpg'}" alt="" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px;" />
+            <img src="${item.image || 'assets/images/mashair.jpg'}" alt="${isEn ? (item.nameEn || item.name || 'Atyab Perfume') : (item.name || 'عطر أطياب')}" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px;" />
             <div style="flex: 1; font-size: 0.82rem;">
               <strong style="display: block;">${isEn ? (item.nameEn || item.name) : item.name}</strong>
               <span style="color: var(--text-muted); font-size: 0.76rem;">${item.size || "100ml"} × ${item.quantity}</span>
@@ -571,28 +626,97 @@ function closeStoreLocatorModal() {
   }
 }
 
+function openShippingModal() {
+  const modal = document.getElementById("shipping-policy-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeShippingModal() {
+  const modal = document.getElementById("shipping-policy-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+}
+
+function openReturnsModal() {
+  const modal = document.getElementById("returns-policy-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeReturnsModal() {
+  const modal = document.getElementById("returns-policy-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+}
+
+function openAboutModal() {
+  const modal = document.getElementById("about-us-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeAboutModal() {
+  const modal = document.getElementById("about-us-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+}
+
 function toggleLangDropdown(event) {
   if (event) event.stopPropagation();
   const dropdown = document.getElementById("lang-selector-dropdown");
   dropdown?.classList.toggle("open");
 }
 
-function switchLanguage(lang, notify = true) {
-  if (lang !== "ar" && lang !== "en") lang = "ar";
+function switchLanguage(lang, notify = true, updateUrl = true) {
+  if (typeof lang !== "string" || !lang.trim().toLowerCase().startsWith("en")) {
+    lang = "ar";
+  } else {
+    lang = "en";
+  }
   state.language = lang;
-  localStorage.setItem("atyab_language", lang);
-  localStorage.setItem("aytyab_language", lang);
+  safeSetStorage("atyab_language", lang);
+  safeSetStorage("aytyab_language", lang);
+
+  // تحديث رابط المتصفح ليعكس لغة العرض دون إعادة تحميل الصفحة
+  if (updateUrl && window.history && window.history.replaceState) {
+    try {
+      const currentUrl = new URL(window.location.href);
+      if (lang === "en") {
+        currentUrl.searchParams.set("lang", "en");
+      } else {
+        currentUrl.searchParams.delete("lang");
+      }
+      window.history.replaceState(window.history.state, "", currentUrl.toString());
+    } catch (e) { }
+  }
 
   // تحديث سمات HTML والاتجاه (RTL / LTR)
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   document.documentElement.classList.toggle("lang-en", lang === "en");
   document.documentElement.classList.toggle("lang-ar", lang === "ar");
-  document.body.classList.toggle("lang-en", lang === "en");
-  document.body.classList.toggle("lang-ar", lang === "ar");
+  if (document.body) {
+    document.body.classList.toggle("lang-en", lang === "en");
+    document.body.classList.toggle("lang-ar", lang === "ar");
+  }
 
   // مزامنة الروابط الداخلية لتحمل اللغة النشطة تلقائياً
-  syncNavLinksLanguage(lang);
+  try {
+    syncNavLinksLanguage(lang);
+  } catch (e) { }
 
   // إغلاق القوائم المنسدلة
   document.getElementById("lang-selector-dropdown")?.classList.remove("open");
@@ -685,7 +809,7 @@ function switchLanguage(lang, notify = true) {
 
   // تحديث خيارات محدد العملة
   const currSelect = document.getElementById("currency-select");
-  if (currSelect) {
+  if (currSelect && currSelect.options && currSelect.options.length >= 3) {
     currSelect.options[0].text = lang === "en" ? "Saudi Riyal (SAR)" : "ريال سعودي (ر.س)";
     currSelect.options[1].text = lang === "en" ? "UAE Dirham (AED)" : "درهم إماراتي (د.إ)";
     currSelect.options[2].text = lang === "en" ? "US Dollar ($)" : "دولار أمريكي ($)";
@@ -698,36 +822,38 @@ function switchLanguage(lang, notify = true) {
   if (bakhoorOldPrice) bakhoorOldPrice.textContent = formatPrice(50);
 
   // تحديث صندوق تتبع الشحنة المباشر
-  renderTrackOrderResult(state.lastTrackedNumber || "SMSA-KSA-994821");
+  try {
+    renderTrackOrderResult(state.lastTrackedNumber || "SMSA-KSA-994821");
+  } catch (e) { }
 
-  // إعادة تصيير الأقسام الديناميكية
-  renderProducts();
-  renderShowcase();
-  renderCreamsSpotlight();
-  updateCartUI();
-  updateWishlistBadge();
-  updateAccountUI();
+  // إعادة تصيير الأقسام الديناميكية مع حماية مستقلة لكل قسم
+  try { renderProducts(); } catch (e) { }
+  try { renderShowcase(); } catch (e) { }
+  try { renderCreamsSpotlight(); } catch (e) { }
+  try { updateCartUI(); } catch (e) { }
+  try { updateWishlistBadge(); } catch (e) { }
+  try { updateAccountUI(); } catch (e) { }
 
   if (document.getElementById("scent-quiz-modal")?.classList.contains("active")) {
-    renderQuizStep();
+    try { renderQuizStep(); } catch (e) { }
   }
 
   if (document.getElementById("checkout-modal")?.classList.contains("active")) {
-    openCheckoutModal();
+    try { openCheckoutModal(); } catch (e) { }
   }
 
   // إذا كنا في صفحة المنتج المستقلة، أعد تصييرها أيضاً
   if (typeof renderProductPage === "function") {
-    renderProductPage();
+    try { renderProductPage(); } catch (e) { }
   }
   if (typeof renderCategoryProducts === "function") {
-    renderCategoryProducts();
+    try { renderCategoryProducts(); } catch (e) { }
   }
   if (typeof updateCategoryPageHeader === "function") {
-    updateCategoryPageHeader();
+    try { updateCategoryPageHeader(); } catch (e) { }
   }
   if (typeof updatePageSEO === "function") {
-    updatePageSEO();
+    try { updatePageSEO(); } catch (e) { }
   }
 
   if (notify) {
@@ -740,14 +866,14 @@ function switchLanguage(lang, notify = true) {
  */
 function syncNavLinksLanguage(lang) {
   document.querySelectorAll("a[href]").forEach((a) => {
-    const href = a.getAttribute("href");
-    if (!href || href.startsWith("#") || href.startsWith("javascript") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("https://wa.me") || href.startsWith("http")) return;
+    const rawHref = a.getAttribute("href");
+    if (!rawHref || rawHref.startsWith("#") || rawHref.startsWith("javascript") || rawHref.startsWith("mailto:") || rawHref.startsWith("tel:") || rawHref.startsWith("https://wa.me") || rawHref.startsWith("http://") || rawHref.startsWith("https://")) return;
 
-    if (href.endsWith(".html") || href.includes(".html?")) {
+    if (rawHref.includes(".html") || rawHref === "/" || rawHref.startsWith("./")) {
       try {
-        const parts = href.split("?");
-        const base = parts[0];
-        const search = parts[1] || "";
+        // فصل الهاش أولاً حتى لا يتم خلطه مع معايير الاستعلام (e.g. index.html#scent-quiz)
+        const [pathAndSearch, hash] = rawHref.split("#");
+        const [basePath, search = ""] = pathAndSearch.split("?");
         const sp = new URLSearchParams(search);
         if (lang === "en") {
           sp.set("lang", "en");
@@ -755,7 +881,9 @@ function syncNavLinksLanguage(lang) {
           sp.delete("lang");
         }
         const newSearch = sp.toString();
-        a.setAttribute("href", newSearch ? `${base}?${newSearch}` : base);
+        const searchPart = newSearch ? `?${newSearch}` : "";
+        const hashPart = hash !== undefined ? `#${hash}` : "";
+        a.setAttribute("href", `${basePath}${searchPart}${hashPart}`);
       } catch (e) { }
     }
   });
@@ -780,14 +908,28 @@ function formatPrice(amountSAR) {
 function setCurrency(curr) {
   if (state.rates[curr]) {
     state.currency = curr;
-    localStorage.setItem("atyab_currency", curr);
-    localStorage.setItem("aytyab_currency", curr);
+    safeSetStorage("atyab_currency", curr);
+    safeSetStorage("aytyab_currency", curr);
+
+    const currSelect = document.getElementById("currency-select");
+    if (currSelect) currSelect.value = curr;
+
     const bakhoorOfficialPrice = document.getElementById("bakhoor-official-price");
     const bakhoorOldPrice = document.getElementById("bakhoor-old-price");
     if (bakhoorOfficialPrice) bakhoorOfficialPrice.textContent = formatPrice(30);
     if (bakhoorOldPrice) bakhoorOldPrice.textContent = formatPrice(50);
-    renderProducts();
-    updateCartUI();
+
+    const spotlightCta = document.querySelector(".spotlight-banner-content .btn-hero-outline span:first-child");
+    if (spotlightCta) {
+      spotlightCta.textContent = state.language === "en" 
+        ? `Quick View Moon Flower (${formatPrice(80)})` 
+        : `نظرة سريعة على مون فلاور (${formatPrice(80)})`;
+    }
+
+    if (typeof renderProducts === "function") renderProducts();
+    if (typeof renderShowcase === "function") renderShowcase();
+    if (typeof renderCreamsSpotlight === "function") renderCreamsSpotlight();
+    if (typeof updateCartUI === "function") updateCartUI();
 
     document.querySelectorAll(".mobile-curr-btn").forEach((btn) => {
       btn.classList.toggle("active", btn.textContent.includes(curr));
@@ -809,15 +951,40 @@ function setCurrency(curr) {
 // ===================================================================
 // تهيئة المتجر عند تحميل الصفحة (DOM INITIALIZATION)
 // ===================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  initHeader();
-  initHeroSlider();
-  switchLanguage(state.language, false);
-  updateAccountUI();
-  setupEventListeners();
+function initApp() {
+  try { initHeader(); } catch (e) { console.warn("initHeader error:", e); }
+  try { initHeroSlider(); } catch (e) { console.warn("initHeroSlider error:", e); }
+  try { switchLanguage(state.language, false, false); } catch (e) { console.warn("switchLanguage error:", e); }
+  try { renderShowcase(); } catch (e) { console.warn("renderShowcase error:", e); }
+  try { renderCreamsSpotlight(); } catch (e) { console.warn("renderCreamsSpotlight error:", e); }
+  try { updateAccountUI(); } catch (e) { console.warn("updateAccountUI error:", e); }
+  try { setupEventListeners(); } catch (e) { console.warn("setupEventListeners error:", e); }
   setTimeout(() => {
-    initScrollReveal();
+    try { initScrollReveal(); } catch (e) {}
   }, 100);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
+
+// Live catalog cross-tab synchronization
+window.addEventListener("atyab_products_updated", () => {
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  try { renderShowcase(); } catch (e) {}
+  try { renderCreamsSpotlight(); } catch (e) {}
+  try { renderProducts(); } catch (e) {}
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+    try { renderShowcase(); } catch (e) {}
+    try { renderCreamsSpotlight(); } catch (e) {}
+    try { renderProducts(); } catch (e) {}
+  }
 });
 
 function initHeader() {
@@ -1028,10 +1195,45 @@ function renderShowcase() {
   const container = document.getElementById("cherished-grid-items") || document.getElementById("showcase-grid-items");
   if (!container) return;
 
-  const targetIds = ["atyab-marj", "atyab-tiger-oud", "atyab-kaaf", "atyab-bin-shaikh"];
-  const products = targetIds
-    .map(id => ATYAB_PRODUCTS.find(p => p.id === id))
-    .filter(Boolean);
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  const allProds = typeof getUnifiedProductsCatalog === "function" 
+    ? getUnifiedProductsCatalog() 
+    : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
+  if (!Array.isArray(allProds) || allProds.length === 0) return;
+
+  // 1. Collect custom products added by admin first
+  const customProds = allProds.filter(p => p.isCustom);
+
+  // 2. Preferred popular fragrances
+  const preferredIds = ["atyab-marj", "atyab-tiger-oud", "atyab-kaaf", "atyab-bin-shaikh", "atyab-nader", "atyab-mashair", "atyab-moon-flower", "atyab-a555"];
+  const products = [];
+  const addedIds = new Set();
+
+  // Add custom products first so newly added products immediately appear on the storefront
+  for (const cp of customProds) {
+    if (!addedIds.has(cp.id)) {
+      products.push(cp);
+      addedIds.add(cp.id);
+    }
+  }
+
+  // Add preferred products that still exist in catalog
+  for (const pid of preferredIds) {
+    const found = allProds.find(p => p.id === pid);
+    if (found && !addedIds.has(found.id)) {
+      products.push(found);
+      addedIds.add(found.id);
+    }
+  }
+
+  // If still fewer than 4 items, add any remaining perfume products
+  for (const p of allProds) {
+    if (products.length >= 8) break;
+    if (!addedIds.has(p.id) && p.category !== "cream") {
+      products.push(p);
+      addedIds.add(p.id);
+    }
+  }
 
   container.innerHTML = products.map((p) => {
     const lp = getProductLocalized(p, state.language);
@@ -1040,11 +1242,11 @@ function renderShowcase() {
     const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
 
     return `
-      <div class="cherished-card">
+      <div class="cherished-card" data-product-id="${p.id}">
         <div class="cherished-card-media">
           ${lp.displayBadge ? `<span class="cherished-badge">${lp.displayBadge}</span>` : ""}
           <a href="${pdpUrl}" aria-label="${lp.displayName}">
-            <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
+            <img src="${p.image || 'assets/images/tiger_oud.jpg'}" alt="${lp.displayName}" loading="lazy" onerror="this.src='assets/images/tiger_oud.jpg'" />
           </a>
         </div>
         <div class="cherished-card-content">
@@ -1054,7 +1256,7 @@ function renderShowcase() {
           <p class="cherished-item-notes">${lp.displaySubtitle || lp.displayFamily}</p>
           <div class="cherished-item-price-row">
             <span class="cherished-current-price">${formatPrice(p.priceSAR)}</span>
-            ${p.originalPriceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
+            ${p.originalPriceSAR && p.originalPriceSAR > p.priceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
           </div>
           <div class="cherished-actions">
             <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" title="${t("cherished_add_cart") || "Add to Bag"}">
@@ -1082,10 +1284,18 @@ function renderCreamsSpotlight() {
   const container = document.getElementById("creams-spotlight-items");
   if (!container) return;
 
-  const creamIds = ["atyab-cream-oud-roses", "atyab-cream-bin-shaikh", "atyab-cream-musk-silk", "atyab-cream-marj"];
-  const creams = creamIds
-    .map(id => ATYAB_PRODUCTS.find(p => p.id === id))
-    .filter(Boolean);
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  const allProds = typeof getUnifiedProductsCatalog === "function" 
+    ? getUnifiedProductsCatalog() 
+    : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
+  const creams = allProds.filter(p => p.category === "cream");
+  const section = container.closest(".creams-spotlight-section");
+
+  if (creams.length === 0) {
+    if (section) section.style.display = "none";
+    return;
+  }
+  if (section) section.style.display = "block";
 
   container.innerHTML = creams.map((p) => {
     const lp = getProductLocalized(p, state.language);
@@ -1094,11 +1304,11 @@ function renderCreamsSpotlight() {
 
     const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
     return `
-      <div class="cherished-card">
+      <div class="cherished-card" data-product-id="${p.id}">
         <div class="cherished-card-media">
           ${lp.displayBadge ? `<span class="cherished-badge">${lp.displayBadge}</span>` : ""}
           <a href="${pdpUrl}" aria-label="${lp.displayName}">
-            <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
+            <img src="${p.image || 'assets/images/cream_oud_roses.jpg'}" alt="${lp.displayName}" loading="lazy" onerror="this.src='assets/images/cream_oud_roses.jpg'" />
           </a>
         </div>
         <div class="cherished-card-content">
@@ -1108,10 +1318,10 @@ function renderCreamsSpotlight() {
           <p class="cherished-item-notes">${lp.displaySubtitle || lp.displayFamily}</p>
           <div class="cherished-item-price-row">
             <span class="cherished-current-price">${formatPrice(p.priceSAR)}</span>
-            ${p.originalPriceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
+            ${p.originalPriceSAR && p.originalPriceSAR > p.priceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
           </div>
           <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" style="width: 100%;">
-            <span>🛍️</span> <span>${t("cherished_add_cart") || "أضف للسلة الآن"}</span>
+            <span>🛍️</span> <span>${t("cream_add_cart_btn") || t("cherished_add_cart") || "أضف للسلة الآن"}</span>
           </button>
         </div>
       </div>
@@ -1128,9 +1338,14 @@ function renderProducts() {
   const grid = document.getElementById("products-grid");
   if (!grid) return;
 
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  const allProds = typeof getUnifiedProductsCatalog === "function" 
+    ? getUnifiedProductsCatalog() 
+    : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
+
   const query = state.searchQuery.toLowerCase().trim();
 
-  let filtered = ATYAB_PRODUCTS.filter((p) => {
+  let filtered = allProds.filter((p) => {
     let matchesCategory = state.filter === "all" || p.category === state.filter;
     if (state.filter === "oud") {
       matchesCategory = p.category === "bakhoor" || (p.family && p.family.includes("عود")) || p.id === "atyab-tiger-oud";

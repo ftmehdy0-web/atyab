@@ -2,9 +2,36 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <script>
+    (function () {
+      var sp = new URLSearchParams(window.location.search);
+      var hash = window.location.hash || '';
+      var qLang = sp.get('lang');
+      if (!qLang && hash.includes('lang=')) {
+        var m = hash.match(/[?&#]lang=([a-zA-Z-]+)/i);
+        if (m) qLang = m[1];
+      }
+      try {
+        var sLang = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
+      } catch (e) { var sLang = null; }
+      var lang = (qLang && qLang.trim().toLowerCase().startsWith('en')) ? 'en' :
+                 ((qLang && qLang.trim().toLowerCase().startsWith('ar')) ? 'ar' :
+                 ((sLang && sLang.trim().toLowerCase().startsWith('en')) ? 'en' : 'ar'));
+      sp.set('id', 'atyab-a555');
+      if (lang === 'en') {
+        sp.set('lang', 'en');
+      } else {
+        sp.delete('lang');
+      }
+      try {
+        localStorage.setItem('atyab_language', lang);
+        localStorage.setItem('aytyab_language', lang);
+      } catch (e) {}
+      window.location.replace('product.html?' + sp.toString());
+    })();
+  </script>
   <meta http-equiv="refresh" content="0; url=product.html?id=atyab-a555">
   <title>عطر أطياب أ. 555 | Atyab A.555</title>
-  <script>window.location.replace("product.html?id=atyab-a555");</script>
 </head>
 <body>
   <p>جاري تحويلك إلى صفحة عطر أطياب أ. 555... <a href="product.html?id=atyab-a555">انقر هنا إن لم يتم التحويل تلقائياً</a></p>

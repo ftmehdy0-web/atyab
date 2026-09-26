@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="js/translations.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/product-page.js"></script>
+</head>
+<body>
+  <div id="pdp-info-meta"></div>
+  <div id="pdp-price-container"></div>
+  <div id="pdp-size-selector-container"></div>
+  <div id="pdp-stock-container"></div>
+  <div id="pdp-actions-container"></div>
+  <div id="pdp-reviews-container"></div>
+  <div id="test-output"></div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // 1. Initial SAR
+      const p1 = formatPrice(40);
+      
+      // 2. Switch to USD
+      setCurrency('USD');
+      const p2 = formatPrice(40);
+
+      // 3. Switch to AED
+      setCurrency('AED');
+      const p3 = formatPrice(40);
+
+      document.getElementById('test-output').innerHTML = `
+        <div id="res-sar">${p1}</div>
+        <div id="res-usd">${p2}</div>
+        <div id="res-aed">${p3}</div>
+      `;
+    });
+  </script>
+</body>
+</html>

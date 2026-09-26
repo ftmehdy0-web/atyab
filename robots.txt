@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /scratch/
+
+Sitemap: https://atyab.sa/sitemap.xml

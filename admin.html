@@ -734,43 +734,44 @@
         <input type="hidden" id="prod-edit-id" value="" />
         <div class="product-editor-split">
           
-          <!-- LEFT COLUMN: Image Upload from PC & Storefront Live Preview -->
+          <!-- LEFT COLUMN: Multi-Image Upload (Up to 5 Photos) & Storefront Live Preview -->
           <div class="product-editor-left">
             <div>
-              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--gold-pale); margin-bottom: 6px;">
-                Product Image (Upload from PC) *
-              </label>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <label style="font-size: 0.84rem; font-weight: 700; color: var(--gold-pale);">
+                  📸 Product Photos (Up to 5 Images) *
+                </label>
+                <span id="prod-images-count-badge" class="images-count-pill">0 / 5 Photos</span>
+              </div>
 
-              <!-- Interactive PC Dropzone -->
+              <!-- Interactive PC Dropzone for Multiple Files -->
               <div class="image-dropzone-container" id="prod-dropzone" onclick="triggerProductFileInput()">
-                <input type="file" id="prod-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleProductFileInputChange(this.files)" />
+                <input type="file" id="prod-file-input" accept="image/png, image/jpeg, image/webp" multiple style="display: none;" onchange="handleProductFilesInputChange(this.files)" />
                 
                 <div class="dropzone-empty-content" id="dropzone-empty-state">
-                  <span class="dropzone-icon">📁</span>
-                  <div class="dropzone-label-main">Click to Browse or Drag Image from PC</div>
-                  <div class="dropzone-sub">Supports PNG, JPG, WebP</div>
-                  <div class="dropzone-badge-optimize">⚡ Auto-compressed for ultra-fast loading</div>
-                </div>
-
-                <div class="dropzone-preview-container" id="dropzone-preview-box">
-                  <img id="dropzone-preview-img" class="dropzone-preview-thumb" src="" alt="Product Preview" />
-                  <div class="dropzone-preview-meta">
-                    <span id="dropzone-file-name">image.jpg</span>
-                    <span id="dropzone-file-size" style="color: var(--gold-pale); font-weight: 700;">85 KB</span>
-                  </div>
-                  <div class="dropzone-preview-actions" onclick="event.stopPropagation()">
-                    <button type="button" class="btn-dropzone-action" onclick="triggerProductFileInput()">Change Image</button>
-                    <button type="button" class="btn-dropzone-action btn-dropzone-remove" onclick="removeProductUploadedImage()">Remove</button>
-                  </div>
+                  <span class="dropzone-icon">📸</span>
+                  <div class="dropzone-label-main">Click or Drag up to 5 Photos from PC</div>
+                  <div class="dropzone-sub">Bottle angles, box packaging & lifestyle shots (PNG, JPG, WebP)</div>
+                  <div class="dropzone-badge-optimize">⚡ Auto-compressed for ultra-fast storefront loading</div>
                 </div>
               </div>
 
-              <!-- Fallback Web Image URL input -->
-              <div style="margin-top: 10px;">
-                <label for="prod-form-image-url" style="font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">
-                  Or paste existing image path / web URL:
+              <!-- 5 Visual Image Slots Grid -->
+              <div class="product-images-slots-grid" id="product-image-slots-grid">
+                <!-- Populated dynamically by renderImageSlots() in admin.js -->
+              </div>
+
+              <!-- Add Photo via Image URL Input -->
+              <div style="margin-top: 12px;">
+                <label for="prod-form-image-url" style="display: block; font-size: 0.74rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">
+                  Or paste image path / web URL:
                 </label>
-                <input type="text" id="prod-form-image-url" placeholder="assets/images/... or https://..." oninput="handleImageUrlInput(this.value)" style="font-size: 0.8rem; padding: 7px 10px;" />
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="prod-form-image-url" placeholder="assets/images/... or https://..." style="flex: 1; font-size: 0.8rem; padding: 7px 10px;" />
+                  <button type="button" class="btn-secondary-action" onclick="addUploadedImageUrl()" style="padding: 7px 12px; font-size: 0.78rem; white-space: nowrap;">
+                    <span>➕ Add Photo</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -946,6 +947,34 @@
           <span>Yes, Remove Product</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 5: ADMIN LOGIN GATEWAY MODAL (For Direct Access / Expired Session)
+       =================================================================== -->
+  <div class="modal-overlay-bg" id="admin-login-gate" style="display: none; z-index: 99999; background: rgba(5, 5, 8, 0.94); backdrop-filter: blur(20px);">
+    <div class="modal-window" style="max-width: 440px; text-align: center; padding: 36px 28px; border: 1px solid var(--gold-border); box-shadow: 0 16px 64px rgba(0, 0, 0, 0.8), var(--gold-glow);">
+      <div style="font-size: 3rem; margin-bottom: 12px;">👑</div>
+      <h3 style="color: #FFF; font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; margin-bottom: 6px;">ATYAB Royal Admin Hub</h3>
+      <p style="color: var(--text-secondary); font-size: 0.84rem; line-height: 1.6; margin-bottom: 24px;">
+        Authorized Super Admin Access • Enter your passcode to unlock live order analytics and manage store products.
+      </p>
+
+      <form onsubmit="handleAdminGateLogin(event)">
+        <div class="form-group-item" style="text-align: left; margin-bottom: 14px;">
+          <label style="color: var(--gold-pale); font-size: 0.82rem; font-weight: 700;">Super Admin Email</label>
+          <input type="email" id="gate-email" value="admin@gmail.com" required style="width: 100%; padding: 10px 14px; background: #121218; border: 1px solid var(--border-light); color: #FFF; border-radius: var(--radius-sm);" />
+        </div>
+        <div class="form-group-item" style="text-align: left; margin-bottom: 22px;">
+          <label style="color: var(--gold-pale); font-size: 0.82rem; font-weight: 700;">Passcode / Password</label>
+          <input type="password" id="gate-password" placeholder="Enter password (123456)" required style="width: 100%; padding: 10px 14px; background: #121218; border: 1px solid var(--border-light); color: #FFF; border-radius: var(--radius-sm);" />
+        </div>
+        <div id="gate-error-msg" style="color: #F87171; font-size: 0.82rem; margin-bottom: 14px; display: none;"></div>
+        <button type="submit" class="btn-primary-action btn-header-gold" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.95rem;">
+          <span>👑 Unlock Executive Dashboard</span>
+        </button>
+      </form>
     </div>
   </div>
 

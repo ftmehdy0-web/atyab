@@ -5,11 +5,29 @@
   <script>
     (function() {
       var sp = new URLSearchParams(window.location.search);
+      var hash = window.location.hash || '';
       var qLang = sp.get('lang');
-      var sLang = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
-      var lang = (qLang === 'ar' || qLang === 'en') ? qLang : (sLang || 'ar');
-      var target = 'perfumes.html?cat=giftset' + (lang === 'en' ? '&lang=en' : '');
-      window.location.replace(target);
+      if (!qLang && hash.includes('lang=')) {
+        var m = hash.match(/[?&#]lang=([a-zA-Z-]+)/i);
+        if (m) qLang = m[1];
+      }
+      try {
+        var sLang = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
+      } catch (e) { var sLang = null; }
+      var lang = (qLang && qLang.trim().toLowerCase().startsWith('en')) ? 'en' :
+                 ((qLang && qLang.trim().toLowerCase().startsWith('ar')) ? 'ar' :
+                 ((sLang && sLang.trim().toLowerCase().startsWith('en')) ? 'en' : 'ar'));
+      sp.set('cat', 'giftset');
+      if (lang === 'en') {
+        sp.set('lang', 'en');
+      } else {
+        sp.delete('lang');
+      }
+      try {
+        localStorage.setItem('atyab_language', lang);
+        localStorage.setItem('aytyab_language', lang);
+      } catch (e) {}
+      window.location.replace('perfumes.html?' + sp.toString());
     })();
   </script>
   <title>Redirecting to Gift Sets...</title>

@@ -6,10 +6,30 @@
   <script>
     (function () {
       try {
-        var sp = new URLSearchParams(window.location.search);
-        var qLang = sp.get('lang');
-        var sLang = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
-        var lang = (qLang === 'ar' || qLang === 'en') ? qLang : (sLang || 'ar');
+        var raw = '';
+        if (window.location.search) {
+          var sp = new URLSearchParams(window.location.search);
+          raw = sp.get('lang');
+        }
+        if (!raw && window.location.hash) {
+          var m = window.location.hash.match(/[?&#]lang=([a-zA-Z-]+)/i);
+          if (m) raw = m[1];
+        }
+        var lang = 'ar';
+        if (raw) {
+          var lower = raw.trim().toLowerCase();
+          if (lower.startsWith('en')) lang = 'en';
+          else if (lower.startsWith('ar')) lang = 'ar';
+          try {
+            localStorage.setItem('atyab_language', lang);
+            localStorage.setItem('aytyab_language', lang);
+          } catch(e) {}
+        } else {
+          try {
+            var s = localStorage.getItem('atyab_language') || localStorage.getItem('aytyab_language');
+            if (s && s.trim().toLowerCase().startsWith('en')) lang = 'en';
+          } catch(e) {}
+        }
         if (lang === 'en') {
           document.documentElement.lang = 'en';
           document.documentElement.dir = 'ltr';
@@ -37,6 +57,27 @@
     content="اكتشف تشكيلة أطياب الملكية المصممة بعناية فائقة من أجود أنواع العود والورد والعنبر." />
   <meta property="og:type" content="product" />
   <meta property="og:locale" content="ar_SA" />
+
+  <!-- Analytics & Conversion Tracking (Google Analytics 4 & Meta Pixel) -->
+  <!-- To activate: Replace 'G-XXXXXXXXXX' and 'YOUR_PIXEL_ID' with your production IDs -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    // gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    // fbq('init', 'YOUR_PIXEL_ID');
+    // fbq('track', 'PageView');
+  </script>
 
   <!-- Google Fonts: Tajawal, Cairo, Amiri & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -193,18 +234,9 @@
           <img src="assets/images/atyab_logo.png" alt="أطياب للعطور | ATYAB PERFUME" class="brand-emblem-logo-img" />
         </a>
 
-        <!-- الجانب الأيمن: الفروع، تسجيل الدخول/الحساب، وسلة المشتريات -->
+        <!-- الجانب الأيمن: تسجيل الدخول/الحساب، وسلة المشتريات -->
         <div class="header-right-tools">
           <div class="header-icons-cluster">
-            <!-- 1. أيقونة تحديد الفروع والمعارض (STORE LOCATOR) -->
-            <button class="hdr-icon-btn hdr-store-btn" onclick="openStoreLocatorModal()" title="فروعنا بالمملكة"
-              aria-label="فروعنا بالمملكة" data-i18n-title="store_locator_btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </button>
 
             <!-- 2. أيقونة الحساب الشخصي وتسجيل الدخول (USER ACCOUNT / LOGIN) -->
             <button class="hdr-icon-btn account-action-btn" id="account-action-btn" onclick="openAccountModal()"
@@ -340,10 +372,10 @@
         <h3 data-i18n="footer_brand_title">أطياب للعطور الفاخرة</h3>
         <div class="sub" data-i18n="footer_brand_sub">ATYAB ROYAL PERFUMES • KSA</div>
         <p style="font-size: 0.88rem; color: #AAA; line-height: 1.7; margin-bottom: 20px;" data-i18n="footer_brand_desc">
-          دار عطور عربية تأسست عام 1988، تكرس خبرتها في استخلاص أندر أنواع العود والزيوت العطرية النقية لتقديم تجارب حسية ملكية تدوم طويلاً وتليق بأصحاب الفخامة في المملكة.
+          دار عطور سعودية فاخرة تكرس خبرتها وشغفها في استخلاص أرقى نفحات العود والزيوت العطرية النقية لتقديم تجارب حسية ملكية تليق بأصحاب الذوق الرفيع بالمملكة.
         </p>
         <div style="font-size: 0.8rem; color: #888;" data-i18n="footer_cr">
-          السجل التجاري بالمملكة: 1010894210 | الرقم الضريبي: 30098471200003
+          السجل التجاري بالمملكة: 7052462681 | الرقم الضريبي: 314378223100003
         </div>
       </div>
 
@@ -365,23 +397,25 @@
         <h4 data-i18n="footer_col_services">خدمة العملاء</h4>
         <ul class="footer-links">
           <li><a href="javascript:void(0)" onclick="openTrackOrderModal()" data-i18n="track_order_btn">تتبع حالة طلبك</a></li>
-          <li><a href="javascript:void(0)" onclick="openStoreLocatorModal()" data-i18n="store_locator_btn">فروعنا بالمملكة</a></li>
+          <li><a href="javascript:void(0)" onclick="openShippingModal()" data-i18n="footer_link_ship">سياسة الشحن والتوصيل</a></li>
+          <li><a href="javascript:void(0)" onclick="openReturnsModal()" data-i18n="footer_link_warranty">الضمان الذهبي والاسترجاع</a></li>
+          <li><a href="javascript:void(0)" onclick="openAboutModal()" data-i18n="footer_link_about">عن أطياب للعطور</a></li>
           <li><a href="javascript:void(0)" onclick="openCartDrawer()" data-i18n="footer_link_cart">سلة المشتريات الملكية</a></li>
           <li><a href="https://wa.me/966558879839" target="_blank" rel="noopener noreferrer" data-i18n="footer_link_whatsapp">استشارات عطرية واتساب</a></li>
         </ul>
       </div>
 
-      <!-- الفروع والتواصل بالمملكة -->
+      <!-- التوصيل والتواصل بالمملكة -->
       <div class="footer-col">
-        <h4 data-i18n="footer_col_boutiques">بوتيكاتنا بالمملكة</h4>
+        <h4 data-i18n="footer_col_boutiques">التوصيل بالمملكة</h4>
         <div class="contact-info">
           <div class="contact-item">
-            <span>📍</span>
-            <span data-i18n="boutique_riyadh"><strong>الرياض:</strong> أبراج العليا، طريق الملك فهد، الطابق الأرضي</span>
+            <span>🚚</span>
+            <span data-i18n="boutique_riyadh"><strong>توصيل سريع:</strong> الرياض، جدة ومكة خلال 24 - 48 ساعة</span>
           </div>
           <div class="contact-item">
-            <span>📍</span>
-            <span data-i18n="boutique_jeddah"><strong>جدة:</strong> رد سي مول، بوابة 4، طريق الملك عبدالعزيز</span>
+            <span>📦</span>
+            <span data-i18n="boutique_jeddah"><strong>كافة مدن المملكة:</strong> خلال 2 - 4 أيام عمل عبر سمسا</span>
           </div>
           <div class="contact-item">
             <span>📞</span>
@@ -389,7 +423,7 @@
           </div>
           <div class="contact-item">
             <span>✉️</span>
-            <span>concierge@atyab.com.sa</span>
+            <a href="mailto:info@atyab.sa" style="color: inherit; text-decoration: none;">info@atyab.sa</a>
           </div>
           <div class="contact-item">
             <span>⏱️</span>
@@ -450,7 +484,6 @@
         <li><a href="perfumes.html?cat=cream" onclick="closeMobileNav();"><span class="nav-icon">🧴</span><span data-i18n="nav_cream">كريم</span> <span class="nav-badge-new" style="font-size:0.7rem; padding: 2px 6px; background: #C59B27; color:#fff; border-radius:4px; margin-right:4px;">جديد</span></a></li>
         <li><a href="perfumes.html?cat=giftset" onclick="closeMobileNav();"><span class="nav-icon">🎁</span><span data-i18n="nav_gift_sets">أطقم هدايا</span></a></li>
         <li><a href="#track-order" onclick="openTrackOrderModal(); closeMobileNav(); return false;"><span class="nav-icon">📦</span><span data-i18n="track_order_btn">تتبع طلبك</span></a></li>
-        <li><a href="#store-locator" onclick="openStoreLocatorModal(); closeMobileNav(); return false;"><span class="nav-icon">📍</span><span data-i18n="store_locator_btn">فروعنا بالمملكة</span></a></li>
       </ul>
 
       <div class="mobile-nav-divider"></div>
@@ -725,76 +758,87 @@
   </div>
 
   <!-- نافذة فروع ومعارض المملكة (STORE LOCATOR MODAL) -->
-  <div class="modal-overlay" id="store-locator-modal">
-    <div class="modal-card stores-modal-card">
-      <button class="modal-close-btn" onclick="closeStoreLocatorModal()" aria-label="إغلاق">&times;</button>
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-        <span style="font-size: 1.5rem;">📍</span>
-        <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800;"
-          data-i18n="store_locator_title">معارضنا وفروعنا بالمملكة العربية السعودية</h3>
+  <!-- نافذة سياسة الشحن والتوصيل بالمملكة (SHIPPING POLICY MODAL) -->
+  <div class="modal-overlay" id="shipping-policy-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeShippingModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span style="font-size: 1.6rem;">🚚</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.4rem; font-weight: 800;">سياسة الشحن والتوصيل السريع بالمملكة</h3>
       </div>
-      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;" data-i18n="store_locator_desc">
-        تفضل بزيارة معارضنا الرسمية في الرياض، جدة، الدمام، مكة المكرمة والمدينة المنورة
-      </p>
-      <div class="stores-branches-grid">
-        <div class="branch-card-item">
-          <div>
-            <span class="branch-city-badge" data-i18n="branch_city_riyadh">الرياض</span>
-            <div class="branch-name" data-i18n="branch_name_riyadh">معرض العليا الرئيسي - برج المملكة</div>
-            <div class="branch-address" data-i18n="branch_addr_riyadh">طريق العليا العام، حي الورود، الرياض</div>
-            <div class="branch-hours" data-i18n="branch_hours_riyadh">🕒 يومياً: ٩:٠٠ ص - ١١:٣٠ م • هاتف: ٠١١٤٤٥٨٨٩٩
-            </div>
-          </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline"
-            style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
+      <div style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.8;">
+        <div style="background: rgba(197, 155, 39, 0.08); border: 1px solid var(--gold-primary); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px;">
+          ✨ <strong>الشحن المجاني:</strong> متاح تلقائياً لكافة مناطق ومدن المملكة العربية السعودية للطلبات التي تزيد قيمتها عن <strong>150 ر.س</strong>.
         </div>
-        <div class="branch-card-item">
-          <div>
-            <span class="branch-city-badge" data-i18n="branch_city_jeddah">جدة</span>
-            <div class="branch-name" data-i18n="branch_name_jeddah">معرض شارع التحلية - مول العرب</div>
-            <div class="branch-address" data-i18n="branch_addr_jeddah">طريق الأمير محمد بن عبدالعزيز (التحلية)، جدة
-            </div>
-            <div class="branch-hours" data-i18n="branch_hours_jeddah">🕒 يومياً: ١٠:٠٠ ص - ١١:٠٠ م • هاتف: ٠١٢٦٦٨٨٤٤٢
-            </div>
-          </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline"
-            style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
+        <h4 style="font-size: 1rem; font-weight: 800; color: #111; margin: 14px 0 6px;">⏱️ مدد التوصيل الرسمية:</h4>
+        <ul style="list-style: disc; padding-inline-start: 20px; margin-bottom: 16px;">
+          <li><strong>مدينة الرياض:</strong> توصيل فوري خلال 24 إلى 48 ساعة كحد أقصى.</li>
+          <li><strong>جدة، مكة المكرمة، والمنطقة الشرقية:</strong> توصيل سريع خلال 1 إلى 3 أيام عمل.</li>
+          <li><strong>باقي مدن ومحافظات المملكة:</strong> توصيل آمن خلال 2 إلى 4 أيام عمل عبر شركاء الشحن المعتمدين (سمسا إكسبريس وأرامكس).</li>
+        </ul>
+        <h4 style="font-size: 1rem; font-weight: 800; color: #111; margin: 14px 0 6px;">📦 التغليف الملكي ومتابعة الشحنة:</h4>
+        <p style="margin-bottom: 16px;">
+          تُغلف جميع العطور بصناديق فاخرة مبطنة ومقاومة للصدمات لضمان وصول القوارير بحالتها المثالية. يُرسل رابط ورقم تتبع الشحنة فور صدور البوليصة عبر رسالة نصية (SMS) ومحادثة الواتساب.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة الضمان الذهبي والاسترجاع (RETURNS & WARRANTY MODAL) -->
+  <div class="modal-overlay" id="returns-policy-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeReturnsModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span style="font-size: 1.6rem;">🛡️</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.4rem; font-weight: 800;">الضمان الذهبي وسياسة الاسترجاع والاستبدال</h3>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.8;">
+        <div style="background: rgba(39, 174, 96, 0.08); border: 1px solid rgba(39, 174, 96, 0.3); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; color: #1e7e34;">
+          👑 <strong>الضمان الذهبي الملكي:</strong> ثقتنا في ثبات وجودة عطورنا مطلقة. إذا لم يناسبك العطر بعد تجربته، يحق لك الاسترجاع أو الاستبدال خلال <strong>7 أيام</strong> من تاريخ الاستلام.
         </div>
-        <div class="branch-card-item">
-          <div>
-            <span class="branch-city-badge" data-i18n="branch_city_dammam">الدمام والخبر</span>
-            <div class="branch-name" data-i18n="branch_name_dammam">معرض الراشد مول وكورنيش الخبر</div>
-            <div class="branch-address" data-i18n="branch_addr_dammam">مجمع الراشد، بوابة ٤، الخبر - المنطقة الشرقية
-            </div>
-            <div class="branch-hours" data-i18n="branch_hours_dammam">🕒 يومياً: ٩:٣٠ ص - ١١:٠٠ م • هاتف: ٠١٣٨٩٤٤٥٥١
-            </div>
-          </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline"
-            style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
+        <h4 style="font-size: 1rem; font-weight: 800; color: #111; margin: 14px 0 6px;">📋 شروط الاسترجاع والاستبدال السلس:</h4>
+        <ul style="list-style: disc; padding-inline-start: 20px; margin-bottom: 16px;">
+          <li>تجربة العطر عبر العينة المرفقة دون إتلاف العبوة الأصلية لضمان سلامة المنتج.</li>
+          <li>أن يكون المنتج في حالته السليمة وتغليفه الأصلي عند رغبة الاسترجاع التام.</li>
+          <li>يتكفل المتجر باستلام الشحنة من باب بيتك في أي مدينة داخل المملكة.</li>
+        </ul>
+        <h4 style="font-size: 1rem; font-weight: 800; color: #111; margin: 14px 0 6px;">💳 آلية استرداد الأموال:</h4>
+        <p style="margin-bottom: 16px;">
+          يتم فحص الشحنة المسترجعة وإعادة المبلغ كاملاً إلى حسابك البنكي أو بطاقتك الائتمانية خلال 2 إلى 4 أيام عمل فور استلام المرتجع.
+        </p>
+        <div style="text-align: center; margin-top: 14px;">
+          <a href="https://wa.me/966558879839?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%B7%D9%84%D8%A8%20%D8%A7%D8%B3%D8%AA%D8%A8%D8%AF%D8%A7%D9%84%20%D8%A3%D9%88%20%D8%A7%D8%B3%D8%AA%D8%B1%D8%AC%D8%A7%D8%B9" target="_blank" rel="noopener" class="btn btn-secondary" style="padding: 10px 22px;">
+            💬 طلب استرجاع فوري عبر الواتساب
+          </a>
         </div>
-        <div class="branch-card-item">
-          <div>
-            <span class="branch-city-badge" data-i18n="branch_city_makkah">مكة المكرمة</span>
-            <div class="branch-name" data-i18n="branch_name_makkah">معرض أبراج البيت - وقف الملك عبدالعزيز</div>
-            <div class="branch-address" data-i18n="branch_addr_makkah">مجمع أبراج الساعة، الدور التجاري الثاني، مكة
-              المكرمة</div>
-            <div class="branch-hours" data-i18n="branch_hours_makkah">🕒 يومياً: على مدار الساعة • هاتف: ٠١٢٥٧٢٢٣٣١
-            </div>
-          </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline"
-            style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
-        </div>
-        <div class="branch-card-item">
-          <div>
-            <span class="branch-city-badge" data-i18n="branch_city_madinah">المدينة المنورة</span>
-            <div class="branch-name" data-i18n="branch_name_madinah">معرض المنطقة المركزية الشمالية</div>
-            <div class="branch-address" data-i18n="branch_addr_madinah">شارع الملك فهد، أمام الحرم النبوي الشريف</div>
-            <div class="branch-hours" data-i18n="branch_hours_madinah">🕒 يومياً: على مدار الساعة • هاتف: ٠١٤٨٣١١٢٢٠
-            </div>
-          </div>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline"
-            style="padding: 8px 14px; font-size: 0.78rem;" data-i18n="branch_map_btn">الموقع على الخريطة</a>
-        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة عن أطياب للعطور وقصتنا (ABOUT US MODAL) -->
+  <div class="modal-overlay" id="about-us-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeAboutModal()" aria-label="إغلاق">&times;</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span style="font-size: 1.6rem;">⚜️</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.4rem; font-weight: 800;">عن دار أطياب للعطور الفاخرة بالمملكة</h3>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.8;">
+        <p style="margin-bottom: 14px;">
+          <strong>أطياب للعطور (ATYAB ROYAL PERFUMES):</strong> دار عطور سعودية فاخرة وُلدت من شغف متأصل بأصالة العطور الشرقية وثقافة الضيافة الملكية في شبه الجزيرة العربية.
+        </p>
+        <p style="margin-bottom: 14px;">
+          نكرس إمكانياتنا في انتقاء أندر خامات العود المعتق، دهن الورد الطبيعي، والعنبر الصافي، لنبتكر توليفات عطرية بتركيز <strong>Eau de Parfum</strong> تمنح حضوراً آسراً وثباتاً أسطورياً يدوم في الذاكرة.
+        </p>
+        <h4 style="font-size: 1rem; font-weight: 800; color: #111; margin: 14px 0 6px;">🏅 معايير الجودة والاعتماد:</h4>
+        <ul style="list-style: disc; padding-inline-start: 20px; margin-bottom: 16px;">
+          <li>خلاصات وزيوت عطرية نقية وطبيعية 100% مختارة من أرقى مصادرها العالمية.</li>
+          <li>مطابقة كاملة لمواصفات الهيئة العامة للغذاء والدواء والاتحاد الدولي للعطور (IFRA).</li>
+          <li>منشأة وطنية معتمدة بسجل تجاري رسمي رقم <strong>7052462681</strong> ورقم ضريبي معتمد <strong>314378223100003</strong>.</li>
+        </ul>
+        <p style="margin-bottom: 0; font-size: 0.85rem; color: var(--gold-deep); font-weight: 700;">
+          📍 الإدارة والمستودع المركزي: الرياض، المملكة العربية السعودية | البريد الرسمي: info@atyab.sa
+        </p>
       </div>
     </div>
   </div>
@@ -882,6 +926,13 @@
               data-i18n="co_submit_btn">
               تأكيد الطلب الملكي 🚀
             </button>
+            <div class="checkout-trust-badge" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; padding: 10px 14px; background: rgba(39, 174, 96, 0.08); border: 1px solid rgba(39, 174, 96, 0.25); border-radius: 6px; font-size: 0.8rem; color: #1e7e34; text-align: center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span data-i18n="checkout_ssl_badge">🔒 اتصال مشفر وآمن 256-bit SSL | مدفوعات معتمدة ومحمية</span>
+            </div>
           </div>
         </div>
       </form>
@@ -927,6 +978,19 @@
   <script src="js/products.js"></script>
   <script src="js/app.js"></script>
   <script src="js/product-page.js"></script>
+  <script>
+    function bootProductPage() {
+      if (typeof initProductPage === "function") initProductPage();
+      if (typeof switchLanguage === "function" && typeof state !== "undefined") {
+        switchLanguage(state.language, false, false);
+      }
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bootProductPage);
+    } else {
+      bootProductPage();
+    }
+  </script>
 </body>
 
 </html>

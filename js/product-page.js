@@ -11,9 +11,13 @@ let currentSizeIndex = 0;
 let currentQty = 1;
 let currentAngleIndex = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initProductPage();
+  });
+} else {
   initProductPage();
-});
+}
 
 function initProductPage() {
   // 1. استخراج معرف العطر من الرابط
@@ -35,6 +39,38 @@ function initProductPage() {
     else if (path.includes("moon-flower")) productId = "atyab-moon-flower";
     else if (path.includes("mashair")) productId = "atyab-mashair";
     else if (path.includes("a555")) productId = "atyab-a555";
+  }
+
+  // إذا تم حذف العطر من لوحة التحكم أو كان غير متوفر
+  let isDeleted = false;
+  try {
+    const deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
+    if (productId && Array.isArray(deletedIds) && deletedIds.includes(productId)) {
+      isDeleted = true;
+    }
+  } catch (e) {}
+
+  if (isDeleted || (productId && !ATYAB_PRODUCTS.some(p => p.id === productId))) {
+    const isEn = typeof state !== "undefined" && state.language === "en";
+    const mainContainer = document.querySelector(".pdp-main-section .container");
+    if (mainContainer) {
+      mainContainer.innerHTML = `
+        <div style="text-align: center; padding: 80px 20px; max-width: 600px; margin: 0 auto;">
+          <div style="font-size: 3.5rem; margin-bottom: 20px;">⚜️</div>
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 12px;">
+            ${isEn ? "Product Currently Unavailable" : "هذا المنتج غير متوفر حالياً"}
+          </h2>
+          <p style="font-size: 0.95rem; color: #666; line-height: 1.7; margin-bottom: 30px;">
+            ${isEn ? "This fragrance creation has been removed or is undergoing royal reformulation. Explore our complete catalogue of luxury fragrances." : "تم سحب هذا الابتكار العطري مؤقتاً أو إعادة صياغته. ندعوك لاستكشاف تشكيلتنا الملكية الفاخرة المتاحة."}
+          </p>
+          <a href="perfumes.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; text-decoration: none;">
+            <span>🛍️</span>
+            <span>${isEn ? "Explore Royal Perfumes" : "تصفح جميع العطور الملكية"}</span>
+          </a>
+        </div>
+      `;
+      return;
+    }
   }
 
   // إذا تم فتح صفحة العطر مباشرة بدون معرّف أو كان المعرف غير صالح
@@ -71,13 +107,24 @@ function updatePageSEO() {
   if (!currentProduct) return;
   const lp = getProductLocalized(currentProduct, state.language);
   const isEn = state.language === "en";
+  const brandName = isEn ? "Atyab Royal Perfumes KSA" : "أطياب للعطور الفاخرة بالمملكة";
 
-  document.title = `${lp.displayName} | ${isEn ? "Atyab Official Royal Store KSA" : "أطياب للعطور | المتجر الرسمي بالمملكة"}`;
+  document.title = `${lp.displayName} | ${lp.displaySubtitle || lp.displayFamily} - ${brandName}`;
 
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute("content", lp.displayDescription);
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if (!metaDesc) {
+    metaDesc = document.createElement("meta");
+    metaDesc.name = "description";
+    document.head.appendChild(metaDesc);
   }
+  metaDesc.setAttribute("content", lp.displayStory || lp.displayDescription || `${lp.displayName} - ${lp.displaySubtitle}`);
+
+  let ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute("content", document.title);
+  let ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute("content", metaDesc.getAttribute("content"));
+  let ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage && currentProduct.image) ogImage.setAttribute("content", currentProduct.image);
 }
 
 /**
@@ -87,6 +134,9 @@ function renderProductPage() {
   if (!currentProduct) return;
   const lp = getProductLocalized(currentProduct, state.language);
   const isEn = state.language === "en";
+
+  // تحديث بيانات SEO والعنوان
+  updatePageSEO();
 
   // 1. شريط مسار التنقل (Breadcrumb)
   renderBreadcrumb(lp);
@@ -240,13 +290,18 @@ function renderPurchaseBox(lp) {
   // تحديث أعلى الصندوق
   const metaContainer = document.getElementById("pdp-info-meta");
   if (metaContainer) {
+    const userReviews = getUserReviews(currentProduct.id);
+    const reviewText = userReviews.length > 0 
+      ? `(${userReviews.length} ${isEn ? "reviews" : "تقييم"})`
+      : (isEn ? "(100% Authentic Signature)" : "(إصدار ملكي أصلي 100%)");
+
     metaContainer.innerHTML = `
       <div class="pdp-top-meta">
         <span class="pdp-family-badge">⚜️ ${lp.displayFamily || currentProduct.family}</span>
         <div class="pdp-rating-strip">
           <span class="pdp-rating-stars">★★★★★</span>
-          <span class="pdp-rating-number">${currentProduct.rating || 5.0}</span>
-          <a href="#reviews-section" class="pdp-reviews-jump">(${currentProduct.reviewsCount || 150} ${isEn ? "reviews" : "تقييم"})</a>
+          <span class="pdp-rating-number">5.0</span>
+          <a href="#reviews-section" class="pdp-reviews-jump">${reviewText}</a>
         </div>
       </div>
       <h1 class="pdp-title">${lp.displayName}</h1>
@@ -581,21 +636,62 @@ function renderStoryAndRitual(lp) {
   `;
 }
 
+function getUserReviews(productId) {
+  try {
+    const raw = localStorage.getItem(`atyab_reviews_${productId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
 /**
- * قسم تقييمات العملاء الموثقة بالمملكة
+ * قسم تقييمات العملاء الموثقة بالمملكة (Authentic Customer Reviews Only)
  */
 function renderReviewsSection(lp) {
   const container = document.getElementById("pdp-reviews-container");
   if (!container) return;
 
-  const reviews = lp.displayReviews || [];
+  const isEn = state.language === "en";
+  const userReviews = getUserReviews(currentProduct.id);
+
+  if (userReviews.length === 0) {
+    container.innerHTML = `
+      <div class="pdp-reviews-header-bar">
+        <div>
+          <span class="section-subtitle">⭐ ${t("pdp_reviews_eyebrow")}</span>
+          <h2 style="font-family: var(--font-arabic-title); font-size: 1.8rem; font-weight: 800; color: #000;">${t("pdp_reviews_section_title")}</h2>
+          <span style="font-size: 0.9rem; color: var(--text-muted);">${isEn ? "No customer reviews yet" : "لا توجد تقييمات مسجلة حتى الآن"}</span>
+        </div>
+        <button class="btn btn-secondary" onclick="openReviewModal()">
+          ✍️ ${t("pdp_write_review_btn")}
+        </button>
+      </div>
+
+      <div style="text-align: center; padding: 48px 24px; background: #FFF; border-radius: 12px; border: 1.5px dashed rgba(197, 155, 39, 0.4); margin-top: 20px;">
+        <span style="font-size: 2.2rem; display: block; margin-bottom: 12px;">⚜️</span>
+        <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800; color: #111; margin-bottom: 8px;">
+          ${isEn ? "Be the First to Experience and Review" : "كن أول من يشارك تجربته مع هذا العطر الملكي"}
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 20px; line-height: 1.7;">
+          ${isEn 
+            ? "We only display authentic customer reviews. Share your impressions on scent longevity, sillage, and royal presence." 
+            : "نحرص على نشر تجارب العملاء الحقيقية فقط. شاركنا انطباعك ورأيك في ثبات وفوحان العطر بعد تجربتك الملكية."}
+        </p>
+        <button class="btn btn-primary" onclick="openReviewModal()" style="padding: 12px 24px;">
+          ✍️ ${t("pdp_write_review_btn")}
+        </button>
+      </div>
+    `;
+    return;
+  }
 
   container.innerHTML = `
     <div class="pdp-reviews-header-bar">
       <div>
         <span class="section-subtitle">⭐ ${t("pdp_reviews_eyebrow")}</span>
         <h2 style="font-family: var(--font-arabic-title); font-size: 1.8rem; font-weight: 800; color: #000;">${t("pdp_reviews_section_title")}</h2>
-        <span style="font-size: 0.9rem; color: var(--text-muted);">${t("pdp_reviews_based_on", { count: currentProduct.reviewsCount })}</span>
+        <span style="font-size: 0.9rem; color: var(--text-muted);">${t("pdp_reviews_based_on", { count: userReviews.length })}</span>
       </div>
       <button class="btn btn-secondary" onclick="openReviewModal()">
         ✍️ ${t("pdp_write_review_btn")}
@@ -603,20 +699,20 @@ function renderReviewsSection(lp) {
     </div>
 
     <div class="pdp-reviews-cards-list">
-      ${reviews.map(r => `
+      ${userReviews.map(r => `
         <div class="pdp-review-card">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span class="stars" style="color: #D4AF37; font-size: 1.1rem;">★★★★★</span>
-              <span style="font-size: 0.78rem; color: var(--text-muted);">${r.displayDate}</span>
+              <span class="stars" style="color: #D4AF37; font-size: 1.1rem;">${"★".repeat(r.rating || 5)}</span>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">${r.date}</span>
             </div>
-            <h4 style="font-size: 1.05rem; font-weight: 800; color: #000; margin-bottom: 8px;">${r.displayTitle}</h4>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">${r.displayComment}</p>
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: #000; margin-bottom: 8px;">${r.title}</h4>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">${r.comment}</p>
           </div>
           <div style="border-top: 1px solid var(--border-light); padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <strong style="display: block; font-size: 0.9rem; color: #000;">${r.displayAuthor}</strong>
-              <span style="font-size: 0.78rem; color: var(--text-muted);">${r.displayCity}</span>
+              <strong style="display: block; font-size: 0.9rem; color: #000;">${r.author}</strong>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">${r.city}</span>
             </div>
             <span style="font-size: 0.76rem; background: #E8F5E9; color: #2E7D32; padding: 3px 8px; border-radius: var(--radius-full); font-weight: 700;">
               ${t("pdp_verified_purchase")}
@@ -725,24 +821,37 @@ function handleReviewSubmit(e) {
   const rating = document.getElementById("rev-rating").value;
   const comment = document.getElementById("rev-comment").value;
 
-  currentProduct.reviews = currentProduct.reviews || [];
-  currentProduct.reviews.unshift({
+  const isEn = state.language === "en";
+  const userReviews = getUserReviews(currentProduct.id);
+  userReviews.unshift({
     author: name,
-    authorEn: name,
     city: city,
-    cityEn: city,
     rating: parseInt(rating),
-    date: "الآن",
-    dateEn: "Just now",
-    title: "تجربة شراء وتقييم أصلي",
-    titleEn: "Verified Purchase Experience",
-    comment: comment,
-    commentEn: comment
+    date: isEn ? "Just now" : "الآن",
+    title: isEn ? "Verified Purchase Experience" : "تجربة شراء وتقييم أصلي",
+    comment: comment
   });
 
-  currentProduct.reviewsCount += 1;
+  try {
+    localStorage.setItem(`atyab_reviews_${currentProduct.id}`, JSON.stringify(userReviews));
+  } catch (err) {}
+
   closeReviewModal();
   const lp = getProductLocalized(currentProduct, state.language);
   renderReviewsSection(lp);
+  renderPurchaseBox(lp);
   showToast(t("review_success_title"), t("review_success_msg"), "⭐");
 }
+
+// Live catalog sync listener
+window.addEventListener("atyab_products_updated", () => {
+  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+  if (typeof initProductPage === "function") initProductPage();
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+    if (typeof initProductPage === "function") initProductPage();
+  }
+});

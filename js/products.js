@@ -2394,18 +2394,7 @@ function getProductLocalized(product, lang = "ar") {
 function getUnifiedProductsCatalog() {
   let list = Array.isArray(BASE_ATYAB_PRODUCTS) ? [...BASE_ATYAB_PRODUCTS] : [];
 
-  // 1. Filter out deleted products (allows removing both custom and default products)
-  try {
-    const deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
-    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
-      const delSet = new Set(deletedIds);
-      list = list.filter(p => !delSet.has(p.id));
-    }
-  } catch (e) {
-    console.warn("Error reading atyab_deleted_product_ids:", e);
-  }
-
-  // 2. Apply modifications to existing products
+  // 1. Apply modifications to existing products
   try {
     const updatedMap = JSON.parse(localStorage.getItem("atyab_updated_products") || "{}");
     if (updatedMap && typeof updatedMap === "object") {
@@ -2415,7 +2404,7 @@ function getUnifiedProductsCatalog() {
     console.warn("Error reading atyab_updated_products:", e);
   }
 
-  // 3. Prepend custom newly created products
+  // 2. Prepend custom newly created products
   try {
     const customList = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
     if (Array.isArray(customList) && customList.length > 0) {
@@ -2424,6 +2413,17 @@ function getUnifiedProductsCatalog() {
     }
   } catch (e) {
     console.warn("Error reading atyab_custom_products:", e);
+  }
+
+  // 3. Absolute final filter: remove all deleted product IDs (covers both base & custom)
+  try {
+    const deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
+    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+      const delSet = new Set(deletedIds);
+      list = list.filter(p => !delSet.has(p.id));
+    }
+  } catch (e) {
+    console.warn("Error reading atyab_deleted_product_ids:", e);
   }
 
   return list;
