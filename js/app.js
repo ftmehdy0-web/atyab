@@ -971,19 +971,21 @@ if (document.readyState === "loading") {
 }
 
 // Live catalog cross-tab synchronization
-window.addEventListener("atyab_products_updated", () => {
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  try { renderShowcase(); } catch (e) { }
-  try { renderCreamsSpotlight(); } catch (e) { }
-  try { renderProducts(); } catch (e) { }
-});
-
-window.addEventListener("storage", (e) => {
-  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
-    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+let appSyncDebounceTimer = null;
+function handleStorefrontLiveSync() {
+  if (appSyncDebounceTimer) clearTimeout(appSyncDebounceTimer);
+  appSyncDebounceTimer = setTimeout(() => {
     try { renderShowcase(); } catch (e) { }
     try { renderCreamsSpotlight(); } catch (e) { }
     try { renderProducts(); } catch (e) { }
+  }, 60);
+}
+
+window.addEventListener("atyab_products_updated", handleStorefrontLiveSync);
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
+    handleStorefrontLiveSync();
   }
 });
 
@@ -1195,7 +1197,6 @@ function renderShowcase() {
   const container = document.getElementById("cherished-grid-items") || document.getElementById("showcase-grid-items");
   if (!container) return;
 
-  if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
   const allProds = typeof getUnifiedProductsCatalog === "function"
     ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);

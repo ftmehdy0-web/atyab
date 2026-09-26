@@ -2442,9 +2442,6 @@ function refreshAtyabProducts() {
   if (typeof window !== "undefined") {
     window.ATYAB_PRODUCTS = ATYAB_PRODUCTS;
     window.AYTYAB_PRODUCTS = ATYAB_PRODUCTS;
-    try {
-      window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { products: ATYAB_PRODUCTS } }));
-    } catch (e) {}
   }
   return ATYAB_PRODUCTS;
 }
@@ -2464,25 +2461,39 @@ if (typeof window !== "undefined" && typeof BroadcastChannel !== "undefined") {
   }
 }
 
+let isBroadcasting = false;
 function broadcastCatalogUpdate(action, payload) {
-  triggerLiveWebsiteSync({ action, payload });
-  if (liveProductsBroadcastChannel) {
-    try {
-      liveProductsBroadcastChannel.postMessage({ action, payload, time: Date.now() });
-    } catch (err) {}
-  }
+  if (isBroadcasting) return;
+  isBroadcasting = true;
   try {
-    window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { action, payload, products: ATYAB_PRODUCTS } }));
-  } catch (err) {}
+    triggerLiveWebsiteSync({ action, payload });
+    if (liveProductsBroadcastChannel) {
+      try {
+        liveProductsBroadcastChannel.postMessage({ action, payload, time: Date.now() });
+      } catch (err) {}
+    }
+    try {
+      window.dispatchEvent(new CustomEvent("atyab_products_updated", { detail: { action, payload, products: ATYAB_PRODUCTS } }));
+    } catch (err) {}
+  } finally {
+    isBroadcasting = false;
+  }
 }
 
+let isLiveSyncing = false;
 function triggerLiveWebsiteSync(data) {
-  refreshAtyabProducts();
-  if (typeof renderProducts === "function") renderProducts();
-  if (typeof renderCategoryProducts === "function") renderCategoryProducts();
-  if (typeof renderShowcase === "function") renderShowcase();
-  if (typeof renderCreamsSpotlight === "function") renderCreamsSpotlight();
-  if (typeof renderProductPage === "function") renderProductPage();
+  if (isLiveSyncing) return;
+  isLiveSyncing = true;
+  try {
+    refreshAtyabProducts();
+    if (typeof renderProducts === "function") renderProducts();
+    if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+    if (typeof renderShowcase === "function") renderShowcase();
+    if (typeof renderCreamsSpotlight === "function") renderCreamsSpotlight();
+    if (typeof renderProductPage === "function") renderProductPage();
+  } finally {
+    isLiveSyncing = false;
+  }
   if (typeof renderProductsManagement === "function") renderProductsManagement();
   if (typeof updateTopNavCounts === "function") updateTopNavCounts();
   if (typeof populateManualOrderProductSelect === "function") populateManualOrderProductSelect();
