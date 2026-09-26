@@ -17,13 +17,13 @@ function safeGetStorage(key, fallback = null) {
 function safeSetStorage(key, val) {
   try {
     localStorage.setItem(key, val);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function safeRemoveStorage(key) {
   try {
     localStorage.removeItem(key);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 // دالة الكشف المتقدم عن اللغة المختارة من رابط المتصفح أو التفضيل المخزن
@@ -921,8 +921,8 @@ function setCurrency(curr) {
 
     const spotlightCta = document.querySelector(".spotlight-banner-content .btn-hero-outline span:first-child");
     if (spotlightCta) {
-      spotlightCta.textContent = state.language === "en" 
-        ? `Quick View Moon Flower (${formatPrice(80)})` 
+      spotlightCta.textContent = state.language === "en"
+        ? `Quick View Moon Flower (${formatPrice(80)})`
         : `نظرة سريعة على مون فلاور (${formatPrice(80)})`;
     }
 
@@ -960,7 +960,7 @@ function initApp() {
   try { updateAccountUI(); } catch (e) { console.warn("updateAccountUI error:", e); }
   try { setupEventListeners(); } catch (e) { console.warn("setupEventListeners error:", e); }
   setTimeout(() => {
-    try { initScrollReveal(); } catch (e) {}
+    try { initScrollReveal(); } catch (e) { }
   }, 100);
 }
 
@@ -973,17 +973,17 @@ if (document.readyState === "loading") {
 // Live catalog cross-tab synchronization
 window.addEventListener("atyab_products_updated", () => {
   if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  try { renderShowcase(); } catch (e) {}
-  try { renderCreamsSpotlight(); } catch (e) {}
-  try { renderProducts(); } catch (e) {}
+  try { renderShowcase(); } catch (e) { }
+  try { renderCreamsSpotlight(); } catch (e) { }
+  try { renderProducts(); } catch (e) { }
 });
 
 window.addEventListener("storage", (e) => {
   if (e.key === "atyab_custom_products" || e.key === "atyab_deleted_product_ids" || e.key === "atyab_updated_products") {
     if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-    try { renderShowcase(); } catch (e) {}
-    try { renderCreamsSpotlight(); } catch (e) {}
-    try { renderProducts(); } catch (e) {}
+    try { renderShowcase(); } catch (e) { }
+    try { renderCreamsSpotlight(); } catch (e) { }
+    try { renderProducts(); } catch (e) { }
   }
 });
 
@@ -1196,8 +1196,8 @@ function renderShowcase() {
   if (!container) return;
 
   if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  const allProds = typeof getUnifiedProductsCatalog === "function" 
-    ? getUnifiedProductsCatalog() 
+  const allProds = typeof getUnifiedProductsCatalog === "function"
+    ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
   if (!Array.isArray(allProds) || allProds.length === 0) return;
 
@@ -1285,8 +1285,8 @@ function renderCreamsSpotlight() {
   if (!container) return;
 
   if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  const allProds = typeof getUnifiedProductsCatalog === "function" 
-    ? getUnifiedProductsCatalog() 
+  const allProds = typeof getUnifiedProductsCatalog === "function"
+    ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
   const creams = allProds.filter(p => p.category === "cream");
   const section = container.closest(".creams-spotlight-section");
@@ -1339,8 +1339,8 @@ function renderProducts() {
   if (!grid) return;
 
   if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-  const allProds = typeof getUnifiedProductsCatalog === "function" 
-    ? getUnifiedProductsCatalog() 
+  const allProds = typeof getUnifiedProductsCatalog === "function"
+    ? getUnifiedProductsCatalog()
     : (typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : []);
 
   const query = state.searchQuery.toLowerCase().trim();
