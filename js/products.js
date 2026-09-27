@@ -2418,8 +2418,13 @@ function getUnifiedProductsCatalog() {
   // 3. Absolute final filter: remove all deleted product IDs (covers both base & custom)
   try {
     const deletedIds = JSON.parse(localStorage.getItem("atyab_deleted_product_ids") || "[]");
-    if (Array.isArray(deletedIds) && deletedIds.length > 0) {
-      const delSet = new Set(deletedIds);
+    const firebaseDeletedIds = JSON.parse(localStorage.getItem("atyab_firebase_deleted_product_ids") || "[]");
+    const allDeletedIds = [
+      ...(Array.isArray(deletedIds) ? deletedIds : []),
+      ...(Array.isArray(firebaseDeletedIds) ? firebaseDeletedIds : [])
+    ];
+    if (allDeletedIds.length > 0) {
+      const delSet = new Set(allDeletedIds);
       list = list.filter(p => !delSet.has(p.id));
     }
   } catch (e) {
@@ -2609,6 +2614,17 @@ function restoreDefaultCatalogInStorage() {
   try {
     localStorage.removeItem("atyab_deleted_product_ids");
     localStorage.removeItem("atyab_updated_products");
+
+    // Product edits are stored as custom overrides using the original product
+    // ID. Remove those overrides while preserving genuinely new products.
+    const baseProductIds = new Set((BASE_ATYAB_PRODUCTS || []).map((product) => product.id));
+    const customProducts = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    if (Array.isArray(customProducts)) {
+      localStorage.setItem(
+        "atyab_custom_products",
+        JSON.stringify(customProducts.filter((product) => !baseProductIds.has(product.id)))
+      );
+    }
     refreshAtyabProducts();
     broadcastCatalogUpdate("restore", {});
     return { success: true };
@@ -2635,6 +2651,7 @@ if (typeof window !== "undefined") {
     if (
       e.key === "atyab_custom_products" ||
       e.key === "atyab_deleted_product_ids" ||
+      e.key === "atyab_firebase_deleted_product_ids" ||
       e.key === "atyab_updated_products"
     ) {
       triggerLiveWebsiteSync({ action: "storage_sync" });

@@ -1,7 +1,7 @@
 /**
  * ATYAB LUXURY PERFUMES - ROYAL ADMIN DASHBOARD CONTROLLER (ENGLISH)
  * Executive Order Management, Live Analytics & Real-Time Sync System
- * Strictly protected for: admin@gmail.com / 123456
+ * Access is restricted to the configured Firebase administrator account.
  * 100% REAL ORDERS ONLY — All dummy/fake seed data removed.
  */
 
@@ -10,7 +10,10 @@
 // If not authenticated via the website sign-in modal, redirect to home.
 // ===================================================================
 const REQUIRED_EMAIL = "admin@gmail.com";
-const REQUIRED_PASS = "123456";
+
+function isAuthorizedAdminEmail(email) {
+  return String(email || "").trim().toLowerCase() === REQUIRED_EMAIL;
+}
 
 function verifyAdminSession() {
   const sessionRaw = localStorage.getItem("atyab_admin_session") || sessionStorage.getItem("atyab_admin_session");
@@ -20,7 +23,7 @@ function verifyAdminSession() {
   }
   try {
     const session = JSON.parse(sessionRaw);
-    if (!session || !session.email || session.email.toLowerCase() !== REQUIRED_EMAIL) {
+    if (!session || !isAuthorizedAdminEmail(session.email)) {
       showAdminLoginGate();
       return false;
     }
@@ -38,18 +41,44 @@ function showAdminLoginGate() {
   }
 }
 
-function handleAdminGateLogin(e) {
+async function handleAdminGateLogin(e) {
   if (e) e.preventDefault();
   const emailInput = document.getElementById("gate-email");
   const passInput = document.getElementById("gate-password");
   const errEl = document.getElementById("gate-error-msg");
 
   const email = emailInput?.value?.trim().toLowerCase() || "";
-  const pass = passInput?.value?.trim() || "";
+  const pass = passInput?.value || "";
 
-  if (email === REQUIRED_EMAIL && pass === REQUIRED_PASS) {
+  if (!email || !pass) {
+    if (errEl) {
+      errEl.textContent = "Enter your Firebase administrator email and password.";
+      errEl.style.display = "block";
+    }
+    return;
+  }
+
+  if (typeof firebaseAuthSignIn !== "function" || typeof isFirebaseConfigured !== "function" || !isFirebaseConfigured()) {
+    if (errEl) {
+      errEl.textContent = "Firebase Authentication is unavailable. Check the Firebase configuration and reload.";
+      errEl.style.display = "block";
+    }
+    return;
+  }
+
+  const authResult = await firebaseAuthSignIn(email, pass);
+  if (!authResult?.success || authResult.isLocal) {
+    if (errEl) {
+      errEl.textContent = authResult?.error || "Firebase could not verify this account.";
+      errEl.style.display = "block";
+    }
+    return;
+  }
+
+  if (isAuthorizedAdminEmail(authResult.user?.email)) {
     const adminSession = {
       email: REQUIRED_EMAIL,
+      uid: authResult.user?.uid || "",
       role: "super_admin",
       loggedInAt: new Date().toISOString()
     };
@@ -60,8 +89,9 @@ function handleAdminGateLogin(e) {
     initDashboard();
     showToast("Access Granted", "Welcome to ATYAB Executive Hub.");
   } else {
+    if (typeof firebaseAuthSignOut === "function") firebaseAuthSignOut();
     if (errEl) {
-      errEl.textContent = "Invalid passcode. Please enter 123456.";
+      errEl.textContent = "This Firebase account is not authorized to access the admin dashboard.";
       errEl.style.display = "block";
     }
   }
@@ -96,6 +126,9 @@ const adminState = {
   editingProductId: null,
   deletingProductId: null
 };
+
+let firebaseAdminSyncStarted = false;
+let pastedFirebaseConfig = null;
 
 window.adminState = adminState;
 
@@ -132,6 +165,68 @@ function saveOrdersToStorage() {
   } catch (err) {
     console.error("Error writing atyab_orders:", err);
   }
+}
+
+function applyCloudOrders(cloudOrders, { announce = false } = {}) {
+  if (!Array.isArray(cloudOrders)) return;
+
+  const ordersById = new Map(adminState.orders.map((order) => [order.id, order]));
+  let changed = false;
+
+  cloudOrders.forEach((cloudOrder) => {
+    if (!cloudOrder || !cloudOrder.id) return;
+    if (cloudOrder._deleted) {
+      changed = ordersById.delete(cloudOrder.id) || changed;
+      return;
+    }
+
+    const current = ordersById.get(cloudOrder.id);
+    if (!current || JSON.stringify(current) !== JSON.stringify(cloudOrder)) {
+      ordersById.set(cloudOrder.id, cloudOrder);
+      changed = true;
+    }
+  });
+
+  if (!changed) return;
+
+  adminState.orders = Array.from(ordersById.values()).sort(
+    (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+  );
+  saveOrdersToStorage();
+  renderDashboard();
+
+  if (announce) {
+    playRoyalChime();
+    showToast("Firebase Live Update", "Orders synchronized with Firebase cloud database.");
+  }
+}
+
+function syncOrderToFirebase(orderRecord) {
+  if (typeof firebaseSaveOrder !== "function") return;
+
+  firebaseSaveOrder(orderRecord).then((result) => {
+    if (result && !result.success) {
+      console.warn("[Firebase Live Sync] Order save failed:", result.error);
+      showToast("Cloud Sync Needs Attention", "The order is saved locally, but Firebase could not confirm the update.");
+    }
+  }).catch((err) => {
+    console.warn("[Firebase Live Sync] Order save notice:", err);
+    showToast("Cloud Sync Needs Attention", "The order is saved locally, but Firebase could not confirm the update.");
+  });
+}
+
+function removeOrderFromFirebase(orderId) {
+  if (typeof firebaseDeleteOrder !== "function") return;
+
+  firebaseDeleteOrder(orderId).then((result) => {
+    if (result && !result.success) {
+      console.warn("[Firebase Live Sync] Order removal failed:", result.error);
+      showToast("Cloud Sync Needs Attention", "The order was removed locally, but Firebase could not confirm the removal.");
+    }
+  }).catch((err) => {
+    console.warn("[Firebase Live Sync] Order removal notice:", err);
+    showToast("Cloud Sync Needs Attention", "The order was removed locally, but Firebase could not confirm the removal.");
+  });
 }
 
 /**
@@ -236,6 +331,7 @@ function confirmOrder(orderId) {
   });
 
   saveOrdersToStorage();
+  syncOrderToFirebase(order);
   renderDashboard();
   showToast(`✅ Order ${orderId} Confirmed!`, "Status updated to Confirmed. Preparations underway.");
 
@@ -273,16 +369,7 @@ function updateOrderStatus(orderId, newStatus) {
   localStorage.setItem("atyab_orders_updated", Date.now().toString());
   window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { orderId, status: newStatus } }));
 
-  // Live Firebase Firestore database status synchronization
-  if (typeof firebaseUpdateOrderStatus === "function") {
-    firebaseUpdateOrderStatus(orderId, newStatus, order.timeline)
-      .then((res) => {
-        if (res && res.success && !res.isLocal) {
-          console.log(`[Firebase Live Sync] Status successfully updated to ${newStatus} for ${orderId}`);
-        }
-      })
-      .catch((err) => console.warn("[Firebase Live Sync] Status sync notice:", err));
-  }
+  syncOrderToFirebase(order);
 
   renderDashboard();
   showToast(`Status Updated`, `Order ${orderId} marked as ${statusLabels[newStatus] || newStatus}`);
@@ -299,6 +386,7 @@ function deleteOrder(orderId) {
   if (!confirm(`Are you sure you want to delete order ${orderId}?`)) return;
   adminState.orders = adminState.orders.filter((o) => o.id !== orderId);
   saveOrdersToStorage();
+  removeOrderFromFirebase(orderId);
   localStorage.setItem("atyab_orders_updated", Date.now().toString());
   window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { orderId, deleted: true } }));
   closeOrderModal();
@@ -311,8 +399,10 @@ function deleteOrder(orderId) {
  */
 function clearAllOrders() {
   if (confirm("Are you sure you want to clear all orders? This will empty the orders list completely.")) {
+    const orderIds = adminState.orders.map((order) => order.id);
     adminState.orders = [];
     saveOrdersToStorage();
+    orderIds.forEach(removeOrderFromFirebase);
     localStorage.setItem("atyab_orders_updated", Date.now().toString());
     window.dispatchEvent(new CustomEvent("atyab_orders_updated", { detail: { cleared: true } }));
     renderDashboard();
@@ -339,6 +429,7 @@ function addOrderNote(orderId) {
   });
 
   saveOrdersToStorage();
+  syncOrderToFirebase(order);
   if (input) input.value = "";
   openOrderDetails(orderId);
   showToast("Note Saved", "Internal note added to order record.");
@@ -1097,6 +1188,7 @@ function handleManualOrderSubmit(event) {
 
   adminState.orders.unshift(newOrder);
   saveOrdersToStorage();
+  syncOrderToFirebase(newOrder);
   closeNewOrderModal();
   renderDashboard();
   showToast("Order Created", `Manual Order ${orderId} successfully registered.`);
@@ -1405,67 +1497,37 @@ function showToast(title, message = "") {
     toast.style.transition = "all 0.3s ease";
     setTimeout(() => toast.remove(), 300);
   }, 4000);
+}
+
 // ===================================================================
 // 8. FIREBASE LIVE SYNC & AUTHENTICATION CONFIGURATION (ADMIN ONLY)
 // ===================================================================
 function initFirebaseAdminIntegration() {
   updateFirebaseStatusBadge();
 
+  if (firebaseAdminSyncStarted) return;
+
   // If Firebase is configured, fetch initial Firestore orders and attach real-time live listener
   if (typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
     if (typeof firebaseGetAllOrders === "function") {
       firebaseGetAllOrders().then((cloudOrders) => {
-        if (cloudOrders && cloudOrders.length > 0) {
-          const existingIds = new Set(adminState.orders.map((o) => o.id));
-          let added = false;
-          cloudOrders.forEach((co) => {
-            if (!existingIds.has(co.id)) {
-              adminState.orders.push(co);
-              existingIds.add(co.id);
-              added = true;
-            }
-          });
-          if (added) {
-            saveOrdersToStorage();
-            renderDashboard();
-          }
-        }
+        applyCloudOrders(cloudOrders);
       }).catch((e) => console.warn("[Firebase Live Sync] Cloud orders fetch notice:", e));
     }
 
     if (typeof firebaseSubscribeToOrders === "function") {
-      firebaseSubscribeToOrders((cloudOrders) => {
+      const unsubscribe = firebaseSubscribeToOrders((cloudOrders) => {
         console.log("[Firebase Live Sync] Real-time event in Admin:", cloudOrders);
-        if (cloudOrders && cloudOrders.length > 0) {
-          const existingMap = new Map(adminState.orders.map(o => [o.id, o]));
-          let modified = false;
-          cloudOrders.forEach(co => {
-            const current = existingMap.get(co.id);
-            if (!current || JSON.stringify(current) !== JSON.stringify(co)) {
-              existingMap.set(co.id, co);
-              modified = true;
-            }
-          });
-          if (modified) {
-            adminState.orders = Array.from(existingMap.values()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            saveOrdersToStorage();
-            renderDashboard();
-            playRoyalChime();
-            showToast("Firebase Live Update", "Orders synchronized with Firebase cloud database.");
-          }
-        }
+        applyCloudOrders(cloudOrders, { announce: true });
       });
+      firebaseAdminSyncStarted = typeof unsubscribe === "function";
     }
   }
-}
 }
 
 // ===================================================================
 // 9. FIREBASE AUTHENTICATION CONFIGURATION (ADMIN MANAGEMENT)
 // ===================================================================
-function initFirebaseAdminIntegration() {
-  updateFirebaseStatusBadge();
-}
 
 function updateFirebaseStatusBadge() {
   const isConfigured = typeof isFirebaseConfigured === "function" && isFirebaseConfigured();
@@ -1477,7 +1539,7 @@ function updateFirebaseStatusBadge() {
   const statusDesc = document.getElementById("firebase-modal-status-desc");
 
   if (dot) dot.style.background = isConfigured ? "#10B981" : "#EF4444";
-  if (label) label.textContent = isConfigured ? "🔥 Firebase: Active" : "🔥 Firebase: Setup";
+  if (label) label.textContent = isConfigured ? "🔥 Firebase: Configured" : "🔥 Firebase: Setup";
 
   if (statusBox) {
     statusBox.style.background = isConfigured ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.1)";
@@ -1486,11 +1548,11 @@ function updateFirebaseStatusBadge() {
   if (statusIcon) statusIcon.textContent = isConfigured ? "🟢" : "🔴";
   if (statusTitle) {
     statusTitle.style.color = isConfigured ? "#34D399" : "#F87171";
-    statusTitle.textContent = isConfigured ? "Firebase Auth: Active & Connected" : "Firebase Auth: Not Configured";
+    statusTitle.textContent = isConfigured ? "Firebase: Configured" : "Firebase: Not Configured";
   }
   if (statusDesc) {
     statusDesc.textContent = isConfigured 
-      ? `Firebase Authentication is successfully connected and verifying customer signups/logins.`
+      ? `Firebase configuration is present. Sign in as the Firebase administrator to begin protected Firestore live sync.`
       : "Paste your Firebase web config JSON or fill in the keys below to activate.";
   }
 }
@@ -1528,6 +1590,7 @@ function handleFirebaseJsonPaste(val) {
     }
     clean = clean.replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":').replace(/'/g, '"');
     const parsed = JSON.parse(clean);
+    pastedFirebaseConfig = parsed;
 
     if (parsed.apiKey) document.getElementById("cfg-fb-apikey").value = parsed.apiKey;
     if (parsed.projectId) document.getElementById("cfg-fb-projectid").value = parsed.projectId;
@@ -1551,6 +1614,7 @@ function handleSaveFirebaseConfig(e) {
   }
 
   const fbConfig = {
+    ...(pastedFirebaseConfig || {}),
     apiKey,
     projectId,
     authDomain,
@@ -1559,14 +1623,8 @@ function handleSaveFirebaseConfig(e) {
   };
 
   localStorage.setItem("atyab_firebase_config", JSON.stringify(fbConfig));
-
-  if (typeof initFirebase === "function") {
-    initFirebase();
-  }
-
-  updateFirebaseStatusBadge();
-  showToast("Firebase Connected!", "Customer sign up & login are now secured by Google Firebase Auth.");
-  closeFirebaseConfigModal();
+  showToast("Firebase Configuration Saved", "Reloading to activate the selected Firebase project.");
+  setTimeout(() => window.location.reload(), 500);
 }
 
 function handleClearFirebaseConfig() {
@@ -1584,8 +1642,9 @@ function handleClearFirebaseConfig() {
     if (appIdInput) appIdInput.value = "";
     if (jsonInput) jsonInput.value = "";
 
-    updateFirebaseStatusBadge();
-    showToast("Firebase Reset", "Switched back to local authentication mode.");
+    pastedFirebaseConfig = null;
+    showToast("Firebase Defaults Restored", "Reloading to activate the built-in Firebase project configuration.");
+    setTimeout(() => window.location.reload(), 500);
   }
 }
 
@@ -2445,9 +2504,13 @@ async function handleProductEditorSubmit(e) {
   // 2. Cloud Firestore Sync if Firebase is configured
   if (typeof firebaseSaveProduct === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
     try {
-      await firebaseSaveProduct(productData);
+      const cloudResult = await firebaseSaveProduct(productData);
+      if (cloudResult && !cloudResult.success) {
+        showToast("Cloud Sync Needs Attention", "The product was saved locally, but Firebase could not confirm the publish.");
+      }
     } catch (err) {
       console.warn("Firestore product save notice:", err);
+      showToast("Cloud Sync Needs Attention", "The product was saved locally, but Firebase could not confirm the publish.");
     }
   }
 
@@ -2522,9 +2585,13 @@ async function executeDeleteProduct() {
   // 2. Cloud Firestore Sync
   if (typeof firebaseDeleteProduct === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
     try {
-      await firebaseDeleteProduct(productId);
+      const cloudResult = await firebaseDeleteProduct(productId);
+      if (cloudResult && !cloudResult.success) {
+        showToast("Cloud Sync Needs Attention", "The product was removed locally, but Firebase could not confirm the unpublish.");
+      }
     } catch (err) {
       console.warn("Firestore delete notice:", err);
+      showToast("Cloud Sync Needs Attention", "The product was removed locally, but Firebase could not confirm the unpublish.");
     }
   }
 
@@ -2536,10 +2603,16 @@ async function executeDeleteProduct() {
   showToast("Product Removed", "The product has been removed and unpublished from the website.");
 }
 
-function handleRestoreDefaultCatalog() {
+async function handleRestoreDefaultCatalog() {
   if (confirm("Restore all original ATYAB catalog items? Any custom products you uploaded will remain safe.")) {
     if (typeof restoreDefaultCatalogInStorage === "function") {
       restoreDefaultCatalogInStorage();
+    }
+    if (typeof firebaseRestoreDefaultProducts === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
+      const result = await firebaseRestoreDefaultProducts();
+      if (result && !result.success) {
+        showToast("Cloud Sync Needs Attention", "Default products were restored locally, but Firebase could not confirm the restore.");
+      }
     }
     renderProductsManagement();
     populateManualOrderProductSelect();
@@ -2582,8 +2655,15 @@ window.handleRestoreDefaultCatalog = handleRestoreDefaultCatalog;
 window.viewProductInStore = viewProductInStore;
 window.handleAdminGateLogin = handleAdminGateLogin;
 
-// Bootstrap dashboard on DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-  initDashboard();
+window.addEventListener("atyab_firebase_auth_changed", () => {
+  if (verifyAdminSession()) {
+    initFirebaseAdminIntegration();
+  }
 });
 
+// Bootstrap dashboard on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  if (verifyAdminSession()) {
+    initDashboard();
+  }
+});

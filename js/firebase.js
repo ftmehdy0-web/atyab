@@ -17,6 +17,8 @@ const DEFAULT_FIREBASE_CONFIG = {
   measurementId: "G-2DQRHH2X0R"
 };
 
+const FIREBASE_ADMIN_EMAIL = "admin@gmail.com";
+
 function getFirebaseConfig() {
   try {
     const custom = localStorage.getItem("atyab_firebase_config");
@@ -88,6 +90,11 @@ function initFirebase() {
               saveAccount(profile);
             }
           }
+          try {
+            window.dispatchEvent(new CustomEvent("atyab_firebase_auth_changed", {
+              detail: { user: user ? { uid: user.uid, email: user.email } : null }
+            }));
+          } catch (e) {}
         });
       } catch (e) {}
     }
@@ -95,22 +102,12 @@ function initFirebase() {
     if (typeof firebase.firestore === "function") {
       firebaseDbInstance = firebase.firestore();
 
-      // Cloud Product Catalog Background Sync
+      // Cloud product catalog sync. The initial Firestore snapshot and every
+      // later change are applied to the local catalog used by every storefront
+      // page, so an admin publish does not require a customer refresh.
       setTimeout(async () => {
         try {
-          const cloudProducts = await firebaseGetAllProducts();
-          if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
-            const localCustom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
-            const localMap = new Map(localCustom.map(p => [p.id, p]));
-            cloudProducts.forEach(cp => {
-              if (cp && cp.id) localMap.set(cp.id, { ...(localMap.get(cp.id) || {}), ...cp });
-            });
-            localStorage.setItem("atyab_custom_products", JSON.stringify(Array.from(localMap.values())));
-            if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
-            if (typeof renderProducts === "function") renderProducts();
-            if (typeof renderCategoryProducts === "function") renderCategoryProducts();
-            if (typeof renderProductsManagement === "function") renderProductsManagement();
-          }
+          firebaseSubscribeToProducts(syncCloudProductsToLocal);
         } catch (e) {
           console.warn("Background product sync notice:", e);
         }
@@ -400,6 +397,40 @@ async function firebaseCreateOrder(orderRecord) {
 }
 
 /**
+ * Save a complete order record after an admin change (notes, confirmation,
+ * manual orders, and status edits). This prevents fields from being lost when
+ * the dashboard synchronizes an order back to Firestore.
+ */
+async function firebaseSaveOrder(orderRecord) {
+  if (!orderRecord || !orderRecord.id) {
+    return { success: false, error: "A valid order ID is required." };
+  }
+  return firebaseCreateOrder({ ...orderRecord, _deleted: false });
+}
+
+/**
+ * Keep a deletion marker instead of removing a document outright. A marker is
+ * included in live snapshots, allowing every open storefront to hide the item.
+ */
+async function firebaseDeleteOrder(orderId) {
+  if (!isFirebaseConfigured()) return { success: true, isLocal: true };
+  const db = getFirebaseDb();
+  if (!db) return { success: true, isLocal: true };
+
+  try {
+    await db.collection("orders").doc(orderId).set({
+      id: orderId,
+      _deleted: true,
+      deletedAt: new Date().toISOString()
+    }, { merge: true });
+    return { success: true };
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not remove order from Firestore:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
  * Fetch all orders from Firebase Firestore
  */
 async function firebaseGetAllOrders() {
@@ -407,8 +438,11 @@ async function firebaseGetAllOrders() {
   const db = getFirebaseDb();
   if (!db) return [];
 
+  const ordersQuery = getFirebaseOrdersQuery(db);
+  if (!ordersQuery) return [];
+
   try {
-    const snapshot = await db.collection("orders").get();
+    const snapshot = await ordersQuery.get();
     const orders = [];
     snapshot.forEach((doc) => {
       orders.push(doc.data());
@@ -426,17 +460,36 @@ async function firebaseGetAllOrders() {
  */
 let firestoreOrdersUnsubscribe = null;
 
+function getFirebaseOrdersQuery(db) {
+  const user = firebaseAuthInstance?.currentUser;
+  if (!user?.email) return null;
+
+  if (user.email.toLowerCase() === FIREBASE_ADMIN_EMAIL) {
+    return db.collection("orders");
+  }
+
+  return db.collection("orders").where("customer.email", "==", user.email.toLowerCase());
+}
+
 function firebaseSubscribeToOrders(onUpdate) {
   if (!isFirebaseConfigured()) return null;
   const db = getFirebaseDb();
   if (!db) return null;
+  const ordersQuery = getFirebaseOrdersQuery(db);
+  if (!ordersQuery) {
+    if (firestoreOrdersUnsubscribe) {
+      firestoreOrdersUnsubscribe();
+      firestoreOrdersUnsubscribe = null;
+    }
+    return null;
+  }
 
   try {
     if (firestoreOrdersUnsubscribe) {
       firestoreOrdersUnsubscribe();
     }
 
-    firestoreOrdersUnsubscribe = db.collection("orders").onSnapshot((snapshot) => {
+    firestoreOrdersUnsubscribe = ordersQuery.onSnapshot((snapshot) => {
       const orders = [];
       snapshot.forEach((doc) => {
         orders.push(doc.data());
@@ -469,6 +522,8 @@ async function firebaseUpdateOrderStatus(orderId, newStatus, timeline) {
 
   try {
     const updateData = {
+      id: orderId,
+      _deleted: false,
       status: newStatus,
       updatedAt: new Date().toISOString()
     };
@@ -551,11 +606,49 @@ async function firebaseDeleteProduct(productId) {
   if (!db) return { success: true, isLocal: true };
 
   try {
-    await db.collection("products").doc(productId).delete();
-    console.log(`[Firebase Live Sync] Product ${productId} deleted from Firestore.`);
+    // Do not physically delete the document. The tombstone is what tells
+    // customers in other browsers to hide built-in products as well.
+    await db.collection("products").doc(productId).set({
+      id: productId,
+      _deleted: true,
+      deletedAt: new Date().toISOString()
+    }, { merge: true });
+    console.log(`[Firebase Live Sync] Product ${productId} unpublished in Firestore.`);
     return { success: true };
   } catch (err) {
     console.warn("[Firebase Live Sync] Could not delete product from Firestore:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Remove cloud deletion markers so restored default products reappear on all
+ * storefronts. Custom product documents remain untouched.
+ */
+async function firebaseRestoreDefaultProducts() {
+  if (!isFirebaseConfigured()) return { success: true, isLocal: true };
+  const db = getFirebaseDb();
+  if (!db) return { success: true, isLocal: true };
+
+  try {
+    const snapshot = await db.collection("products").get();
+    const removals = [];
+    const baseProductIds = new Set(
+      (typeof window !== "undefined" && Array.isArray(window.BASE_ATYAB_PRODUCTS)
+        ? window.BASE_ATYAB_PRODUCTS
+        : [])
+        .map((product) => product.id)
+    );
+    snapshot.forEach((doc) => {
+      const product = doc.data();
+      if (product?._deleted || baseProductIds.has(doc.id)) {
+        removals.push(doc.ref.delete());
+      }
+    });
+    await Promise.all(removals);
+    return { success: true };
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not restore default products:", err);
     return { success: false, error: err.message };
   }
 }
@@ -577,6 +670,47 @@ async function firebaseGetAllProducts() {
 }
 
 let firestoreProductsUnsubscribe = null;
+
+/**
+ * Merge Firestore products into the browser catalog and mirror Firestore
+ * tombstones separately from local-only product deletions.
+ */
+function syncCloudProductsToLocal(cloudProducts) {
+  if (!Array.isArray(cloudProducts)) return;
+
+  try {
+    const cloudDeletedIds = cloudProducts
+      .filter((product) => product && product.id && product._deleted)
+      .map((product) => product.id);
+    const localCustom = JSON.parse(localStorage.getItem("atyab_custom_products") || "[]");
+    const localMap = new Map(
+      (Array.isArray(localCustom) ? localCustom : [])
+        .filter((product) => product && product.id && !cloudDeletedIds.includes(product.id))
+        .map((product) => [product.id, product])
+    );
+
+    cloudProducts.forEach((product) => {
+      if (product && product.id && !product._deleted) {
+        localMap.set(product.id, { ...(localMap.get(product.id) || {}), ...product });
+      }
+    });
+
+    localStorage.setItem("atyab_custom_products", JSON.stringify(Array.from(localMap.values())));
+    localStorage.setItem("atyab_firebase_deleted_product_ids", JSON.stringify(cloudDeletedIds));
+
+    if (typeof refreshAtyabProducts === "function") refreshAtyabProducts();
+    if (typeof triggerLiveWebsiteSync === "function") {
+      triggerLiveWebsiteSync({ action: "firebase_catalog_sync" });
+    } else {
+      if (typeof renderProducts === "function") renderProducts();
+      if (typeof renderCategoryProducts === "function") renderCategoryProducts();
+      if (typeof renderProductsManagement === "function") renderProductsManagement();
+    }
+  } catch (err) {
+    console.warn("[Firebase Live Sync] Could not apply cloud catalog:", err);
+  }
+}
+
 function firebaseSubscribeToProducts(onUpdate) {
   if (!isFirebaseConfigured()) return null;
   const db = getFirebaseDb();
@@ -616,6 +750,8 @@ if (typeof window !== "undefined") {
   window.firebaseAuthSignInWithGoogle = firebaseAuthSignInWithGoogle;
   window.firebaseAuthSignOut = firebaseAuthSignOut;
   window.firebaseCreateOrder = firebaseCreateOrder;
+  window.firebaseSaveOrder = firebaseSaveOrder;
+  window.firebaseDeleteOrder = firebaseDeleteOrder;
   window.firebaseGetAllOrders = firebaseGetAllOrders;
   window.firebaseSubscribeToOrders = firebaseSubscribeToOrders;
   window.firebaseUpdateOrderStatus = firebaseUpdateOrderStatus;
@@ -623,6 +759,8 @@ if (typeof window !== "undefined") {
   window.firebaseGetCart = firebaseGetCart;
   window.firebaseSaveProduct = firebaseSaveProduct;
   window.firebaseDeleteProduct = firebaseDeleteProduct;
+  window.firebaseRestoreDefaultProducts = firebaseRestoreDefaultProducts;
   window.firebaseGetAllProducts = firebaseGetAllProducts;
   window.firebaseSubscribeToProducts = firebaseSubscribeToProducts;
+  window.syncCloudProductsToLocal = syncCloudProductsToLocal;
 }

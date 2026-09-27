@@ -1978,59 +1978,25 @@ async function handleAccountLogin(event) {
   const email = document.getElementById("account-login-email")?.value.trim().toLowerCase();
   const password = document.getElementById("account-login-password")?.value;
 
-  // فحص تسجيل دخول المشرف / الأدمن المخصص
-  if (email === "admin@gmail.com") {
-    if (password === "123456") {
-      const adminSession = {
-        email: "admin@gmail.com",
-        name: "مدير المتجر الملكي (Super Admin)",
-        role: "admin",
-        token: "atyab_adm_" + Date.now(),
-        loggedInAt: new Date().toISOString()
-      };
-      localStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
-      sessionStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
-      saveAccount({ name: "Super Admin (إدارة أطياب)", email: "admin@gmail.com", role: "admin" });
-
-      showAccountMessage(
-        state.language === "en" ? "👑 Admin verified! Redirecting to Royal Admin..." : "👑 تم التحقق من حساب الإدارة الملكية! جاري توجيهك...",
-        "success"
-      );
-      showToast(
-        state.language === "en" ? "👑 Welcome Super Admin" : "👑 مرحباً بمدير النظام",
-        state.language === "en" ? "Access granted. Launching Royal Admin Panel..." : "تم التحقق بنجاح! جاري فتح لوحة التحكم الملكية...",
-        "👑"
-      );
-
-      setTimeout(() => {
-        closeAccountModal();
-        window.location.href = "admin.html";
-      }, 700);
-      return;
-    } else {
-      showAccountMessage(
-        state.language === "en" ? "Incorrect password for admin account (admin@gmail.com)." : "كلمة المرور غير صحيحة لحساب الإدارة (admin@gmail.com)."
-      );
-      return;
-    }
-  }
-
-  // تسجيل دخول المستخدم العادي (Supabase أو الحساب المحلي)
+  // Sign in through the configured authentication provider.
   if (!email || !password || password.length < 6) {
     showAccountMessage(t("account_login_error"));
     return;
   }
 
   let userProfile = null;
+  let usedFirebaseAuth = false;
 
   // Try Firebase Auth if configured
   if (typeof firebaseAuthSignIn === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
     const fbRes = await firebaseAuthSignIn(email, password);
     if (fbRes && fbRes.success && !fbRes.isLocal) {
       userProfile = {
+        uid: fbRes.user?.uid || "",
         name: fbRes.user?.displayName || email.split("@")[0],
         email: fbRes.user?.email || email
       };
+      usedFirebaseAuth = true;
     } else if (fbRes && !fbRes.isLocal) {
       showAccountMessage(fbRes.error || t("account_login_error"));
       return;
@@ -2049,6 +2015,22 @@ async function handleAccountLogin(event) {
       showAccountMessage(res.error || t("account_login_error"));
       return;
     }
+  }
+
+  // The admin route only accepts a Firebase-verified administrator account.
+  if (usedFirebaseAuth && userProfile && userProfile.email?.toLowerCase() === "admin@gmail.com") {
+    const adminSession = {
+      email: userProfile.email,
+      uid: userProfile.uid || "",
+      role: "super_admin",
+      loggedInAt: new Date().toISOString()
+    };
+    localStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+    sessionStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+    saveAccount({ ...userProfile, role: "admin" });
+    closeAccountModal();
+    window.location.href = "admin.html";
+    return;
   }
 
   // Local fallback recovery
@@ -2176,6 +2158,21 @@ async function handleGoogleSignIn() {
         email: user.email,
         photoURL: user.photoURL || null
       };
+
+      if (userProfile.email.toLowerCase() === "admin@gmail.com") {
+        const adminSession = {
+          email: userProfile.email,
+          uid: userProfile.uid,
+          role: "super_admin",
+          loggedInAt: new Date().toISOString()
+        };
+        localStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+        sessionStorage.setItem("atyab_admin_session", JSON.stringify(adminSession));
+        saveAccount({ ...userProfile, role: "admin" });
+        closeAccountModal();
+        window.location.href = "admin.html";
+        return;
+      }
 
       saveAccount(userProfile);
       try {
@@ -2593,7 +2590,7 @@ function closeCheckoutModal() {
   document.getElementById("checkout-modal")?.classList.remove("active");
 }
 
-function handleCheckoutSubmit(e) {
+async function handleCheckoutSubmit(e) {
   e.preventDefault();
   const name = document.getElementById("co-name")?.value.trim() || (state.language === "en" ? "Royal Customer" : "عميل أطياب الملكي");
   const email = document.getElementById("co-email")?.value.trim() || "";
@@ -2683,7 +2680,23 @@ function handleCheckoutSubmit(e) {
 
   // Live Firebase Firestore database sync
   if (typeof firebaseCreateOrder === "function") {
-    firebaseCreateOrder(orderRecord).catch((err) => console.warn("Firebase create order notice:", err));
+    try {
+      const cloudResult = await firebaseCreateOrder(orderRecord);
+      if (cloudResult && !cloudResult.success) {
+        showToast(
+          state.language === "en" ? "Cloud Sync Needs Attention" : "تحتاج المزامنة السحابية إلى مراجعة",
+          state.language === "en" ? "Your order is saved locally, but Firebase could not confirm the live sync." : "تم حفظ طلبك محلياً، لكن تعذر تأكيد المزامنة المباشرة مع Firebase.",
+          "⚠️"
+        );
+      }
+    } catch (err) {
+      console.warn("Firebase create order notice:", err);
+      showToast(
+        state.language === "en" ? "Cloud Sync Needs Attention" : "تحتاج المزامنة السحابية إلى مراجعة",
+        state.language === "en" ? "Your order is saved locally, but Firebase could not confirm the live sync." : "تم حفظ طلبك محلياً، لكن تعذر تأكيد المزامنة المباشرة مع Firebase.",
+        "⚠️"
+      );
+    }
   }
 
   // Live Supabase database sync (fallback if configured)
@@ -2825,6 +2838,32 @@ function showToast(title, message, icon = "⚜️") {
   }, 3200);
 }
 
+function applyFirebaseOrderSnapshot(orders) {
+  if (orders && orders.length > 0) {
+    try {
+      const stored = localStorage.getItem("atyab_orders");
+      const localOrders = stored ? JSON.parse(stored) : [];
+      const localMap = new Map(localOrders.map(o => [o.id, o]));
+      orders.forEach(co => {
+        if (!co || !co.id) return;
+        if (co._deleted) {
+          localMap.delete(co.id);
+        } else {
+          localMap.set(co.id, co);
+        }
+      });
+      localStorage.setItem("atyab_orders", JSON.stringify(Array.from(localMap.values())));
+    } catch { }
+  }
+  refreshActiveOrderTracking();
+}
+
+function subscribeToFirebaseOrderUpdates() {
+  if (typeof firebaseSubscribeToOrders === "function") {
+    firebaseSubscribeToOrders(applyFirebaseOrderSnapshot);
+  }
+}
+
 // ===================================================================
 // إعداد مستمعي الأحداث (EVENT LISTENERS)
 // ===================================================================
@@ -2887,23 +2926,9 @@ function setupEventListeners() {
     refreshActiveOrderTracking();
   });
 
-  // Firebase Live Sync realtime subscription for tracking status updates (including cancellations)
-  if (typeof firebaseSubscribeToOrders === "function") {
-    firebaseSubscribeToOrders((orders) => {
-      if (orders && orders.length > 0) {
-        try {
-          const stored = localStorage.getItem("atyab_orders");
-          const localOrders = stored ? JSON.parse(stored) : [];
-          const localMap = new Map(localOrders.map(o => [o.id, o]));
-          orders.forEach(co => {
-            localMap.set(co.id, co);
-          });
-          localStorage.setItem("atyab_orders", JSON.stringify(Array.from(localMap.values())));
-        } catch { }
-      }
-      refreshActiveOrderTracking();
-    });
-  }
+  // Firebase listeners wait for a real authenticated Firebase session.
+  subscribeToFirebaseOrderUpdates();
+  window.addEventListener("atyab_firebase_auth_changed", subscribeToFirebaseOrderUpdates);
 
   // Supabase live realtime subscription for tracking status updates (including cancellations)
   if (typeof supabaseSubscribeToOrders === "function") {

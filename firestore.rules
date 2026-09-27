@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Change this value if the Firebase account that manages the store uses a
+    // different email address. Keep the same address in js/admin.js.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'admin@gmail.com';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function ownsIncomingCustomerRecord() {
+      return isSignedIn()
+        && request.resource.data.customer.email == request.auth.token.email;
+    }
+
+    function ownsStoredCustomerRecord() {
+      return isSignedIn()
+        && resource.data.customer.email == request.auth.token.email;
+    }
+
+    // The catalog is public, but only the Firebase administrator can publish,
+    // edit, unpublish, or restore products.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Customers can create and read only their own orders; management actions
+    // (status, notes, deletion) are limited to the administrator.
+    match /orders/{orderId} {
+      allow create: if isAdmin() || ownsIncomingCustomerRecord();
+      allow read: if isAdmin() || ownsStoredCustomerRecord();
+      allow update, delete: if isAdmin();
+    }
+
+    // Customer profiles are scoped to their own Firebase UID.
+    match /users/{userId} {
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow delete: if isAdmin();
+    }
+
+    // The cart document stores its owner's email, so users can only access
+    // their own cart while the administrator can provide support when needed.
+    match /carts/{cartId} {
+      allow create: if isAdmin() || (isSignedIn()
+        && request.resource.data.email == request.auth.token.email);
+      allow read, delete: if isAdmin() || (isSignedIn()
+        && resource.data.email == request.auth.token.email);
+      allow update: if isAdmin() || (isSignedIn()
+        && resource.data.email == request.auth.token.email
+        && request.resource.data.email == request.auth.token.email);
+    }
+  }
+}
