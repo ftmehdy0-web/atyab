@@ -2047,6 +2047,15 @@ body {
 .product-modal-window {
   max-width: 1060px;
   width: 95vw;
+  height: min(94vh, 900px);
+  max-height: 94vh;
+}
+
+.product-modal-window form {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .product-editor-split {
@@ -2054,7 +2063,9 @@ body {
   grid-template-columns: 360px 1fr;
   gap: 28px;
   padding: 24px;
-  max-height: 78vh;
+  min-height: 0;
+  max-height: none;
+  flex: 1;
   overflow-y: auto;
 }
 
@@ -2317,6 +2328,18 @@ body {
   font-family: var(--font-main);
   font-size: 0.86rem;
   transition: all 0.2s ease;
+}
+
+.product-modal-window .modal-footer-bar {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.product-modal-window #btn-submit-product {
+  min-width: 230px;
+  justify-content: center;
 }
 
 .product-editor-right input:focus,
@@ -2590,4 +2613,3 @@ body {
     justify-content: center;
   }
 }
-

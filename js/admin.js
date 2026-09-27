@@ -2291,7 +2291,7 @@ function openProductEditorModal(productId = null) {
     if (!prod) return;
 
     if (modalTitle) modalTitle.textContent = `Edit Product: ${prod.englishName || prod.name}`;
-    if (submitBtnLabel) submitBtnLabel.textContent = "Save Changes & Update Website";
+    if (submitBtnLabel) submitBtnLabel.textContent = "Save Changes & Sync Website";
 
     document.getElementById("prod-edit-id").value = prod.id;
     document.getElementById("prod-form-category").value = prod.category || "perfumes";
@@ -2329,7 +2329,7 @@ function openProductEditorModal(productId = null) {
   } else {
     // Add new product
     if (modalTitle) modalTitle.textContent = "Upload & Publish Product to Storefront";
-    if (submitBtnLabel) submitBtnLabel.textContent = "Publish Product to Website";
+    if (submitBtnLabel) submitBtnLabel.textContent = "Save & Publish to Website";
 
     document.getElementById("prod-edit-id").value = "";
     document.getElementById("product-editor-form").reset();
@@ -2352,6 +2352,7 @@ function openProductEditorModal(productId = null) {
 
   renderImageSlots();
   updateLivePreview();
+  setProductSubmitButtonState(document.getElementById("btn-submit-product"), { editing: Boolean(productId) });
   modal.classList.add("active");
   modal.style.display = "flex";
   modal.style.opacity = "1";
@@ -2369,6 +2370,15 @@ function closeProductEditorModal() {
     modal.style.pointerEvents = "none";
   }
   adminState.editingProductId = null;
+}
+
+function setProductSubmitButtonState(button, { busy = false, editing = false } = {}) {
+  if (!button) return;
+  button.disabled = busy;
+  const label = busy
+    ? "Publishing…"
+    : (editing ? "Save Changes & Update Website" : "Save & Publish to Website");
+  button.innerHTML = `<span>${busy ? "⏳" : "✨"}</span><span id="btn-submit-product-label">${label}</span>`;
 }
 
 /**
@@ -2491,21 +2501,28 @@ async function handleProductEditorSubmit(e) {
   };
 
   const submitBtn = document.getElementById("btn-submit-product");
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span>⏳</span><span>Publishing...</span>`;
-  }
+  setProductSubmitButtonState(submitBtn, { busy: true, editing: Boolean(editId) });
 
   // 1. Save to local unified storage engine
+  let localSaveSucceeded = false;
   if (typeof saveCustomProductToStorage === "function") {
-    saveCustomProductToStorage(productData);
+    const localResult = saveCustomProductToStorage(productData);
+    localSaveSucceeded = Boolean(localResult?.success);
+  }
+
+  if (!localSaveSucceeded) {
+    setProductSubmitButtonState(submitBtn, { editing: Boolean(editId) });
+    showToast("Product Not Saved", "The browser could not save this product. Please try again.");
+    return;
   }
 
   // 2. Cloud Firestore Sync if Firebase is configured
+  let cloudSynced = false;
   if (typeof firebaseSaveProduct === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
     try {
       const cloudResult = await firebaseSaveProduct(productData);
-      if (cloudResult && !cloudResult.success) {
+      cloudSynced = Boolean(cloudResult?.success && !cloudResult?.isLocal);
+      if (!cloudSynced) {
         showToast("Cloud Sync Needs Attention", "The product was saved locally, but Firebase could not confirm the publish.");
       }
     } catch (err) {
@@ -2514,10 +2531,7 @@ async function handleProductEditorSubmit(e) {
     }
   }
 
-  if (submitBtn) {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = `<span>✨</span><span>Publish Product to Website</span>`;
-  }
+  setProductSubmitButtonState(submitBtn, { editing: Boolean(editId) });
 
   closeProductEditorModal();
   renderProductsManagement();
@@ -2525,8 +2539,10 @@ async function handleProductEditorSubmit(e) {
   updateTopNavCounts();
 
   showToast(
-    editId ? "Product Updated!" : "Product Published Live!",
-    `"${nameEn}" is now live with ${gallery.length} photo(s) on the customer storefront.`
+    cloudSynced ? (editId ? "Product Updated & Synced!" : "Product Published & Synced!") : "Product Saved Locally",
+    cloudSynced
+      ? `"${nameEn}" is live with ${gallery.length} photo(s) on the customer storefront.`
+      : `"${nameEn}" is saved in this browser. Sign in as the Firebase administrator and publish the Firestore rules to sync it to all visitors.`
   );
 }
 

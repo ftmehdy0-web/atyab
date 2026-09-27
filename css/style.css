@@ -2735,6 +2735,63 @@ html[dir="rtl"] .hdr-dropdown-menu {
   height: 19px;
 }
 
+.account-phone-auth {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--border-light, #E8DFD0);
+  border-radius: 10px;
+  background: var(--bg-ivory, #FBFAF7);
+}
+
+.account-phone-auth-title {
+  color: var(--text-primary, #111);
+  font-size: 0.87rem;
+  font-weight: 800;
+}
+
+.account-phone-auth-copy {
+  margin: 3px 0 10px;
+  color: var(--text-muted, #6B7280);
+  font-size: 0.73rem;
+  line-height: 1.45;
+}
+
+.account-phone-auth-row,
+.account-phone-verify {
+  display: flex;
+  gap: 8px;
+}
+
+.account-phone-auth-row .form-control,
+.account-phone-verify .form-control {
+  min-width: 0;
+  flex: 1;
+}
+
+.account-phone-send,
+.account-phone-verify .btn {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  font-size: 0.79rem;
+  white-space: nowrap;
+}
+
+.account-phone-verify {
+  margin-top: 9px;
+}
+
+@media (max-width: 480px) {
+  .account-phone-auth-row,
+  .account-phone-verify {
+    flex-direction: column;
+  }
+
+  .account-phone-send,
+  .account-phone-verify .btn {
+    width: 100%;
+  }
+}
+
 .account-auth-divider {
   display: flex;
   align-items: center;
@@ -7475,4 +7532,3 @@ html[dir="ltr"] .cat-quiz-strip-card {
 html[dir="ltr"] .cat-card-price-box {
   direction: ltr;
 }
-

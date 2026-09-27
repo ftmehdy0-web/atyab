@@ -1288,6 +1288,18 @@
           </svg>
           <span data-i18n="google_auth_btn">المتابعة باستخدام Google</span>
         </button>
+        <section class="account-phone-auth" aria-labelledby="phone-auth-title">
+          <div class="account-phone-auth-title" id="phone-auth-title">أو سجّل برقم الجوال السعودي</div>
+          <p class="account-phone-auth-copy">سنرسل رمز تحقق لمرة واحدة عبر SMS. يعمل للحساب الجديد أو المسجل.</p>
+          <div class="account-phone-auth-row">
+            <input type="tel" id="account-phone-number" class="form-control" inputmode="tel" autocomplete="tel" placeholder="05XXXXXXXX أو +9665XXXXXXXX" dir="ltr" />
+            <button type="button" class="btn btn-secondary account-phone-send" id="phone-otp-send-button" onclick="handlePhoneOtpSend()">إرسال الرمز</button>
+          </div>
+          <div class="account-phone-verify" id="account-phone-verification" hidden>
+            <input type="text" id="account-phone-otp" class="form-control" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="رمز التحقق من 6 أرقام" dir="ltr" />
+            <button type="button" class="btn btn-primary" id="phone-otp-verify-button" onclick="handlePhoneOtpVerify()">تأكيد والدخول</button>
+          </div>
+        </section>
         <div class="account-auth-divider">
           <span data-i18n="auth_divider_or">أو عبر البريد الإلكتروني</span>
         </div>
@@ -1354,6 +1366,7 @@
         </div>
         <button type="button" class="btn btn-secondary account-logout" onclick="logoutAccount()" data-i18n="account_logout">تسجيل الخروج</button>
       </section>
+      <div id="firebase-phone-recaptcha" aria-hidden="true"></div>
     </div>
   </div>
 

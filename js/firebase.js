@@ -48,6 +48,9 @@ function isFirebaseConfigured() {
 let firebaseAppInstance = null;
 let firebaseAuthInstance = null;
 let firebaseDbInstance = null;
+let firebasePhoneRecaptcha = null;
+let firebasePhoneRecaptchaContainerId = null;
+let firebasePhoneConfirmation = null;
 
 function initFirebase() {
   if (typeof firebase === "undefined") {
@@ -83,8 +86,9 @@ function initFirebase() {
           if (user && typeof state !== "undefined" && !state.account) {
             const profile = {
               uid: user.uid,
-              name: user.displayName || user.email.split("@")[0],
-              email: user.email
+              name: user.displayName || user.email?.split("@")[0] || user.phoneNumber || "Atyab Customer",
+              email: user.email || "",
+              phoneNumber: user.phoneNumber || ""
             };
             if (typeof saveAccount === "function") {
               saveAccount(profile);
@@ -92,7 +96,7 @@ function initFirebase() {
           }
           try {
             window.dispatchEvent(new CustomEvent("atyab_firebase_auth_changed", {
-              detail: { user: user ? { uid: user.uid, email: user.email } : null }
+              detail: { user: user ? { uid: user.uid, email: user.email || "", phoneNumber: user.phoneNumber || "" } : null }
             }));
           } catch (e) {}
         });
@@ -180,6 +184,30 @@ function getFirebaseErrorMessage(code, lang = "ar") {
       return isEn 
         ? "Network error. Please check your internet connection."
         : "تعذر الاتصال بالخادم. يُرجى التحقق من اتصالك بالإنترنت.";
+    case "auth/invalid-phone-number":
+      return isEn
+        ? "Enter a valid Saudi mobile number, for example 05XXXXXXXX or +9665XXXXXXXX."
+        : "أدخل رقم جوال سعودي صحيحاً، مثل 05XXXXXXXX أو +9665XXXXXXXX.";
+    case "auth/missing-phone-number":
+      return isEn
+        ? "Enter your mobile number first."
+        : "أدخل رقم جوالك أولاً.";
+    case "auth/invalid-verification-code":
+      return isEn
+        ? "The verification code is incorrect. Please check the SMS and try again."
+        : "رمز التحقق غير صحيح. تحقق من رسالة SMS وحاول مرة أخرى.";
+    case "auth/code-expired":
+      return isEn
+        ? "This verification code has expired. Request a new code."
+        : "انتهت صلاحية رمز التحقق. اطلب رمزاً جديداً.";
+    case "auth/captcha-check-failed":
+      return isEn
+        ? "Security verification failed. Please try sending the code again."
+        : "تعذر التحقق الأمني. يرجى طلب الرمز من جديد.";
+    case "auth/app-not-authorized":
+      return isEn
+        ? "This website domain is not authorized for Firebase Phone Authentication."
+        : "نطاق الموقع غير مصرح به لمصادقة Firebase برقم الجوال.";
     case "auth/unauthorized-domain":
       return isEn
         ? "This domain is not authorized in Firebase Console. Please add this domain under Firebase > Authentication > Settings > Authorized domains."
@@ -354,6 +382,112 @@ async function firebaseAuthSignInWithGoogle() {
   }
 }
 
+// 5.2 Phone number authentication (Firebase sends an SMS OTP; Firebase does
+// not support a password-only sign-in with a phone number on the web).
+function normalizeSaudiPhoneNumber(phoneNumber) {
+  const raw = String(phoneNumber || "").trim().replace(/[\s\-()]/g, "");
+  let normalized = raw.replace(/^00966/, "+966");
+  if (/^05\d{8}$/.test(normalized)) normalized = `+966${normalized.slice(1)}`;
+  if (/^5\d{8}$/.test(normalized)) normalized = `+966${normalized}`;
+  if (/^9665\d{8}$/.test(normalized)) normalized = `+${normalized}`;
+  return /^\+9665\d{8}$/.test(normalized) ? normalized : null;
+}
+
+function getFirebasePhoneRecaptcha(containerId = "firebase-phone-recaptcha") {
+  const auth = getFirebaseAuth();
+  const container = document.getElementById(containerId);
+  if (!auth || !container || typeof firebase === "undefined" || !firebase.auth?.RecaptchaVerifier) return null;
+
+  if (firebasePhoneRecaptcha && firebasePhoneRecaptchaContainerId === containerId) {
+    return firebasePhoneRecaptcha;
+  }
+
+  try {
+    firebasePhoneRecaptcha?.clear();
+  } catch (err) {}
+
+  container.innerHTML = "";
+  firebasePhoneRecaptcha = new firebase.auth.RecaptchaVerifier(containerId, {
+    size: "invisible",
+    "expired-callback": () => {
+      firebasePhoneConfirmation = null;
+    }
+  }, auth);
+  firebasePhoneRecaptchaContainerId = containerId;
+  return firebasePhoneRecaptcha;
+}
+
+async function firebaseAuthSendPhoneOtp(phoneNumber, containerId = "firebase-phone-recaptcha") {
+  if (!isFirebaseConfigured()) {
+    return { success: false, error: "Firebase is not configured." };
+  }
+
+  const auth = getFirebaseAuth();
+  const normalizedPhone = normalizeSaudiPhoneNumber(phoneNumber);
+  const appVerifier = getFirebasePhoneRecaptcha(containerId);
+  if (!auth || !appVerifier) {
+    return { success: false, error: "Firebase Phone Authentication is not ready. Reload the page and try again." };
+  }
+  if (!normalizedPhone) {
+    const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
+    return { success: false, error: getFirebaseErrorMessage("auth/invalid-phone-number", lang) };
+  }
+
+  try {
+    firebasePhoneConfirmation = await auth.signInWithPhoneNumber(normalizedPhone, appVerifier);
+    return { success: true, phoneNumber: normalizedPhone };
+  } catch (error) {
+    try { firebasePhoneRecaptcha.reset(); } catch (err) {}
+    const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
+    return {
+      success: false,
+      error: getFirebaseErrorMessage(error.code, lang),
+      code: error.code
+    };
+  }
+}
+
+async function firebaseAuthVerifyPhoneOtp(code) {
+  const cleanCode = String(code || "").replace(/\D/g, "");
+  if (!firebasePhoneConfirmation) {
+    return { success: false, error: "Request an SMS verification code first." };
+  }
+  if (cleanCode.length !== 6) {
+    const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
+    return { success: false, error: getFirebaseErrorMessage("auth/invalid-verification-code", lang) };
+  }
+
+  try {
+    const userCredential = await firebasePhoneConfirmation.confirm(cleanCode);
+    const user = userCredential.user;
+    const db = getFirebaseDb();
+    if (db && user) {
+      db.collection("users").doc(user.uid).set({
+        phoneNumber: user.phoneNumber || "",
+        provider: "phone",
+        lastLoginAt: new Date().toISOString()
+      }, { merge: true }).catch(() => {});
+    }
+    firebasePhoneConfirmation = null;
+    return {
+      success: true,
+      user: {
+        uid: user.uid,
+        email: user.email || "",
+        phoneNumber: user.phoneNumber || "",
+        displayName: user.displayName || user.phoneNumber || "Atyab Customer"
+      }
+    };
+  } catch (error) {
+    const lang = (typeof state !== "undefined" && state.language) ? state.language : "ar";
+    return {
+      success: false,
+      error: getFirebaseErrorMessage(error.code, lang),
+      code: error.code
+    };
+  }
+}
+
 // 6. Sign Out (تسجيل الخروج)
 async function firebaseAuthSignOut() {
   if (!isFirebaseConfigured()) return;
@@ -462,13 +596,13 @@ let firestoreOrdersUnsubscribe = null;
 
 function getFirebaseOrdersQuery(db) {
   const user = firebaseAuthInstance?.currentUser;
-  if (!user?.email) return null;
+  if (!user?.uid) return null;
 
-  if (user.email.toLowerCase() === FIREBASE_ADMIN_EMAIL) {
+  if (user.email?.toLowerCase() === FIREBASE_ADMIN_EMAIL) {
     return db.collection("orders");
   }
 
-  return db.collection("orders").where("customer.email", "==", user.email.toLowerCase());
+  return db.collection("orders").where("user_uid", "==", user.uid);
 }
 
 function firebaseSubscribeToOrders(onUpdate) {
@@ -541,15 +675,27 @@ async function firebaseUpdateOrderStatus(orderId, newStatus, timeline) {
 /**
  * Save user cart to Firebase Firestore
  */
-async function firebaseSaveCart(email, cartItems) {
-  if (!isFirebaseConfigured() || !email) return;
+function getFirebaseCartOwner(account) {
+  const user = firebaseAuthInstance?.currentUser;
+  if (!user?.uid) return null;
+  return {
+    uid: user.uid,
+    email: user.email || account?.email || "",
+    phoneNumber: user.phoneNumber || account?.phoneNumber || ""
+  };
+}
+
+async function firebaseSaveCart(account, cartItems) {
+  if (!isFirebaseConfigured()) return;
   const db = getFirebaseDb();
-  if (!db) return;
+  const owner = getFirebaseCartOwner(account);
+  if (!db || !owner) return;
 
   try {
-    const key = email.toLowerCase().replace(/[^a-zA-Z0-9_]/g, "_");
-    await db.collection("carts").doc(key).set({
-      email: email.toLowerCase(),
+    await db.collection("carts").doc(owner.uid).set({
+      ownerUid: owner.uid,
+      email: owner.email,
+      phoneNumber: owner.phoneNumber,
       items: cartItems,
       updatedAt: new Date().toISOString()
     });
@@ -561,14 +707,14 @@ async function firebaseSaveCart(email, cartItems) {
 /**
  * Retrieve user cart from Firebase Firestore
  */
-async function firebaseGetCart(email) {
-  if (!isFirebaseConfigured() || !email) return [];
+async function firebaseGetCart(account) {
+  if (!isFirebaseConfigured()) return [];
   const db = getFirebaseDb();
-  if (!db) return [];
+  const owner = getFirebaseCartOwner(account);
+  if (!db || !owner) return [];
 
   try {
-    const key = email.toLowerCase().replace(/[^a-zA-Z0-9_]/g, "_");
-    const doc = await db.collection("carts").doc(key).get();
+    const doc = await db.collection("carts").doc(owner.uid).get();
     if (doc.exists && doc.data()?.items) {
       return doc.data().items;
     }
@@ -748,6 +894,9 @@ if (typeof window !== "undefined") {
   window.firebaseAuthSignUp = firebaseAuthSignUp;
   window.firebaseAuthSignIn = firebaseAuthSignIn;
   window.firebaseAuthSignInWithGoogle = firebaseAuthSignInWithGoogle;
+  window.firebaseAuthSendPhoneOtp = firebaseAuthSendPhoneOtp;
+  window.firebaseAuthVerifyPhoneOtp = firebaseAuthVerifyPhoneOtp;
+  window.normalizeSaudiPhoneNumber = normalizeSaudiPhoneNumber;
   window.firebaseAuthSignOut = firebaseAuthSignOut;
   window.firebaseCreateOrder = firebaseCreateOrder;
   window.firebaseSaveOrder = firebaseSaveOrder;

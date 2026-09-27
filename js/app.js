@@ -103,28 +103,39 @@ function detectInitialLanguage() {
 
 const initialLang = detectInitialLanguage();
 
-// The storefront is static, so this is a local profile only—not production authentication.
-// Passwords are deliberately never written to localStorage.
+// Passwords and OTP codes are never written to localStorage. A saved profile
+// only contains the Firebase user identifiers needed for the storefront UI.
 function readStoredAccount() {
   try {
     const rawAccount = localStorage.getItem("atyab_account") || localStorage.getItem("aytyab_account");
     const account = rawAccount ? JSON.parse(rawAccount) : null;
-    return account && typeof account.name === "string" && typeof account.email === "string" ? account : null;
+    const hasIdentity = typeof account?.uid === "string" || typeof account?.email === "string" || typeof account?.phoneNumber === "string";
+    return account && typeof account.name === "string" && hasIdentity ? account : null;
   } catch {
     return null;
   }
 }
 
+function getAccountIdentity(account = state?.account || readStoredAccount()) {
+  if (!account) return "";
+  if (account.uid) return `uid_${account.uid}`;
+  if (account.email) return `email_${account.email.toLowerCase()}`;
+  if (account.phoneNumber) return `phone_${account.phoneNumber.replace(/\D/g, "")}`;
+  return "";
+}
+
 function getCartStorageKey(email) {
   const account = state?.account || readStoredAccount();
-  const userEmail = email || account?.email;
-  return userEmail ? `atyab_cart_${userEmail.toLowerCase()}` : "atyab_guest_cart";
+  const suppliedIdentity = typeof email === "string" && email ? `email_${email.toLowerCase()}` : "";
+  const identity = suppliedIdentity || getAccountIdentity(account);
+  return identity ? `atyab_cart_${identity}` : "atyab_guest_cart";
 }
 
 function readStoredCart() {
   const account = readStoredAccount();
-  if (account && account.email) {
-    const userKey = `atyab_cart_${account.email.toLowerCase()}`;
+  const accountIdentity = getAccountIdentity(account);
+  if (account && accountIdentity) {
+    const userKey = `atyab_cart_${accountIdentity}`;
     try {
       const raw = localStorage.getItem(userKey);
       if (raw) return JSON.parse(raw);
@@ -348,10 +359,14 @@ function renderTrackModalContent(forceGuest = false) {
 
   // CASE 3: Authenticated User with Personal Orders
   const allOrders = getStoredOrdersList();
-  const userEmail = state.account.email.toLowerCase();
+  const userEmail = state.account.email?.toLowerCase() || "";
+  const userPhone = state.account.phoneNumber || "";
+  const userUid = state.account.uid || "";
   const userOrders = allOrders.filter(o =>
-    (o.customer?.email && o.customer.email.toLowerCase() === userEmail) ||
-    (o.user_email && o.user_email.toLowerCase() === userEmail)
+    (userUid && o.user_uid === userUid) ||
+    (userEmail && o.customer?.email && o.customer.email.toLowerCase() === userEmail) ||
+    (userEmail && o.user_email && o.user_email.toLowerCase() === userEmail) ||
+    (userPhone && o.customer?.phone === userPhone)
   );
 
   if (userOrders.length === 0) {
@@ -1587,9 +1602,9 @@ function saveCart() {
     localStorage.setItem("atyab_cart", JSON.stringify(state.cart));
     if (state.account) {
       if (typeof firebaseSaveCart === "function") {
-        firebaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Firebase cart sync notice:", e));
+        firebaseSaveCart(state.account, state.cart).catch((e) => console.warn("Firebase cart sync notice:", e));
       }
-      if (typeof supabaseSaveCart === "function") {
+      if (state.account.email && typeof supabaseSaveCart === "function") {
         supabaseSaveCart(state.account.email, state.cart).catch((e) => console.warn("Supabase cart sync notice:", e));
       }
     }
@@ -1900,7 +1915,7 @@ function updateAccountUI() {
     if (accountIcon) accountIcon.hidden = isSignedIn;
     if (accountInitial) {
       accountInitial.hidden = !isSignedIn;
-      accountInitial.textContent = isSignedIn ? state.account.name.trim().charAt(0).toUpperCase() : "";
+      accountInitial.textContent = isSignedIn ? String(state.account.name || "A").trim().charAt(0).toUpperCase() : "";
     }
   }
 
@@ -1908,7 +1923,7 @@ function updateAccountUI() {
     element.textContent = state.account?.name || "";
   });
   document.querySelectorAll(".account-signed-email").forEach((element) => {
-    element.textContent = state.account?.email || "";
+    element.textContent = state.account?.email || state.account?.phoneNumber || "";
   });
 
   const isAdmin = Boolean(localStorage.getItem("atyab_admin_session") || (state.account && state.account.email === "admin@gmail.com"));
@@ -2041,7 +2056,7 @@ async function handleAccountLogin(event) {
         userProfile = JSON.parse(storedUserRaw);
       }
     } catch { }
-    if (!userProfile && state.account && state.account.email.toLowerCase() === email) {
+    if (!userProfile && state.account?.email && state.account.email.toLowerCase() === email) {
       userProfile = state.account;
     }
     if (!userProfile) {
@@ -2057,13 +2072,24 @@ async function handleAccountLogin(event) {
 
   // LOAD USER-SCOPED CART (Saved exclusively for this user):
   const userCartRaw = localStorage.getItem(`atyab_cart_${email}`);
-  let userCart = userCartRaw ? JSON.parse(userCartRaw) : [];
+  const userCartKey = getCartStorageKey();
+  let userCart = userCartRaw ? JSON.parse(userCartRaw) : (localStorage.getItem(userCartKey) ? JSON.parse(localStorage.getItem(userCartKey)) : []);
   state.cart = userCart;
   saveCart();
   updateCartUI();
 
+  if (usedFirebaseAuth && typeof firebaseGetCart === "function") {
+    firebaseGetCart(userProfile).then((cloudCart) => {
+      if (Array.isArray(cloudCart) && cloudCart.length > 0) {
+        state.cart = cloudCart;
+        saveCart();
+        updateCartUI();
+      }
+    }).catch(() => {});
+  }
+
   // If Supabase is active, sync cloud cart
-  if (typeof supabaseGetCart === "function" && typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
+  if (userProfile.email && typeof supabaseGetCart === "function" && typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
     supabaseGetCart(email).then((cloudCart) => {
       if (cloudCart && cloudCart.length > 0) {
         state.cart = cloudCart;
@@ -2093,11 +2119,13 @@ async function handleAccountSignup(event) {
     return;
   }
 
+  let firebaseSignupResult = null;
+
   // Try Firebase Auth signup if configured
   if (typeof firebaseAuthSignUp === "function" && typeof isFirebaseConfigured === "function" && isFirebaseConfigured()) {
-    const fbRes = await firebaseAuthSignUp(name, email, password);
-    if (fbRes && !fbRes.success && !fbRes.isLocal) {
-      showAccountMessage(fbRes.error || t("account_login_error"));
+    firebaseSignupResult = await firebaseAuthSignUp(name, email, password);
+    if (firebaseSignupResult && !firebaseSignupResult.success && !firebaseSignupResult.isLocal) {
+      showAccountMessage(firebaseSignupResult.error || t("account_login_error"));
       return;
     }
   }
@@ -2112,7 +2140,7 @@ async function handleAccountSignup(event) {
     }
   }
 
-  const userProfile = { name, email };
+  const userProfile = { name, email, uid: firebaseSignupResult?.user?.uid || "" };
   saveAccount(userProfile);
   try {
     localStorage.setItem(`atyab_user_${email}`, JSON.stringify(userProfile));
@@ -2180,8 +2208,12 @@ async function handleGoogleSignIn() {
       } catch { }
 
       // Load user-scoped cart
-      const userCartRaw = localStorage.getItem(`atyab_cart_${user.email}`);
+      const userCartRaw = localStorage.getItem(getCartStorageKey());
       state.cart = userCartRaw ? JSON.parse(userCartRaw) : (state.cart || []);
+      if (typeof firebaseGetCart === "function") {
+        const cloudCart = await firebaseGetCart(userProfile);
+        if (Array.isArray(cloudCart) && cloudCart.length > 0) state.cart = cloudCart;
+      }
       saveCart();
       updateCartUI();
 
@@ -2205,6 +2237,110 @@ async function handleGoogleSignIn() {
   }
 }
 window.handleGoogleSignIn = handleGoogleSignIn;
+
+async function handlePhoneOtpSend() {
+  const phoneInput = document.getElementById("account-phone-number");
+  const sendButton = document.getElementById("phone-otp-send-button");
+  const phoneNumber = phoneInput?.value.trim() || "";
+
+  if (typeof firebaseAuthSendPhoneOtp !== "function") {
+    if (typeof initFirebase === "function") initFirebase();
+  }
+  if (typeof firebaseAuthSendPhoneOtp !== "function") {
+    showAccountMessage(state.language === "en" ? "Firebase Phone Authentication is loading. Please try again." : "جارٍ تحميل خدمة تسجيل الدخول بالجوال. حاول مرة أخرى.");
+    return;
+  }
+
+  if (sendButton) {
+    sendButton.disabled = true;
+    sendButton.textContent = state.language === "en" ? "Sending…" : "جارٍ الإرسال…";
+  }
+
+  try {
+    const result = await firebaseAuthSendPhoneOtp(phoneNumber);
+    if (!result?.success) {
+      showAccountMessage(result?.error || (state.language === "en" ? "Could not send the verification code." : "تعذر إرسال رمز التحقق."));
+      return;
+    }
+    document.getElementById("account-phone-verification")?.removeAttribute("hidden");
+    showAccountMessage(
+      state.language === "en" ? `A verification code was sent to ${result.phoneNumber}.` : `تم إرسال رمز التحقق إلى ${result.phoneNumber}.`,
+      "success"
+    );
+    document.getElementById("account-phone-otp")?.focus();
+  } catch (error) {
+    console.error("Firebase Phone OTP send error:", error);
+    showAccountMessage(error.message || (state.language === "en" ? "Could not send the verification code." : "تعذر إرسال رمز التحقق."));
+  } finally {
+    if (sendButton) {
+      sendButton.disabled = false;
+      sendButton.textContent = state.language === "en" ? "Send code" : "إرسال الرمز";
+    }
+  }
+}
+
+async function handlePhoneOtpVerify() {
+  const codeInput = document.getElementById("account-phone-otp");
+  const verifyButton = document.getElementById("phone-otp-verify-button");
+  const code = codeInput?.value || "";
+
+  if (typeof firebaseAuthVerifyPhoneOtp !== "function") {
+    showAccountMessage(state.language === "en" ? "Firebase Phone Authentication is not ready. Please request a new code." : "خدمة تسجيل الدخول بالجوال غير جاهزة. اطلب رمزاً جديداً.");
+    return;
+  }
+
+  if (verifyButton) {
+    verifyButton.disabled = true;
+    verifyButton.textContent = state.language === "en" ? "Verifying…" : "جارٍ التحقق…";
+  }
+
+  try {
+    const result = await firebaseAuthVerifyPhoneOtp(code);
+    if (!result?.success || !result.user) {
+      showAccountMessage(result?.error || (state.language === "en" ? "The verification code is invalid." : "رمز التحقق غير صحيح."));
+      return;
+    }
+
+    const userProfile = {
+      uid: result.user.uid,
+      name: result.user.displayName || result.user.phoneNumber || "Atyab Customer",
+      email: result.user.email || "",
+      phoneNumber: result.user.phoneNumber || ""
+    };
+    saveAccount(userProfile);
+
+    try {
+      const localCart = localStorage.getItem(getCartStorageKey());
+      state.cart = localCart ? JSON.parse(localCart) : (state.cart || []);
+    } catch {
+      state.cart = state.cart || [];
+    }
+
+    if (typeof firebaseGetCart === "function") {
+      const cloudCart = await firebaseGetCart(userProfile);
+      if (Array.isArray(cloudCart) && cloudCart.length > 0) state.cart = cloudCart;
+    }
+    saveCart();
+    updateCartUI();
+    closeAccountModal();
+    showToast(
+      state.language === "en" ? "Mobile verified" : "تم توثيق الجوال",
+      state.language === "en" ? "You are now signed in with your Saudi mobile number." : "تم تسجيل دخولك برقم جوالك السعودي.",
+      "📱"
+    );
+  } catch (error) {
+    console.error("Firebase Phone OTP verification error:", error);
+    showAccountMessage(error.message || (state.language === "en" ? "Could not verify the code." : "تعذر التحقق من الرمز."));
+  } finally {
+    if (verifyButton) {
+      verifyButton.disabled = false;
+      verifyButton.textContent = state.language === "en" ? "Verify & sign in" : "تأكيد والدخول";
+    }
+  }
+}
+
+window.handlePhoneOtpSend = handlePhoneOtpSend;
+window.handlePhoneOtpVerify = handlePhoneOtpVerify;
 
 function logoutAccount() {
   state.account = null;
@@ -2619,6 +2755,7 @@ async function handleCheckoutSubmit(e) {
     id: orderId,
     createdAt: new Date().toISOString(),
     status: "pending", // pending, confirmed, processing, shipped, delivered, cancelled
+    user_uid: state.account?.uid || "",
     user_email: customerEmail,
     customer: {
       name,
