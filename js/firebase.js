@@ -282,6 +282,8 @@ async function firebaseAuthSignIn(email, password) {
       code: error.code
     };
   }
+}
+
 // 5.1 Sign In With Google (تسجيل الدخول والمتابعة عبر جوجل)
 async function firebaseAuthSignInWithGoogle() {
   if (!isFirebaseConfigured()) {
