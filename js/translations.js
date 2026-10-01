@@ -33,7 +33,7 @@ const ATYAB_TRANSLATIONS = {
     nav_oil_perfume: "عطور زيتية",
     nav_oil_perfumes: "عطور زيتية",
     nav_bakhoor: "بخور",
-    nav_cream: "كريم",
+    nav_cream: "كريمات الجسم",
     footer_bakhoor: "بخور ودخون المجالس",
     nav_dukhoon: "دخون",
     nav_gift_sets: "أطقم هدايا",
@@ -45,18 +45,18 @@ const ATYAB_TRANSLATIONS = {
     nav_showcase: "مقدَّر من الجميع",
     nav_bestsellers: "الأكثر مبيعاً",
     nav_catalog: "جميع العطور",
-    nav_quiz: "مستشار العطور",
+    nav_quiz: "اختبار مستشار العطور",
     nav_quiz_badge: "اختبار",
     nav_reviews: "آراء العملاء",
     search_tooltip: "البحث في العطور",
     wishlist_tooltip: "قائمة المفضلة",
-    cart_tooltip: "سلة المشتريات الملكية",
+    cart_tooltip: "سلة المشتريات",
     account_tooltip: "تسجيل الدخول أو إنشاء حساب",
     account_signed_in_tooltip: "حسابي",
     lang_btn_text: "العربية",
 
     // 3. السلايدر الرئيسي
-    hero_slide1_pill: "الإصدارات الملكية الخاصة بالمملكة لعام ٢٠٢٦",
+    hero_slide1_pill: "الإصدارات الخاصة بالمملكة لعام ٢٠٢٦",
     hero_slide1_title: "عطورٌ تدوم طويلاً",
     hero_slide1_title_accent: "في كل قطرة",
     hero_slide1_desc: "صياغة استثنائية تجمع نبل العود الكمبودي النادر وزعفران قصر الملوك مع هيبة عطر نادر؛ حضور يفرض وقاره في أرقى المحافل والمناسبات.",
@@ -156,7 +156,7 @@ const ATYAB_TRANSLATIONS = {
     bakhoor_subtitle: "تراث الضيافة العربية",
     bakhoor_title: "بخور أطياب الملكي الفاخر",
     bakhoor_desc: "رقائق عود مروكي طبيعي معتقة لسنوات في مزيج ملكي من دهن العود الصافي، المسك الأسود، وعنبر الشيوخ، مع قطرات من ماء الورد الجبلي. صُمم خصيصاً لتعطير المجالس، قصور الضيافة، والمناسبات الكبرى بنفحات بخورية تدوم لساعات طويلة في الأرجاء.",
-    bakhoor_stat1: "⏱️ <strong>ثبات الدخون:</strong> أكثر من 48 ساعة بالمكان",
+    bakhoor_stat1: "<strong>الاستخدام:</strong> اتبع تعليمات الاستخدام على العبوة.",
     bakhoor_stat2: "📦 <strong>الوزن الصافي:</strong> 100 جرام ملكي",
     bakhoor_price_label: "السعر الرسمي:",
     bakhoor_btn_cart: "أضف البخور إلى السلة الملكية",
@@ -207,7 +207,7 @@ const ATYAB_TRANSLATIONS = {
     footer_link_cart: "متابعة حالة سلة المشتريات",
     footer_link_search: "البحث في الكتالوج",
     footer_link_whatsapp: "التواصل عبر الواتساب",
-    boutique_riyadh: "<strong>توصيل سريع:</strong> الرياض، جدة ومكة خلال 24 - 48 ساعة",
+    boutique_riyadh: "<strong>التوصيل:</strong> يتم تأكيد توفره وموعده عند إتمام الطلب.",
     boutique_jeddah: "<strong>كافة مدن المملكة:</strong> خلال 2 - 4 أيام عمل عبر سمسا",
     boutique_hours: "خدمة العملاء: يومياً 9:00 ص - 11:00 م",
     footer_rights: "جميع الحقوق محفوظة © 2026 <strong>أطياب للعطور الفاخرة | ATYAB PERFUME KSA</strong>",
@@ -216,7 +216,7 @@ const ATYAB_TRANSLATIONS = {
     checkout_ssl_badge: "🔒 اتصال مشفر وآمن 256-bit SSL | مدفوعات معتمدة ومحمية",
 
     // 12. سلة المشتريات
-    cart_drawer_title: "سلة المشتريات الملكية",
+    cart_drawer_title: "سلة المشتريات",
     cart_empty_title: "سلة مشترياتك فارغة",
     cart_empty_desc: "استكشف تشكيلتنا الملكية من العطور الشرقية والبخور الفاخر.",
     cart_empty_btn: "استكشف العطور الآن",
@@ -227,7 +227,7 @@ const ATYAB_TRANSLATIONS = {
     subtotal_label: "المجموع الفرعي:",
     discount_label: "الخصم الترويجي:",
     total_label: "المجموع الإجمالي:",
-    checkout_drawer_btn: "المتابعة لإتمام الطلب الملكي",
+    checkout_drawer_btn: "المتابعة لإتمام الطلب",
     cart_item_remove: "حذف",
 
     // 13. النوافذ المنبثقة
@@ -242,7 +242,7 @@ const ATYAB_TRANSLATIONS = {
     search_no_results: "لا توجد عطور مطابقة لـ \"<strong>{query}</strong>\"",
 
     // الحساب المحلي
-    account_eyebrow: "بوابتك الملكية",
+    account_eyebrow: "حسابك في أطياب",
     account_title: "حساب أطياب",
     account_intro: "سجّل دخولك لمتابعة اختياراتك ومشترياتك المفضلة.",
     account_login_tab: "تسجيل الدخول",
@@ -308,7 +308,7 @@ const ATYAB_TRANSLATIONS = {
     quiz_res_details_btn: "عرض التفاصيل والمكونات",
 
     // إتمام الطلب
-    checkout_modal_title: "إتمام الطلب الملكي والشحن",
+    checkout_modal_title: "إتمام الطلب والشحن",
     checkout_modal_desc: "يرجى إدخال بيانات التوصيل بدقة لضمان وصول طلبك سريعاً وبأمان.",
     co_name_label: "الاسم الكريم بالكامل *",
     co_name_placeholder: "مثال: محمد بن عبدالله",
@@ -320,7 +320,7 @@ const ATYAB_TRANSLATIONS = {
     co_address_placeholder: "اسم الحي، الشارع، ورقم المبنى...",
     co_summary_title: "ملخص الطلب ({count} منتجات)",
     co_total_due: "المبلغ الإجمالي المستحق:",
-    co_submit_btn: "تأكيد الطلب وإرسال الشحنة 🚀",
+    co_submit_btn: "تأكيد الطلب وإرسال الشحنة",
 
     // تأكيد الطلب
     order_conf_pill: "تم تأكيد طلبك الملكي بنجاح",
@@ -359,7 +359,7 @@ const ATYAB_TRANSLATIONS = {
     pdp_buy_whatsapp_btn: "طلب مباشر وسريع عبر الواتساب",
     pdp_whatsapp_order_msg: "مرحباً مستشار أطياب، أود طلب {name} ({size}) بسعر {price} من المتجر الرسمي.",
     pdp_stock_status: "متوفر بالمستودع - شحن فوري سريع ⚡",
-    pdp_fast_shipping_note: "توصيل آمن لجميع مناطق المملكة (خلال 24-48 ساعة) 🇸🇦",
+    pdp_fast_shipping_note: "يتم تأكيد توفر التوصيل وموعده عند إتمام الطلب.",
     pdp_golden_guarantee: "الضمان الذهبي الملكي: عينة مجانية مع كل قارورة للتجربة قبل فتح العبوة الأصلية",
     pdp_free_shipping_hint: "احصل على شحن مجاني للطلبات فوق 150 ر.س",
     pdp_view_full_notes: "استكشف الهرم العطري والمكونات",
@@ -479,7 +479,7 @@ const ATYAB_TRANSLATIONS = {
     review_success_title: "تم إرسال تقييمك الملكي",
     review_success_msg: "شكراً لمشاركتك رأيك القيّم مع عائلة أطياب للعطور.",
     page_title: "أطياب للعطور | دار العطور الملكية الفاخرة بالمملكة العربية السعودية",
-    mobile_wa_btn: "خدمة العملاء الملكية (واتساب)",
+    mobile_wa_btn: "خدمة العملاء (واتساب)",
     mobile_lang_label: "🌐 اللغة / Language",
     mobile_curr_label: "💵 العملة / Currency",
     track_login_prompt_title: "سجّل دخولك لمتابعة شحناتك",
@@ -689,7 +689,7 @@ const ATYAB_TRANSLATIONS = {
     nav_oil_perfume: "Perfume Oil",
     nav_oil_perfumes: "Perfume Oil",
     nav_bakhoor: "Bakhoor",
-    nav_cream: "Cream",
+    nav_cream: "Body Creams",
     footer_bakhoor: "Bakhoor & Dakhoon",
     nav_dukhoon: "Dukhoon",
     nav_gift_sets: "Gift Sets",
@@ -812,7 +812,7 @@ const ATYAB_TRANSLATIONS = {
     bakhoor_subtitle: "Arabian Hospitality Heritage",
     bakhoor_title: "Atyab Royal Luxury Bakhoor",
     bakhoor_desc: "Natural Maroke agarwood chips aged for years in a royal formulation of pure Dehn Al Oud, black musk, and royal amber, finished with drops of mountain rose water. Specially composed to perfume majlises and grand halls with enduring fragrance.",
-    bakhoor_stat1: "⏱️ <strong>Longevity:</strong> Over 48 hours in room ambiance",
+    bakhoor_stat1: "<strong>Use:</strong> Follow the instructions on the product packaging.",
     bakhoor_stat2: "📦 <strong>Net Weight:</strong> 100g Royal Pack",
     bakhoor_price_label: "Official Price:",
     bakhoor_btn_cart: "Add Bakhoor to Royal Cart",
@@ -863,7 +863,7 @@ const ATYAB_TRANSLATIONS = {
     footer_link_cart: "View Shopping Cart",
     footer_link_search: "Search Full Catalog",
     footer_link_whatsapp: "WhatsApp Fragrance Advisor",
-    boutique_riyadh: "<strong>Express Delivery:</strong> Riyadh, Jeddah & Makkah within 24-48 hrs",
+    boutique_riyadh: "<strong>Delivery:</strong> Availability and timing are confirmed at checkout.",
     boutique_jeddah: "<strong>All KSA Cities:</strong> 2-4 business days via SMSA Express",
     boutique_hours: "Customer Care: Daily 9:00 AM - 11:00 PM",
     footer_rights: "All Rights Reserved © 2026 <strong>ATYAB ROYAL PERFUME KSA</strong>",
@@ -872,7 +872,7 @@ const ATYAB_TRANSLATIONS = {
     checkout_ssl_badge: "🔒 256-bit SSL Encrypted & Secure Checkout | Trusted Payments",
 
     // 12. Cart Drawer
-    cart_drawer_title: "Royal Shopping Cart",
+    cart_drawer_title: "Shopping Cart",
     cart_empty_title: "Your shopping cart is empty",
     cart_empty_desc: "Explore our royal collection of oriental fragrances and precious incense.",
     cart_empty_btn: "Explore Fragrances Now",
@@ -883,7 +883,7 @@ const ATYAB_TRANSLATIONS = {
     subtotal_label: "Subtotal:",
     discount_label: "Promo Discount:",
     total_label: "Total Amount:",
-    checkout_drawer_btn: "Proceed to Royal Checkout",
+    checkout_drawer_btn: "Proceed to Checkout",
     cart_item_remove: "Remove",
 
     // 13. Modals
@@ -898,7 +898,7 @@ const ATYAB_TRANSLATIONS = {
     search_no_results: "No perfumes matching \"<strong>{query}</strong>\"",
 
     // Local Account
-    account_eyebrow: "Your Royal Gateway",
+    account_eyebrow: "Your Atyab Account",
     account_title: "Atyab Account",
     account_intro: "Sign in to keep your favorite selections and purchases close.",
     account_login_tab: "Log in",
@@ -964,7 +964,7 @@ const ATYAB_TRANSLATIONS = {
     quiz_res_details_btn: "View Details & Notes",
 
     // Checkout Modal
-    checkout_modal_title: "Complete Royal Order & Delivery",
+    checkout_modal_title: "Complete Order & Delivery",
     checkout_modal_desc: "Please provide accurate delivery coordinates to guarantee swift dispatch.",
     co_name_label: "Full Name *",
     co_name_placeholder: "e.g. Mohammed Al-Otaibi",
@@ -976,7 +976,7 @@ const ATYAB_TRANSLATIONS = {
     co_address_placeholder: "District, Street Name, Building Number...",
     co_summary_title: "Order Summary ({count} items)",
     co_total_due: "Total Due:",
-    co_submit_btn: "Confirm Order & Dispatch 🚀",
+    co_submit_btn: "Confirm Order & Dispatch",
 
     // Order Confirmation
     order_conf_pill: "Your Royal Order Has Been Confirmed",
@@ -1015,7 +1015,7 @@ const ATYAB_TRANSLATIONS = {
     pdp_buy_whatsapp_btn: "Direct Order via WhatsApp",
     pdp_whatsapp_order_msg: "Hello Atyab Concierge, I would like to order {name} ({size}) priced at {price} from the official store.",
     pdp_stock_status: "In Stock - Express Dispatch Ready ⚡",
-    pdp_fast_shipping_note: "Safe insured delivery across Saudi Arabia (24-48 hours) 🇸🇦",
+    pdp_fast_shipping_note: "Delivery availability and timing are confirmed at checkout.",
     pdp_golden_guarantee: "Royal Golden Guarantee: Free trial sample included with every flacon before opening",
     pdp_free_shipping_hint: "Enjoy Free Shipping across KSA on orders over 150 SAR",
     pdp_view_full_notes: "Explore Fragrance Pyramid & Notes",
@@ -1135,7 +1135,7 @@ const ATYAB_TRANSLATIONS = {
     review_success_title: "Royal Review Submitted",
     review_success_msg: "Thank you for sharing your authentic feedback with the Atyab family.",
     page_title: "Atyab Perfume | Official Royal Luxury Fragrance House KSA",
-    mobile_wa_btn: "Royal Concierge (WhatsApp)",
+    mobile_wa_btn: "Customer Care (WhatsApp)",
     mobile_lang_label: "🌐 Language / اللغة",
     mobile_curr_label: "💵 Currency / العملة",
     track_login_prompt_title: "Log in to Track Your Orders",

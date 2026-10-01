@@ -160,8 +160,8 @@ function getFirebaseErrorMessage(code, lang = "ar") {
         : "صيغة البريد الإلكتروني غير صحيحة. يرجى التأكد وكتابته بشكل سليم.";
     case "auth/operation-not-allowed":
       return isEn 
-        ? "Email/Password sign-in is not enabled in Firebase Console."
-        : "تسجيل الدخول بالبريد وكلمة المرور غير مفعّل في لوحة تحكم Firebase.";
+        ? "This sign-in method is not enabled in Firebase Console. Enable the Google provider under Authentication > Sign-in method."
+        : "طريقة تسجيل الدخول هذه غير مفعّلة في Firebase. فعّل مزود Google من Authentication > Sign-in method.";
     case "auth/weak-password":
       return isEn 
         ? "The password must be at least 6 characters."
@@ -322,6 +322,7 @@ async function firebaseAuthSignInWithGoogle() {
 
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     provider.addScope("profile");
     provider.addScope("email");
 
@@ -362,7 +363,7 @@ async function firebaseAuthSignInWithGoogle() {
     if (error.code === "auth/popup-blocked") {
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithRedirect(provider);
+        await auth.signInWithRedirect(provider);
         return { success: true, isRedirecting: true };
       } catch (redirErr) {
         const isEn = (typeof state !== "undefined" && state.language === "en");
@@ -379,6 +380,56 @@ async function firebaseAuthSignInWithGoogle() {
       error: getFirebaseErrorMessage(error.code, lang),
       code: error.code
     };
+  }
+}
+
+/**
+ * Stores a consented newsletter subscription.  The Firestore rule permits
+ * public creates only; subscriber lists remain readable by the administrator.
+ */
+async function firebaseSubscribeNewsletter(email, source = "website") {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return { success: false, error: "Please enter a valid email address." };
+  }
+  const db = getFirebaseDb();
+  if (!db) return { success: false, error: "Newsletter service is not available right now." };
+
+  try {
+    await db.collection("newsletterSubscribers").doc(normalizedEmail).set({
+      email: normalizedEmail,
+      consent: true,
+      source,
+      subscribedAt: new Date().toISOString()
+    }, { merge: true });
+    return { success: true };
+  } catch (error) {
+    console.warn("Newsletter subscription error:", error);
+    return { success: false, error: "We could not save your subscription. Please try again." };
+  }
+}
+
+async function firebaseSendContactMessage(message) {
+  const email = String(message?.email || "").trim().toLowerCase();
+  const name = String(message?.name || "").trim();
+  const body = String(message?.message || "").trim();
+  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !body) {
+    return { success: false, error: "Please complete your name, email and message." };
+  }
+  const db = getFirebaseDb();
+  if (!db) return { success: false, error: "Contact service is not available right now." };
+  try {
+    await db.collection("contactMessages").add({
+      name: name.slice(0, 120),
+      email: email.slice(0, 254),
+      message: body.slice(0, 4000),
+      source: "contact-page",
+      createdAt: new Date().toISOString()
+    });
+    return { success: true };
+  } catch (error) {
+    console.warn("Contact message error:", error);
+    return { success: false, error: "We could not send your message. Please try again." };
   }
 }
 
@@ -894,6 +945,8 @@ if (typeof window !== "undefined") {
   window.firebaseAuthSignUp = firebaseAuthSignUp;
   window.firebaseAuthSignIn = firebaseAuthSignIn;
   window.firebaseAuthSignInWithGoogle = firebaseAuthSignInWithGoogle;
+  window.firebaseSubscribeNewsletter = firebaseSubscribeNewsletter;
+  window.firebaseSendContactMessage = firebaseSendContactMessage;
   window.firebaseAuthSendPhoneOtp = firebaseAuthSendPhoneOtp;
   window.firebaseAuthVerifyPhoneOtp = firebaseAuthVerifyPhoneOtp;
   window.normalizeSaudiPhoneNumber = normalizeSaudiPhoneNumber;

@@ -7532,3 +7532,22 @@ html[dir="ltr"] .cat-quiz-strip-card {
 html[dir="ltr"] .cat-card-price-box {
   direction: ltr;
 }
+
+/* Shared storefront additions */
+.newsletter-form { margin-top: 22px; }
+.newsletter-form label { display: block; color: #fff; font-weight: 700; margin-bottom: 6px; }
+.newsletter-form p, .newsletter-form small { display: block; color: #b7b7b7; font-size: .82rem; line-height: 1.55; margin: 0 0 9px; }
+.newsletter-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.newsletter-controls input { flex: 1 1 175px; min-width: 0; padding: 10px 12px; border-radius: 5px; border: 1px solid #5b5b5b; background: #1c1c1c; color: #fff; }
+.newsletter-controls .btn { min-height: 42px; padding: 8px 16px; }
+.social-links { display: flex; gap: 8px; margin-top: 14px; }
+.social-links a { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #2b2b2b; color: #fff; font-size: .68rem; font-weight: 800; text-decoration: none; }
+.social-links a:hover { background: var(--gold-primary); color: #111; }
+.product-stock-label { margin: 9px 0 0; font-size: .78rem; font-weight: 800; }
+.product-stock-label.in-stock { color: #247a48; }
+.product-stock-label.out-of-stock { color: #b42318; }
+.pdp-out-of-stock { color: #b42318 !important; background: rgba(180, 35, 24, .08) !important; border-color: rgba(180, 35, 24, .24) !important; }
+.cat-filter-divider { align-self: stretch; width: 1px; min-height: 28px; background: var(--border-light); margin: 0 3px; }
+/* Legacy static cards cannot advertise unverified sale prices. */
+.cherished-old-price, .original-price, .pdp-old-price, .pdp-save-badge, .cat-card-price-old, .cat-price-save-tag { display: none !important; }
+@media (max-width: 560px) { .newsletter-controls { display: grid; grid-template-columns: 1fr; } .cat-filter-divider { display: none; } }

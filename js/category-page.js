@@ -7,6 +7,7 @@
 let currentCategoryFilter = "perfumes";
 let currentSortBy = "featured";
 let currentSubTag = "all";
+let currentGenderFilter = "all";
 let currentGridLayout = "cols-4"; // 'cols-4' or 'cols-3'
 
 function initCategoryPage(defaultCategory = "perfumes") {
@@ -14,6 +15,7 @@ function initCategoryPage(defaultCategory = "perfumes") {
   const urlCat = params.get("cat") || defaultCategory;
   currentCategoryFilter = urlCat;
   currentSubTag = "all";
+  currentGenderFilter = "all";
 
   // Set active header category nav link - match strictly by dataset.cat or explicit cat query
   document.querySelectorAll(".category-nav-menu .cat-nav-link").forEach(link => {
@@ -49,6 +51,7 @@ function switchCategoryTab(cat) {
   if (currentCategoryFilter === cat && currentSubTag === "all") return;
   currentCategoryFilter = cat;
   currentSubTag = "all";
+  currentGenderFilter = "all";
 
   const url = new URL(window.location);
   url.searchParams.set("cat", cat);
@@ -94,6 +97,7 @@ window.addEventListener("popstate", () => {
   const cat = params.get("cat") || "perfumes";
   currentCategoryFilter = cat;
   currentSubTag = "all";
+  currentGenderFilter = "all";
   document.querySelectorAll(".category-nav-menu .cat-nav-link").forEach(link => {
     const linkCat = link.dataset.cat || (link.getAttribute("href")?.match(/[?&]cat=([^&]+)/)?.[1]);
     link.classList.toggle("active", linkCat === cat);
@@ -113,13 +117,13 @@ function updateCategoryPageHeader() {
     perfumes: {
       pillAr: "⚜️ أفخر التوليفات الشرقية والفرنسية الملكية",
       pillEn: "⚜️ Royal Oriental & French Haute Parfumerie",
-      titleAr: "العطور الملكية الفاخرة",
+      titleAr: "العطور الفاخرة",
       titleEn: "LUXURY PERFUMES COLLECTION",
       accentAr: "أثرٌ خالد وفوحان يأسر الحواس",
       accentEn: "Enduring Aura & Majestic Sillage",
       descAr: "توليفات عطرية استثنائية صُممت لمحبي التميز والوقار؛ تجمع بين نبل العود الكمبودي والورود الدمشقية وزعفران قصر الملوك لتمنحك حضوراً يفرض هيبته في أرقى المناسبات.",
       descEn: "Exceptional fragrance creations handcrafted for connoisseurs of distinction. Marrying the noble depth of wild Cambodian agarwood, dewy Taif rose, and Persian saffron to bestow a commanding presence at grand receptions.",
-      crumbAr: "العطور الملكية",
+      crumbAr: "العطور",
       crumbEn: "Luxury Perfumes",
       filters: [
         { id: "all", labelAr: "جميع العطور (10)", labelEn: "All Perfumes (10)" },
@@ -149,8 +153,8 @@ function updateCategoryPageHeader() {
     bakhoor: {
       pillAr: "🕌 كرم الضيافة العربية وفخامة المجالس",
       pillEn: "🕌 Arabian Hospitality & Royal Majlis",
-      titleAr: "بخور ودخون المجالس الملكية",
-      titleEn: "ROYAL BAKHOOR & DAKHOON",
+      titleAr: "بخور ودخون المجالس",
+      titleEn: "BAKHOOR & DAKHOON",
       accentAr: "سحابة عطرية تملأ المكان بالسكينة",
       accentEn: "A Warm Aromatic Cloud of Tranquility",
       descAr: "رقائق عود مروكي وآسام طبيعية منقوعة في أصفى الزيوت الشرقية والورد الطائفي لتعطير البيوت والمجالس بأصالة تدوم طويلاً.",
@@ -164,8 +168,8 @@ function updateCategoryPageHeader() {
       ]
     },
     cream: {
-      pillAr: "✨ عناية ملكية مخملية وترطيب 24 ساعة",
-      pillEn: "✨ Velvety 24-Hour Silk Hydration",
+      pillAr: "عناية مخملية وترطيب يدوم طويلاً",
+      pillEn: "Velvety Silk Hydration",
       titleAr: "كريمات الجسم المعطرة الفاخرة",
       titleEn: "PERFUMED BODY CREAMS & SOUFFLÉS",
       accentAr: "دلال الحرير ونعومة تدوم طويلاً",
@@ -181,10 +185,10 @@ function updateCategoryPageHeader() {
       ]
     },
     giftset: {
-      pillAr: "🎁 فن الإهداء الملكي الفاخر",
-      pillEn: "🎁 The Art of Royal Gifting",
+      pillAr: "فن الإهداء الفاخر",
+      pillEn: "The Art of Gifting",
       titleAr: "صناديق الإهداء الفاخرة (VIP)",
-      titleEn: "ROYAL PRESENTATION GIFT SETS",
+      titleEn: "PRESENTATION GIFT SETS",
       accentAr: "هدية تخلد أثرك وتبهج القلوب",
       accentEn: "A Distinguished Gift of Remembrance",
       descAr: "صناديق جلدية مبطنة بالمخمل ومذهبة بشرائط أنيقة، تشمل أفخر العطور والدهون والبخور الجاهز للإهداء الفوري.",
@@ -245,7 +249,12 @@ function updateCategoryPageHeader() {
           ${label}
         </button>
       `;
-    }).join("");
+    }).join("") + `<span class="cat-filter-divider" aria-hidden="true"></span>` + [
+      ["all", isEn ? "All genders" : "كل الخيارات"],
+      ["men", isEn ? "For Men" : "للرجال"],
+      ["women", isEn ? "For Women" : "للنساء"],
+      ["unisex", isEn ? "Unisex" : "للجنسين"]
+    ].map(([id, label]) => `<button type="button" class="cat-filter-btn cat-gender-filter ${currentGenderFilter === id ? "active" : ""}" data-gender="${id}" onclick="filterCategoryByGender('${id}', this)">${label}</button>`).join("");
   }
 
   // Update Page Title
@@ -300,6 +309,10 @@ function renderCategoryProducts() {
     });
   }
 
+  if (currentGenderFilter !== "all") {
+    filtered = filtered.filter((product) => (product.genderCategory || "unisex") === currentGenderFilter);
+  }
+
   // Sort
   if (currentSortBy === "price-asc") {
     filtered.sort((a, b) => (a.priceSAR || 0) - (b.priceSAR || 0));
@@ -312,7 +325,7 @@ function renderCategoryProducts() {
   // Update count badge
   const countEl = document.getElementById("cat-count-num");
   if (countEl) {
-    countEl.textContent = isEn ? `${filtered.length} Creations` : `${filtered.length} عطور ملكية`;
+    countEl.textContent = isEn ? `${filtered.length} Creations` : `${filtered.length} عطور`;
   }
 
   // Empty state
@@ -337,7 +350,7 @@ function renderCategoryProducts() {
   container.innerHTML = filtered.map((product, index) => {
     const lp = getProductLocalized(product, isEn ? "en" : "ar");
     const exactPrice = product.priceSAR;
-    const exactOldPrice = product.originalPriceSAR;
+    const exactOldPrice = null;
     const officialVolume = isEn ? (product.defaultSizeEn || "100ml Bottle") : (product.defaultSize || "قارورة 100 مل");
     const cleanVolume = officialVolume.split("(")[0].trim();
 
@@ -351,9 +364,9 @@ function renderCategoryProducts() {
     }
 
     const isWishlisted = typeof state !== "undefined" && state.wishlist && state.wishlist.some(w => (typeof w === "object" ? w.id : w) === product.id);
-    const savePercent = exactOldPrice && exactOldPrice > exactPrice 
-      ? Math.round((1 - exactPrice / exactOldPrice) * 100) 
-      : 0;
+    const savePercent = 0;
+    const inStock = product.inStock !== false;
+    const stockText = isEn ? (inStock ? "In Stock" : "Out of Stock") : (inStock ? "متوفر" : "نفد من المخزون");
 
     const pdpUrl = `product.html?id=${product.id}${isEn ? '&lang=en' : ''}`;
 
@@ -429,6 +442,7 @@ function renderCategoryProducts() {
           <p class="cat-card-sub" title="${lp.displaySubtitle || ''}">
             ${lp.displaySubtitle || lp.displayFamily || ""}
           </p>
+          <p class="product-stock-label ${inStock ? "in-stock" : "out-of-stock"}">${stockText}</p>
 
           ${keyNotesPreview ? `
             <div class="cat-card-notes-chips" title="${keyNotesPreview}">
@@ -459,7 +473,7 @@ function renderCategoryProducts() {
             <button type="button" 
                     class="cat-btn-add-cart" 
                     id="add-btn-${product.id}"
-                    onclick="handleCardDirectAddToCart('${product.id}')">
+                    ${inStock ? `onclick="handleCardDirectAddToCart('${product.id}')"` : "disabled"}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -539,13 +553,20 @@ function openQuickViewCategory(productId, event) {
  */
 function filterCategoryByTag(tag, btn) {
   currentSubTag = tag;
-  document.querySelectorAll(".cat-filter-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".cat-filter-btn:not(.cat-gender-filter)").forEach(b => b.classList.remove("active"));
   if (btn) {
     btn.classList.add("active");
   } else {
     const target = document.querySelector(`.cat-filter-btn[data-tag="${tag}"]`);
     if (target) target.classList.add("active");
   }
+  renderCategoryProducts();
+}
+
+function filterCategoryByGender(gender, btn) {
+  currentGenderFilter = gender;
+  document.querySelectorAll(".cat-gender-filter").forEach((button) => button.classList.remove("active"));
+  if (btn) btn.classList.add("active");
   renderCategoryProducts();
 }
 
@@ -577,6 +598,7 @@ window.updateCategoryPageHeader = updateCategoryPageHeader;
 window.selectCardVariant = selectCardVariant;
 window.handleCardDirectAddToCart = handleCardDirectAddToCart;
 window.filterCategoryByTag = filterCategoryByTag;
+window.filterCategoryByGender = filterCategoryByGender;
 window.sortCategoryProducts = sortCategoryProducts;
 window.setCategoryGridLayout = setCategoryGridLayout;
 

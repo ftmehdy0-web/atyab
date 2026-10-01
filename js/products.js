@@ -2342,6 +2342,25 @@ const BASE_ATYAB_PRODUCTS = [
 
 ];
 
+// Original/strike-through prices are intentionally withheld until the store
+// owner supplies verifiable original prices. Availability and gender remain
+// explicit product fields so the catalog can render consistent labels/filters.
+const ATYAB_GENDER_DEFAULTS = {
+  "atyab-tiger-oud": "men",
+  "atyab-nader": "men",
+  "atyab-mashair": "women",
+  "atyab-moon-flower": "women"
+};
+BASE_ATYAB_PRODUCTS.forEach((product) => {
+  product.originalPriceSAR = null;
+  product.inStock = product.inStock !== false;
+  product.genderCategory = product.genderCategory || ATYAB_GENDER_DEFAULTS[product.id] || "unisex";
+  (product.sizeVariants || []).forEach((variant) => {
+    variant.originalPriceSAR = null;
+    delete variant.savePercent;
+  });
+});
+
 /**
  * Helper to get localized product attributes
  */

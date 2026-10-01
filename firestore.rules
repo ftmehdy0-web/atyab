@@ -58,5 +58,24 @@ service cloud.firestore {
         && resource.data.ownerUid == request.auth.uid
         && request.resource.data.ownerUid == request.auth.uid);
     }
+
+    // Public newsletter forms may only create a minimal, consented record.
+    // Subscriber data is never exposed to other customers.
+    match /newsletterSubscribers/{subscriberId} {
+      allow create: if request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.consent == true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /contactMessages/{messageId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.message is string
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.message.size() <= 4000;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }

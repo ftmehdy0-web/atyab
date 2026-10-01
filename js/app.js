@@ -762,6 +762,10 @@ function switchLanguage(lang, notify = true, updateUrl = true) {
     document.body.classList.toggle("lang-ar", lang === "ar");
   }
 
+  // Header navigation, footer data and checkout options use one shared
+  // configuration rather than page-specific copies.
+  try { if (typeof renderAtyabSharedComponents === "function") renderAtyabSharedComponents(); } catch (e) { }
+
   // مزامنة الروابط الداخلية لتحمل اللغة النشطة تلقائياً
   try {
     syncNavLinksLanguage(lang);
@@ -1449,6 +1453,10 @@ function renderProducts() {
   grid.innerHTML = filtered
     .map((product) => {
       const lp = getProductLocalized(product, state.language);
+      const isInStock = product.inStock !== false;
+      const stockLabel = state.language === "en"
+        ? (isInStock ? "In Stock" : "Out of Stock")
+        : (isInStock ? "متوفر" : "نفد من المخزون");
       const isWishlisted = state.wishlist.includes(product.id);
       const topNote = (lp.displayNotes && lp.displayNotes.top && lp.displayNotes.top[0]) || "";
       const heartNote = (lp.displayNotes && lp.displayNotes.heart && lp.displayNotes.heart[0]) || "";
@@ -1484,6 +1492,7 @@ function renderProducts() {
             <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}">${lp.displayName}</a>
           </h3>
           <p class="product-subtitle">${lp.displaySubtitle}</p>
+          <p class="product-stock-label ${isInStock ? "in-stock" : "out-of-stock"}">${stockLabel}</p>
 
           <div class="note-pills">
             <span class="note-pill">${topNote}</span>
@@ -1504,7 +1513,7 @@ function renderProducts() {
               </div>
               ${product.originalPriceSAR ? `<span class="original-price">${formatPrice(product.originalPriceSAR)}</span>` : ""}
             </div>
-            <button class="btn-add-cart" onclick="addToCart('${product.id}', '${product.defaultSize}', 1)" title="${t("cart_tooltip")}">
+            <button class="btn-add-cart" ${isInStock ? `onclick="addToCart('${product.id}', '${product.defaultSize}', 1)"` : "disabled"} title="${stockLabel}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -2745,7 +2754,9 @@ async function handleCheckoutSubmit(e) {
     mada: "مدى (Mada Debit)",
     applepay: "آبل باي (Apple Pay)",
     credit: "بطاقة ائتمانية (Visa / MasterCard)",
-    cod: "الدفع عند الاستلام (COD)"
+    cod: "الدفع عند الاستلام (COD)",
+    tabby: "تابي — طلب دفع لاحقاً (يتطلب تفعيل التاجر)",
+    tamara: "تمارا — طلب دفع لاحقاً (يتطلب تفعيل التاجر)"
   };
 
   const customerEmail = (state.account?.email || email || "customer@atyab.sa").toLowerCase();
@@ -2765,7 +2776,9 @@ async function handleCheckoutSubmit(e) {
       address,
       paymentMethod,
       paymentLabel: paymentLabels[paymentMethod] || paymentMethod,
-      paymentStatus: paymentMethod === "cod" ? "عند الاستلام (Pending COD)" : "مدفوع إلكترونياً (Paid)"
+      paymentStatus: paymentMethod === "cod"
+        ? "عند الاستلام (Pending COD)"
+        : (["tabby", "tamara"].includes(paymentMethod) ? "طلب دفع لاحقاً بانتظار تفعيل/موافقة المزود" : "مدفوع إلكترونياً (Paid)")
     },
     items: state.cart.map((item) => ({
       id: item.id,

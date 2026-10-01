@@ -33,7 +33,7 @@ function initProductPage() {
   // Also auto-detect product from filename (e.g. product-backhoor.html)
   if (!productId) {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes("backhoor") || path.includes("bakhoor")) productId = "atyab-bakhoor";
+    if (path.includes("backhoor") || path.includes("bakhoor")) productId = "atyab-backhoor";
     else if (path.includes("tiger-oud")) productId = "atyab-tiger-oud";
     else if (path.includes("nader")) productId = "atyab-nader";
     else if (path.includes("moon-flower")) productId = "atyab-moon-flower";
@@ -278,7 +278,7 @@ function closeLightbox() {
 function renderPurchaseBox(lp) {
   const isEn = state.language === "en";
   const singlePrice = currentProduct.priceSAR;
-  const oldPrice = currentProduct.originalPriceSAR;
+  const oldPrice = null; // Hidden until the owner supplies substantiated original prices.
   const officialSize = isEn ? (currentProduct.defaultSizeEn || "100ml Bottle (Official Signature)") : (currentProduct.defaultSize || "قارورة 100 مل (الحجم الرسمي)");
   const cleanVolume = officialSize.split("(")[0].trim();
   const savePercent = oldPrice && oldPrice > singlePrice 
@@ -352,10 +352,11 @@ function renderPurchaseBox(lp) {
   // حالة التوفر بالمستودع
   const stockContainer = document.getElementById("pdp-stock-container");
   if (stockContainer) {
+    const inStock = currentProduct.inStock !== false;
     stockContainer.innerHTML = `
-      <div class="pdp-stock-banner">
+      <div class="pdp-stock-banner ${inStock ? "" : "pdp-out-of-stock"}">
         <span class="pdp-pulse-dot"></span>
-        <span>${isEn ? "In Stock - Riyadh Central Fulfillment (Immediate Express Dispatch across KSA 🇸🇦)" : "متوفر بالمستودع المركزي - الرياض (شحن فوري سريع لكافة مدن المملكة 🇸🇦)"}</span>
+        <span>${isEn ? (inStock ? "In Stock" : "Out of Stock") : (inStock ? "متوفر" : "نفد من المخزون")}</span>
       </div>
     `;
   }
