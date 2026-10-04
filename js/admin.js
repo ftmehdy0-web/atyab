@@ -1,5 +1,5 @@
-/**
- * ATYAB LUXURY PERFUMES - ROYAL ADMIN DASHBOARD CONTROLLER (ENGLISH)
+﻿/**
+ * ATYAB LUXURY PERFUMES - Signature ADMIN DASHBOARD CONTROLLER (ENGLISH)
  * Executive Order Management, Live Analytics & Real-Time Sync System
  * Access is restricted to the configured Firebase administrator account.
  * 100% REAL ORDERS ONLY — All dummy/fake seed data removed.
@@ -269,7 +269,7 @@ function handleLiveOrdersUpdate() {
     const newestOrder = adminState.orders[0];
     playRoyalChime();
     showToast(
-      `🔔 New Live Order: ${newestOrder.id}`,
+      `� New Live Order: ${newestOrder.id}`,
       `Customer: ${newestOrder.customer?.name} (${newestOrder.customer?.city || "KSA"}) • Total: ${newestOrder.financials?.totalSAR || 0} SAR`
     );
 
@@ -676,13 +676,13 @@ function renderOrdersTable() {
       tbody.innerHTML = `
         <tr>
           <td colspan="6" style="text-align: center; padding: 70px 20px;">
-            <div style="font-size: 3rem; margin-bottom: 12px; color: var(--gold-primary);">👑</div>
+            <div style="font-size: 3rem; margin-bottom: 12px; color: var(--gold-primary);"></div>
             <h3 style="color: #FFFFFF; font-size: 1.25rem; margin-bottom: 6px; font-weight: 800;">No Customer Orders Yet</h3>
             <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 18px; font-size: 0.88rem; line-height: 1.6;">
               Your luxury store is live and operational. When a customer completes checkout on the website, their order will appear here in real-time.
             </p>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-              <a href="index.html" target="_blank" class="btn-primary-action" style="text-decoration: none;">🛍️ Place Test Order on Store</a>
+              <a href="index.html" target="_blank" class="btn-primary-action" style="text-decoration: none;">� Place Test Order on Store</a>
               <button type="button" class="btn-secondary-action" onclick="openNewOrderModal()">➕ Create Manual Order</button>
             </div>
           </td>
@@ -692,7 +692,7 @@ function renderOrdersTable() {
       tbody.innerHTML = `
         <tr>
           <td colspan="6" style="text-align: center; padding: 50px 20px;">
-            <div style="font-size: 2.2rem; margin-bottom: 8px; color: var(--gold-primary);">🔍</div>
+            <div style="font-size: 2.2rem; margin-bottom: 8px; color: var(--gold-primary);">�</div>
             <h3 style="color: #FFFFFF; font-size: 1.1rem; margin-bottom: 4px; font-weight: 700;">No Orders Match Active Filter</h3>
             <p style="color: var(--text-muted); font-size: 0.84rem;">Try selecting "All Orders" or clearing your search term.</p>
           </td>
@@ -718,7 +718,7 @@ function renderOrdersTable() {
       const isPending = o.status === "pending";
       const confirmButton = isPending
         ? `<button class="btn-confirm-action" onclick="confirmOrder('${o.id}')" title="Quick 1-Click Order Confirmation">
-             <span>👑</span>
+             <span></span>
              <span>Confirm Order</span>
            </button>`
         : "";
@@ -737,7 +737,7 @@ function renderOrdersTable() {
           <td>
             <div class="customer-title">${escapeHTML(customerName)}</div>
             <div class="customer-detail-sub">
-              <span>📍 ${escapeHTML(customerCity)}</span>
+              <span>� ${escapeHTML(customerCity)}</span>
               ${customerPhone ? `• <a href="tel:${customerPhone}" class="phone-link">${customerPhone}</a>` : ""}
             </div>
           </td>
@@ -771,28 +771,28 @@ function renderOrdersTable() {
 
               <!-- Status Dropdown Selector -->
               <select class="status-dropdown-select" onchange="updateOrderStatus('${o.id}', this.value)" title="Change Order Status">
-                <option value="pending" ${o.status === "pending" ? "selected" : ""}>🟡 Pending</option>
-                <option value="confirmed" ${o.status === "confirmed" ? "selected" : ""}>🟢 Confirmed</option>
-                <option value="processing" ${o.status === "processing" ? "selected" : ""}>🔵 Processing</option>
-                <option value="shipped" ${o.status === "shipped" ? "selected" : ""}>🚚 Shipped</option>
-                <option value="delivered" ${o.status === "delivered" ? "selected" : ""}>🏁 Delivered</option>
-                <option value="cancelled" ${o.status === "cancelled" ? "selected" : ""}>🔴 Cancelled</option>
+                <option value="pending" ${o.status === "pending" ? "selected" : ""}>� Pending</option>
+                <option value="confirmed" ${o.status === "confirmed" ? "selected" : ""}>� Confirmed</option>
+                <option value="processing" ${o.status === "processing" ? "selected" : ""}>� Processing</option>
+                <option value="shipped" ${o.status === "shipped" ? "selected" : ""}> Shipped</option>
+                <option value="delivered" ${o.status === "delivered" ? "selected" : ""}>� Delivered</option>
+                <option value="cancelled" ${o.status === "cancelled" ? "selected" : ""}>� Cancelled</option>
               </select>
 
               <!-- View Details Modal -->
               <button class="btn-icon-square" onclick="openOrderDetails('${o.id}')" title="Inspect Order Details">
-                👁️
+                �
               </button>
 
               <!-- Print Invoice -->
               <button class="btn-icon-square" onclick="printInvoice('${o.id}')" title="Print Official Tax Invoice">
-                🖨️
+                �
               </button>
 
               <!-- Customer WhatsApp Direct -->
               ${customerPhone ? `
               <button class="btn-icon-square btn-whatsapp-square" onclick="openWhatsApp('${o.id}')" title="Message Customer via WhatsApp">
-                💬
+                
               </button>` : ""}
             </div>
           </td>
@@ -918,7 +918,7 @@ function openOrderDetails(orderId) {
       <!-- Customer Information Block -->
       <div class="info-block">
         <div class="info-block-header">
-          <span>👤</span>
+          <span>�</span>
           <span>Customer & Destination</span>
         </div>
         <div class="info-data-row">
@@ -948,7 +948,7 @@ function openOrderDetails(orderId) {
       <!-- Financial & Dispatch Block -->
       <div class="info-block">
         <div class="info-block-header">
-          <span>💳</span>
+          <span></span>
           <span>Payment & Fulfillment</span>
         </div>
         <div class="info-data-row">
@@ -1004,7 +1004,7 @@ function openOrderDetails(orderId) {
       <!-- Internal Notes -->
       <div class="info-block">
         <div class="info-block-header">
-          <span>📝</span>
+          <span>�</span>
           <span>Executive Internal Notes</span>
         </div>
         <div style="max-height: 140px; overflow-y: auto; margin-bottom: 12px;">
@@ -1019,7 +1019,7 @@ function openOrderDetails(orderId) {
       <!-- Activity Timeline -->
       <div class="info-block">
         <div class="info-block-header">
-          <span>⏱️</span>
+          <span>⏱</span>
           <span>Order Lifecycle Log</span>
         </div>
         <div style="max-height: 180px; overflow-y: auto;">
@@ -1037,20 +1037,20 @@ function openOrderDetails(orderId) {
       <div style="display: flex; gap: 10px; align-items: center;">
         <span style="font-size: 0.82rem; color: var(--gold-pale); font-weight: 700;">Update Status:</span>
         <select class="select-filter" onchange="updateOrderStatus('${order.id}', this.value)">
-          <option value="pending" ${order.status === "pending" ? "selected" : ""}>🟡 Pending Approval</option>
-          <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>🟢 Confirmed</option>
-          <option value="processing" ${order.status === "processing" ? "selected" : ""}>🔵 Processing</option>
-          <option value="shipped" ${order.status === "shipped" ? "selected" : ""}>🚚 Shipped</option>
-          <option value="delivered" ${order.status === "delivered" ? "selected" : ""}>🏁 Delivered</option>
-          <option value="cancelled" ${order.status === "cancelled" ? "selected" : ""}>🔴 Cancelled</option>
+          <option value="pending" ${order.status === "pending" ? "selected" : ""}>� Pending Approval</option>
+          <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>� Confirmed</option>
+          <option value="processing" ${order.status === "processing" ? "selected" : ""}>� Processing</option>
+          <option value="shipped" ${order.status === "shipped" ? "selected" : ""}> Shipped</option>
+          <option value="delivered" ${order.status === "delivered" ? "selected" : ""}>� Delivered</option>
+          <option value="cancelled" ${order.status === "cancelled" ? "selected" : ""}>� Cancelled</option>
         </select>
       </div>
 
       <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        ${isPending ? `<button class="btn-confirm-action" style="padding: 9px 18px; font-size: 0.86rem;" onclick="confirmOrder('${order.id}')">👑 Confirm Order</button>` : ""}
-        <button class="btn-secondary-action" onclick="printInvoice('${order.id}')">🖨️ Tax Invoice</button>
-        ${order.customer?.phone ? `<button class="btn-secondary-action" onclick="openWhatsApp('${order.id}')">💬 WhatsApp</button>` : ""}
-        <button class="btn-secondary-action" style="color: #F87171; border-color: rgba(239, 68, 68, 0.4);" onclick="deleteOrder('${order.id}')">🗑️ Delete</button>
+        ${isPending ? `<button class="btn-confirm-action" style="padding: 9px 18px; font-size: 0.86rem;" onclick="confirmOrder('${order.id}')"> Confirm Order</button>` : ""}
+        <button class="btn-secondary-action" onclick="printInvoice('${order.id}')">� Tax Invoice</button>
+        ${order.customer?.phone ? `<button class="btn-secondary-action" onclick="openWhatsApp('${order.id}')"> WhatsApp</button>` : ""}
+        <button class="btn-secondary-action" style="color: #F87171; border-color: rgba(239, 68, 68, 0.4);" onclick="deleteOrder('${order.id}')">� Delete</button>
         <button class="btn-secondary-action" onclick="closeOrderModal()">Close</button>
       </div>
     `;
@@ -1297,7 +1297,7 @@ function printInvoice(orderId) {
       </div>
 
       <div style="margin-top: 40px; text-align: center; border-top: 1px dashed #CCC; padding-top: 16px; color: #777; font-size: 13px;">
-        Thank you for choosing Atyab Royal Fragrances 👑 • For inquiries, call Concierge: 920000000 • Riyadh, Saudi Arabia
+        Thank you for choosing Atyab Signature Fragrances  • For inquiries, call Concierge: 920000000 • Riyadh, Saudi Arabia
       </div>
     </div>
   `;
@@ -1319,7 +1319,7 @@ function openWhatsApp(orderId) {
     phone = "966" + phone;
   }
 
-  const message = `Hello ${order.customer.name} 👑,\nGreetings from ATYAB Royal Perfumes regarding your Order #${order.id}.\nYour order is currently ${order.status.toUpperCase()} and being processed with our finest royal standards.\n\nThank you for choosing ATYAB.`;
+  const message = `Hello ${order.customer.name} ,\nGreetings from ATYAB Signature Perfumes regarding your Order #${order.id}.\nYour order is currently ${order.status.toUpperCase()} and being processed with our finest Signature standards.\n\nThank you for choosing ATYAB.`;
   const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 }
@@ -1483,7 +1483,7 @@ function showToast(title, message = "") {
   const toast = document.createElement("div");
   toast.className = "admin-toast-pill";
   toast.innerHTML = `
-    <span>👑</span>
+    <span></span>
     <div>
       <div style="font-weight: 700; color: #FFF;">${escapeHTML(title)}</div>
       ${message ? `<div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">${escapeHTML(message)}</div>` : ""}
@@ -1539,13 +1539,13 @@ function updateFirebaseStatusBadge() {
   const statusDesc = document.getElementById("firebase-modal-status-desc");
 
   if (dot) dot.style.background = isConfigured ? "#10B981" : "#EF4444";
-  if (label) label.textContent = isConfigured ? "🔥 Firebase: Configured" : "🔥 Firebase: Setup";
+  if (label) label.textContent = isConfigured ? "� Firebase: Configured" : "� Firebase: Setup";
 
   if (statusBox) {
     statusBox.style.background = isConfigured ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.1)";
     statusBox.style.borderColor = isConfigured ? "rgba(16, 185, 129, 0.35)" : "rgba(239, 68, 68, 0.3)";
   }
-  if (statusIcon) statusIcon.textContent = isConfigured ? "🟢" : "🔴";
+  if (statusIcon) statusIcon.textContent = isConfigured ? "�" : "�";
   if (statusTitle) {
     statusTitle.style.color = isConfigured ? "#34D399" : "#F87171";
     statusTitle.textContent = isConfigured ? "Firebase: Configured" : "Firebase: Not Configured";
@@ -1855,7 +1855,7 @@ function renderProductsTable(products) {
     tbody.innerHTML = `
       <tr>
         <td colspan="6" style="text-align: center; padding: 48px 20px;">
-          <div style="font-size: 2.2rem; margin-bottom: 10px;">🏷️</div>
+          <div style="font-size: 2.2rem; margin-bottom: 10px;">�</div>
           <div style="font-size: 1.05rem; font-weight: 700; color: #FFF; margin-bottom: 6px;">No Products Found in This Category</div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px;">Click "Add New Product" to upload and publish a product to this category.</div>
           <button type="button" class="btn-primary-action btn-header-gold" onclick="openProductEditorModal()">
@@ -1873,11 +1873,11 @@ function renderProductsTable(products) {
     const catClass = `cat-tag-${prod.category || "perfumes"}`;
     const catNameMap = {
       perfumes: "🧴 Perfumes",
-      bakhoor: "🕌 Bakhoor",
-      dakhoon: "🕌 Dakhoon",
-      oil: "💎 Perfume Oil",
-      cream: "✨ Body Cream",
-      giftset: "🎁 Gift Set"
+      bakhoor: "� Bakhoor",
+      dakhoon: "� Dakhoon",
+      oil: "� Perfume Oil",
+      cream: " Body Cream",
+      giftset: " Gift Set"
     };
     const catDisplayName = catNameMap[prod.category] || prod.category;
 
@@ -1907,7 +1907,7 @@ function renderProductsTable(products) {
         </td>
         <td>
           <span class="cat-tag-pill ${catClass}">${catDisplayName}</span>
-          ${isCustom ? `<div style="font-size: 0.68rem; color: var(--gold-pale); font-weight: 700; margin-top: 4px;">✨ Admin Uploaded</div>` : ''}
+          ${isCustom ? `<div style="font-size: 0.68rem; color: var(--gold-pale); font-weight: 700; margin-top: 4px;"> Admin Uploaded</div>` : ''}
         </td>
         <td>
           <div class="prod-pricing-cell">
@@ -1930,15 +1930,15 @@ function renderProductsTable(products) {
         <td>
           <div class="prod-actions-group">
             <button type="button" class="btn-prod-action" onclick="viewProductInStore('${prod.id}')" title="View live page on website">
-              <span>👁️</span>
+              <span>�</span>
               <span>View</span>
             </button>
             <button type="button" class="btn-prod-action btn-action-edit" onclick="openProductEditorModal('${prod.id}')" title="Edit product pricing and details">
-              <span>✏️</span>
+              <span>✏</span>
               <span>Edit</span>
             </button>
             <button type="button" class="btn-prod-action btn-action-delete" onclick="confirmDeleteProduct('${prod.id}')" title="Remove product from store">
-              <span>🗑️</span>
+              <span>�</span>
               <span>Remove</span>
             </button>
           </div>
@@ -1962,7 +1962,7 @@ function renderProductsGrid(products) {
   if (products.length === 0) {
     gridContainer.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg);">
-        <div style="font-size: 2.2rem; margin-bottom: 10px;">🏷️</div>
+        <div style="font-size: 2.2rem; margin-bottom: 10px;">�</div>
         <div style="font-size: 1.05rem; font-weight: 700; color: #FFF; margin-bottom: 6px;">No Products Found</div>
         <button type="button" class="btn-primary-action btn-header-gold" onclick="openProductEditorModal()">
           <span>➕</span>
@@ -1996,9 +1996,9 @@ function renderProductsGrid(products) {
               ${prod.originalPriceSAR ? `<span style="font-size: 0.74rem; color: var(--text-muted); text-decoration: line-through;">${prod.originalPriceSAR} SAR</span>` : ''}
             </div>
             <div class="prod-actions-group">
-              <button type="button" class="btn-prod-action" onclick="viewProductInStore('${prod.id}')" title="View">👁️</button>
-              <button type="button" class="btn-prod-action btn-action-edit" onclick="openProductEditorModal('${prod.id}')" title="Edit">✏️</button>
-              <button type="button" class="btn-prod-action btn-action-delete" onclick="confirmDeleteProduct('${prod.id}')" title="Remove">🗑️</button>
+              <button type="button" class="btn-prod-action" onclick="viewProductInStore('${prod.id}')" title="View">�</button>
+              <button type="button" class="btn-prod-action btn-action-edit" onclick="openProductEditorModal('${prod.id}')" title="Edit">✏</button>
+              <button type="button" class="btn-prod-action btn-action-delete" onclick="confirmDeleteProduct('${prod.id}')" title="Remove">�</button>
             </div>
           </div>
         </div>
@@ -2163,11 +2163,11 @@ function renderImageSlots() {
       const isCover = (i === 0);
       slotsHtml += `
         <div class="image-slot-item has-image ${isCover ? 'is-cover' : ''}" title="${isCover ? 'Main Cover Photo' : `Angle Photo ${i + 1}`}">
-          ${isCover ? '<span class="slot-cover-tag">👑 Cover</span>' : `<span class="slot-number-tag">#${i + 1}</span>`}
+          ${isCover ? '<span class="slot-cover-tag"> Cover</span>' : `<span class="slot-number-tag">#${i + 1}</span>`}
           <img src="${item.src}" alt="Photo ${i + 1}" class="slot-img-preview" />
           <div class="slot-hover-overlay" onclick="event.stopPropagation()">
-            ${!isCover ? `<button type="button" class="btn-slot-ctrl" onclick="setSlotAsCover(${i})">👑 Make Cover</button>` : ''}
-            <button type="button" class="btn-slot-ctrl btn-slot-delete" onclick="removeSlotImage(${i})">🗑️ Remove</button>
+            ${!isCover ? `<button type="button" class="btn-slot-ctrl" onclick="setSlotAsCover(${i})"> Make Cover</button>` : ''}
+            <button type="button" class="btn-slot-ctrl btn-slot-delete" onclick="removeSlotImage(${i})">� Remove</button>
           </div>
         </div>
       `;
@@ -2378,7 +2378,7 @@ function setProductSubmitButtonState(button, { busy = false, editing = false } =
   const label = busy
     ? "Publishing…"
     : (editing ? "Save Changes & Update Website" : "Save & Publish to Website");
-  button.innerHTML = `<span>${busy ? "⏳" : "✨"}</span><span id="btn-submit-product-label">${label}</span>`;
+  button.innerHTML = `<span>${busy ? "⏳" : ""}</span><span id="btn-submit-product-label">${label}</span>`;
 }
 
 /**
@@ -2398,10 +2398,10 @@ async function handleProductEditorSubmit(e) {
   const badge = document.getElementById("prod-form-badge")?.value || "الأكثر طلباً";
   const concentration = document.getElementById("prod-form-concentration")?.value.trim() || "أو دو بارفان رويال";
   const subtitleAr = document.getElementById("prod-form-subtitle-ar")?.value.trim() || `${nameAr} - نفحات شرقية ساحرة وفوحان ملكي`;
-  const subtitleEn = document.getElementById("prod-form-subtitle-en")?.value.trim() || `${nameEn} - Royal Oriental Signature Scent`;
+  const subtitleEn = document.getElementById("prod-form-subtitle-en")?.value.trim() || `${nameEn} - Signature Oriental Signature Scent`;
   const longevity = document.getElementById("prod-form-longevity")?.value.trim() || "18+ ساعة";
   const season = document.getElementById("prod-form-season")?.value.trim() || "المناسبات الفاخرة والرسمية";
-  const descAr = document.getElementById("prod-form-desc-ar")?.value.trim() || `صُمم هذا الابتكار العطري الفاخر ليعكس عراقة التراث وجمال التوليفات الملكية المترفة. يدوم طويلاً بفوحان آسر يفرض حضوره في أرقى الأمسيات.`;
+  const descAr = document.getElementById("prod-form-desc-ar")?.value.trim() || `صُمم هذا الابتكار العطري الفاخر ليعكس عراقة التراث وجمال التوليفات الفاخرة المترفة. يدوم طويلاً بفوحان آسر يفرض حضوره في أرقى الأمسيات.`;
   const descEn = document.getElementById("prod-form-desc-en")?.value.trim() || `Handcrafted with meticulous dedication to haute perfumery. Marrying noble orientals to bestow a commanding presence at grand receptions.`;
 
   // Image & Gallery resolution (up to 5 images)
@@ -2423,7 +2423,7 @@ async function handleProductEditorSubmit(e) {
     titleAr: idx === 0 ? "الواجهة الرئيسية للزجاجة" : `لقطة زاوية ${idx + 1}`,
     titleEn: idx === 0 ? "Official Bottle Front View" : `Product Angle ${idx + 1}`,
     badgeAr: idx === 0 ? "الأصلية 100%" : "تفاصيل ملكية",
-    badgeEn: idx === 0 ? "100% Authentic" : "Royal Details"
+    badgeEn: idx === 0 ? "100% Authentic" : "Signature Details"
   }));
 
   if (gallery.length === 0) {
@@ -2462,7 +2462,7 @@ async function handleProductEditorSubmit(e) {
     reviewsCount: 145,
     badge: badge === "none" ? "" : badge,
     badgeEn: badge === "none" ? "" : badge,
-    badgeType: "royal",
+    badgeType: "Signature",
     image: primaryImage,
     gallery,
     sizes: [size],
@@ -2633,12 +2633,12 @@ async function handleRestoreDefaultCatalog() {
     renderProductsManagement();
     populateManualOrderProductSelect();
     updateTopNavCounts();
-    showToast("Defaults Restored", "All original royal products have been restored to the catalog.");
+    showToast("Defaults Restored", "All original Signature products have been restored to the catalog.");
   }
 }
 
 function viewProductInStore(productId) {
-  window.open(`product.html?id=${productId}`, "_blank");
+  window.open(`product-productId.html`, "_blank");
 }
 
 // Window bindings for all Product Management handlers
@@ -2683,3 +2683,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initDashboard();
   }
 });
+
+
+

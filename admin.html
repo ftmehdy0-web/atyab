@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
@@ -16,12 +16,12 @@
   <header class="admin-header">
     <div class="admin-header-container">
       <div class="brand-wrapper">
-        <div class="brand-crest">👑</div>
+        <div class="brand-crest"></div>
         <div class="brand-info">
           <h1>ATYAB PERFUMES</h1>
           <span>
             <span class="live-indicator-dot"></span>
-            Royal Executive Hub • Live
+            Signature Executive Hub • Live
           </span>
         </div>
       </div>
@@ -29,14 +29,14 @@
       <div class="header-controls">
         <!-- Live Saudi Arabia Clock -->
         <div class="live-clock-pill" title="Current Saudi Arabia Standard Time">
-          <span>🕒</span>
+          <span>�</span>
           <span id="live-ksa-clock">--:--:--</span>
           <span style="font-size: 0.7rem; color: var(--gold-primary); font-weight: 700;">KSA</span>
         </div>
 
         <!-- Super Admin Profile Chip -->
         <div class="admin-badge-pill">
-          <div class="admin-avatar">👑</div>
+          <div class="admin-avatar"></div>
           <div class="admin-meta">
             <div class="admin-email-text">admin@gmail.com</div>
             <div class="admin-role-text">Authorized Super Admin</div>
@@ -45,32 +45,32 @@
 
         <!-- Dedicated Manage Products Action -->
         <button type="button" class="btn-header-action btn-header-gold" onclick="switchAdminView('products')" id="btn-header-manage-products" title="Manage store products, add new, or remove products">
-          <span>👑</span>
+          <span></span>
           <span>Manage Products</span>
           <span class="tab-btn-badge" id="header-products-count" style="margin-left: 6px; background: rgba(0,0,0,0.4); color: #FFF;">0</span>
         </button>
 
         <!-- Quick Storefront Link -->
         <a href="index.html" target="_blank" class="btn-header-action" title="Open Storefront in New Tab">
-          <span>🛍️</span>
+          <span>�</span>
           <span>View Store</span>
         </a>
 
         <!-- Firebase Live Sync Settings (Strictly Firebase Only) -->
         <button type="button" class="btn-header-action" onclick="openFirebaseConfigModal()" id="btn-firebase-modal" title="Firebase Live Sync & Authentication">
           <span id="firebase-status-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; margin-right: 4px;"></span>
-          <span id="firebase-btn-label">🔥 Firebase Live Sync</span>
+          <span id="firebase-btn-label">� Firebase Live Sync</span>
         </button>
 
         <!-- Clear Orders -->
         <button type="button" class="btn-header-action" onclick="clearAllOrders()" title="Clear all orders from dashboard">
-          <span>🗑️</span>
+          <span>�</span>
           <span>Clear Orders</span>
         </button>
 
         <!-- Logout -->
         <button type="button" class="btn-header-action btn-logout" onclick="logoutAdmin()" title="Log out from Executive Session">
-          <span>🚪</span>
+          <span>�</span>
           <span>Sign Out</span>
         </button>
       </div>
@@ -81,12 +81,12 @@
   <div class="admin-view-nav-wrapper">
     <div class="admin-view-nav-container">
       <button type="button" class="admin-nav-tab-btn active" id="tab-btn-orders" onclick="switchAdminView('orders')">
-        <span class="tab-btn-icon">📦</span>
+        <span class="tab-btn-icon"></span>
         <span class="tab-btn-text">Orders & Live Analytics</span>
         <span class="tab-btn-badge" id="nav-orders-count">0</span>
       </button>
       <button type="button" class="admin-nav-tab-btn" id="tab-btn-products" onclick="switchAdminView('products')">
-        <span class="tab-btn-icon">👑</span>
+        <span class="tab-btn-icon"></span>
         <span class="tab-btn-text">Manage Products & Live Sync</span>
         <span class="tab-btn-badge" id="nav-products-count">19</span>
       </button>
@@ -117,7 +117,7 @@
       <div class="kpi-card revenue-kpi">
         <div class="kpi-top">
           <span class="kpi-title">Gross Sales Revenue</span>
-          <div class="kpi-icon" style="color: var(--gold-vibrant); border-color: var(--gold-border);">💰</div>
+          <div class="kpi-icon" style="color: var(--gold-vibrant); border-color: var(--gold-border);">�</div>
         </div>
         <div class="kpi-value" id="kpi-total-revenue">0 SAR</div>
         <div class="kpi-meta">
@@ -130,7 +130,7 @@
       <div class="kpi-card">
         <div class="kpi-top">
           <span class="kpi-title">Total Orders</span>
-          <div class="kpi-icon" style="color: #60A5FA;">📦</div>
+          <div class="kpi-icon" style="color: #60A5FA;"></div>
         </div>
         <div class="kpi-value" id="kpi-total-orders">0</div>
         <div class="kpi-meta">
@@ -154,7 +154,7 @@
       <div class="kpi-card">
         <div class="kpi-top">
           <span class="kpi-title">Active Dispatches</span>
-          <div class="kpi-icon" style="color: #C084FC;">🚚</div>
+          <div class="kpi-icon" style="color: #C084FC;"></div>
         </div>
         <div class="kpi-value" id="kpi-active-count">0</div>
         <div class="kpi-meta">
@@ -166,7 +166,7 @@
       <div class="kpi-card">
         <div class="kpi-top">
           <span class="kpi-title">Avg. Order Value (AOV)</span>
-          <div class="kpi-icon" style="color: #34D399;">💎</div>
+          <div class="kpi-icon" style="color: #34D399;">�</div>
         </div>
         <div class="kpi-value" id="kpi-aov-val">0 SAR</div>
         <div class="kpi-meta">
@@ -182,7 +182,7 @@
         <div class="analytics-header">
           <div>
             <div class="analytics-title">
-              <span>📊</span>
+              <span>�</span>
               <span>Order Lifecycle Breakdown</span>
             </div>
             <div class="analytics-subtitle">Current status proportion across active orders</div>
@@ -259,7 +259,7 @@
         <div class="analytics-header">
           <div>
             <div class="analytics-title">
-              <span>🇸🇦</span>
+              <span>��</span>
               <span>Regional Order Volume</span>
             </div>
             <div class="analytics-subtitle">Top delivery destinations across Saudi Arabia</div>
@@ -276,7 +276,7 @@
       <div class="toolbar-upper">
         <!-- Live Search Field -->
         <div class="search-box-wrapper">
-          <span class="search-icon-inside">🔍</span>
+          <span class="search-icon-inside">�</span>
           <input type="text" id="admin-order-search" class="search-input-field" placeholder="Search by Order ID (ATY-KSA-...), Customer Name, Phone, City..." />
         </div>
 
@@ -292,7 +292,7 @@
           </button>
 
           <button type="button" class="btn-secondary-action" onclick="exportOrdersCSV()" title="Export all orders to CSV">
-            <span>📥</span>
+            <span>�</span>
             <span>Export CSV</span>
           </button>
         </div>
@@ -305,27 +305,27 @@
           <span class="pill-count" data-filter-key="all">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="pending" style="border-color: rgba(245, 158, 11, 0.4);">
-          <span>🟡 Pending Approval</span>
+          <span>� Pending Approval</span>
           <span class="pill-count" data-filter-key="pending">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="confirmed" style="border-color: rgba(16, 185, 129, 0.4);">
-          <span>🟢 Confirmed</span>
+          <span>� Confirmed</span>
           <span class="pill-count" data-filter-key="confirmed">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="processing">
-          <span>🔵 Processing</span>
+          <span>� Processing</span>
           <span class="pill-count" data-filter-key="processing">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="shipped">
-          <span>🚚 Shipped</span>
+          <span> Shipped</span>
           <span class="pill-count" data-filter-key="shipped">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="delivered">
-          <span>🏁 Delivered</span>
+          <span>� Delivered</span>
           <span class="pill-count" data-filter-key="delivered">0</span>
         </button>
         <button type="button" class="tab-pill" data-status-filter="cancelled">
-          <span>🔴 Cancelled</span>
+          <span>� Cancelled</span>
           <span class="pill-count" data-filter-key="cancelled">0</span>
         </button>
       </div>
@@ -362,7 +362,7 @@
         <!-- Catalog Header Banner & Actions -->
         <div class="products-catalog-banner">
           <div class="catalog-banner-info">
-            <div class="catalog-banner-icon">👑</div>
+            <div class="catalog-banner-icon"></div>
             <div>
               <div class="catalog-banner-title">Manage Products & Live Store Sync</div>
               <div class="catalog-banner-sub">
@@ -376,11 +376,11 @@
               <span>Add New Product</span>
             </button>
             <button type="button" class="btn-secondary-action" onclick="refreshProductsManagementUI()" title="Refresh products catalog">
-              <span>🔄</span>
+              <span>�</span>
               <span>Refresh</span>
             </button>
             <button type="button" class="btn-secondary-action" onclick="handleRestoreDefaultCatalog()" title="Restore all original catalog items">
-              <span>↩️</span>
+              <span>↩</span>
               <span>Restore Defaults</span>
             </button>
           </div>
@@ -391,7 +391,7 @@
           <div class="category-kpi-card active-filter" data-cat-filter="all" onclick="filterProductsByCategory('all', this)">
             <div class="cat-kpi-top">
               <span class="cat-kpi-label">All Creations</span>
-              <span class="cat-kpi-icon">👑</span>
+              <span class="cat-kpi-icon"></span>
             </div>
             <div class="cat-kpi-count" id="cat-count-all">0</div>
           </div>
@@ -407,7 +407,7 @@
           <div class="category-kpi-card" data-cat-filter="bakhoor" onclick="filterProductsByCategory('bakhoor', this)">
             <div class="cat-kpi-top">
               <span class="cat-kpi-label">Bakhoor & Incense</span>
-              <span class="cat-kpi-icon">🕌</span>
+              <span class="cat-kpi-icon">�</span>
             </div>
             <div class="cat-kpi-count" id="cat-count-bakhoor">0</div>
           </div>
@@ -415,7 +415,7 @@
           <div class="category-kpi-card" data-cat-filter="oil" onclick="filterProductsByCategory('oil', this)">
             <div class="cat-kpi-top">
               <span class="cat-kpi-label">Oils & Attars</span>
-              <span class="cat-kpi-icon">💎</span>
+              <span class="cat-kpi-icon">�</span>
             </div>
             <div class="cat-kpi-count" id="cat-count-oil">0</div>
           </div>
@@ -423,7 +423,7 @@
           <div class="category-kpi-card" data-cat-filter="cream" onclick="filterProductsByCategory('cream', this)">
             <div class="cat-kpi-top">
               <span class="cat-kpi-label">Body Creams</span>
-              <span class="cat-kpi-icon">✨</span>
+              <span class="cat-kpi-icon"></span>
             </div>
             <div class="cat-kpi-count" id="cat-count-cream">0</div>
           </div>
@@ -431,7 +431,7 @@
           <div class="category-kpi-card" data-cat-filter="giftset" onclick="filterProductsByCategory('giftset', this)">
             <div class="cat-kpi-top">
               <span class="cat-kpi-label">VIP Gift Sets</span>
-              <span class="cat-kpi-icon">🎁</span>
+              <span class="cat-kpi-icon"></span>
             </div>
             <div class="cat-kpi-count" id="cat-count-giftset">0</div>
           </div>
@@ -441,7 +441,7 @@
         <div class="products-toolbar-card">
           <div class="products-toolbar-top">
             <div class="products-search-wrapper">
-              <span class="products-search-icon">🔍</span>
+              <span class="products-search-icon">�</span>
               <input type="text" id="admin-product-search" placeholder="Search by name (Arabic / English), notes, SKU, price..." oninput="handleProductSearch(this.value)" />
             </div>
 
@@ -469,7 +469,7 @@
           <!-- Category Filter Pills -->
           <div class="products-category-tabs">
             <button type="button" class="prod-cat-tab active" data-pill-cat="all" onclick="filterProductsByCategory('all', this)">
-              <span>👑</span>
+              <span></span>
               <span>All Products</span>
             </button>
             <button type="button" class="prod-cat-tab" data-pill-cat="perfumes" onclick="filterProductsByCategory('perfumes', this)">
@@ -477,20 +477,20 @@
               <span>Luxury Perfumes</span>
             </button>
             <button type="button" class="prod-cat-tab" data-pill-cat="bakhoor" onclick="filterProductsByCategory('bakhoor', this)">
-              <span>🕌</span>
+              <span>�</span>
               <span>Bakhoor & Incense</span>
             </button>
             <button type="button" class="prod-cat-tab" data-pill-cat="oil" onclick="filterProductsByCategory('oil', this)">
-              <span>💎</span>
+              <span>�</span>
               <span>Perfume Oils & Attars</span>
             </button>
             <button type="button" class="prod-cat-tab" data-pill-cat="cream" onclick="filterProductsByCategory('cream', this)">
-              <span>✨</span>
+              <span></span>
               <span>Body Creams</span>
             </button>
             <button type="button" class="prod-cat-tab" data-pill-cat="giftset" onclick="filterProductsByCategory('giftset', this)">
-              <span>🎁</span>
-              <span>Royal Gift Sets</span>
+              <span></span>
+              <span>Signature Gift Sets</span>
             </button>
           </div>
         </div>
@@ -532,8 +532,8 @@
     <div class="modal-window">
       <div class="modal-header-bar">
         <div class="modal-title-text">
-          <span>👑</span>
-          <span>Royal Order Details & Tracking</span>
+          <span></span>
+          <span>Signature Order Details & Tracking</span>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeOrderModal()">&times;</button>
       </div>
@@ -623,7 +623,7 @@
 
         <div class="modal-footer-bar">
           <button type="button" class="btn-secondary-action" onclick="closeNewOrderModal()">Cancel</button>
-          <button type="submit" class="btn-primary-action">✨ Submit & Approve Order</button>
+          <button type="submit" class="btn-primary-action"> Submit & Approve Order</button>
         </div>
       </form>
     </div>
@@ -640,7 +640,7 @@
     <div class="modal-sheet-card" style="max-width: 620px;">
       <div class="modal-title-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.5rem;">🔥</span>
+          <span style="font-size: 1.5rem;">�</span>
           <div>
             <h3>Connect Firebase Live Sync & Auth</h3>
             <p>Real-time cloud database syncing for customer orders, cancellations, and user accounts</p>
@@ -652,7 +652,7 @@
       <div style="padding: 24px;">
         <!-- Status Banner -->
         <div id="firebase-modal-status-box" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
-          <span id="firebase-modal-status-icon" style="font-size: 1.4rem;">🔴</span>
+          <span id="firebase-modal-status-icon" style="font-size: 1.4rem;">�</span>
           <div style="flex: 1;">
             <div id="firebase-modal-status-title" style="font-weight: 700; color: #F87171; font-size: 0.92rem;">Firebase Live Sync: Not Configured</div>
             <div id="firebase-modal-status-desc" style="font-size: 0.78rem; color: var(--text-muted);">Paste your Firebase web config JSON or fill in the keys below to activate real-time order sync & cloud auth.</div>
@@ -697,20 +697,20 @@
           <!-- Quick Setup Helper -->
           <div style="background: rgba(197, 155, 39, 0.08); border: 1px dashed rgba(197, 155, 39, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
             <div style="font-weight: 700; color: var(--gold-pale); font-size: 0.84rem; margin-bottom: 6px;">
-              📋 Firebase Console Setup Steps:
+               Firebase Console Setup Steps:
             </div>
             <ol style="margin-left: 18px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">
               <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color: var(--gold-primary); text-decoration: underline;">console.firebase.google.com</a> & create a project.</li>
               <li>Go to <strong>Build &gt; Firestore Database</strong>, create the database, then publish the protected rules from <code style="color: #F8E2A7;">firestore.rules</code> in this project.</li>
               <li>Go to <strong>Build &gt; Authentication &gt; Sign-in method</strong>, enable <strong>Email/Password</strong>.</li>
-              <li>Go to <strong>Project Settings ⚙️ &gt; General</strong>, register a Web App (`</>`) and copy the <code style="color: #F8E2A7;">firebaseConfig</code> snippet!</li>
+              <li>Go to <strong>Project Settings ⚙ &gt; General</strong>, register a Web App (`</>`) and copy the <code style="color: #F8E2A7;">firebaseConfig</code> snippet!</li>
             </ol>
           </div>
 
           <div class="modal-footer-bar" style="padding: 0; background: transparent; border-top: none; display: flex; gap: 10px; justify-content: flex-end;">
             <button type="button" class="btn-secondary-action" onclick="handleClearFirebaseConfig()">Restore Default Config</button>
             <button type="button" class="btn-secondary-action" onclick="closeFirebaseConfigModal()">Close</button>
-            <button type="submit" class="btn-primary-action">🔥 Save & Activate Live Sync</button>
+            <button type="submit" class="btn-primary-action">� Save & Activate Live Sync</button>
           </div>
         </form>
       </div>
@@ -724,7 +724,7 @@
     <div class="modal-window product-modal-window">
       <div class="modal-header-bar">
         <div class="modal-title-text">
-          <span id="editor-modal-icon">✨</span>
+          <span id="editor-modal-icon"></span>
           <span id="editor-modal-title">Upload & Publish Product to Storefront</span>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeProductEditorModal()">&times;</button>
@@ -739,7 +739,7 @@
             <div>
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                 <label style="font-size: 0.84rem; font-weight: 700; color: var(--gold-pale);">
-                  📸 Product Photos (Up to 5 Images) *
+                  � Product Photos (Up to 5 Images) *
                 </label>
                 <span id="prod-images-count-badge" class="images-count-pill">0 / 5 Photos</span>
               </div>
@@ -749,7 +749,7 @@
                 <input type="file" id="prod-file-input" accept="image/png, image/jpeg, image/webp" multiple style="display: none;" onchange="handleProductFilesInputChange(this.files)" />
                 
                 <div class="dropzone-empty-content" id="dropzone-empty-state">
-                  <span class="dropzone-icon">📸</span>
+                  <span class="dropzone-icon">�</span>
                   <div class="dropzone-label-main">Click or Drag up to 5 Photos from PC</div>
                   <div class="dropzone-sub">Bottle angles, box packaging & lifestyle shots (PNG, JPG, WebP)</div>
                   <div class="dropzone-badge-optimize">⚡ Auto-compressed for ultra-fast storefront loading</div>
@@ -778,7 +778,7 @@
             <!-- Live Customer Storefront Card Replica Preview -->
             <div class="live-preview-box">
               <div class="live-preview-title">
-                <span>👁️ Live Storefront Preview</span>
+                <span>� Live Storefront Preview</span>
                 <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">Real-time</span>
               </div>
               <div class="live-preview-card-replica">
@@ -805,11 +805,11 @@
               <div class="form-group-item">
                 <label for="prod-form-category">Product Category *</label>
                 <select id="prod-form-category" required onchange="handleCategorySelectChange(this.value)">
-                  <option value="perfumes">🧴 العطور الملكية (Luxury Perfumes)</option>
-                  <option value="bakhoor">🕌 بخور ودخون المجالس (Bakhoor & Incense)</option>
-                  <option value="oil">💎 دهن العود والمسك المركز (Perfume Oils & Attars)</option>
-                  <option value="cream">✨ كريمات الجسم المعطرة (Perfumed Body Creams)</option>
-                  <option value="giftset">🎁 صناديق الإهداء الفاخرة (VIP Gift Sets)</option>
+                  <option value="perfumes">🧴 العطور الفاخرة (Luxury Perfumes)</option>
+                  <option value="bakhoor">� بخور ودخون المجالس (Bakhoor & Incense)</option>
+                  <option value="oil">� دهن العود والمسك المركز (Perfume Oils & Attars)</option>
+                  <option value="cream"> كريمات الجسم المعطرة (Perfumed Body Creams)</option>
+                  <option value="giftset"> صناديق الإهداء الفاخرة (VIP Gift Sets)</option>
                 </select>
               </div>
 
@@ -827,7 +827,7 @@
 
               <div class="form-group-item">
                 <label for="prod-form-name-en">Product Name (English) *</label>
-                <input type="text" id="prod-form-name-en" required placeholder="e.g. Atyab Royal Amber" dir="ltr" oninput="updateLivePreview()" />
+                <input type="text" id="prod-form-name-en" required placeholder="e.g. Atyab Signature Amber" dir="ltr" oninput="updateLivePreview()" />
               </div>
             </div>
 
@@ -907,7 +907,7 @@
         <div class="modal-footer-bar">
           <button type="button" class="btn-secondary-action" onclick="closeProductEditorModal()">Cancel</button>
           <button type="submit" class="btn-primary-action btn-header-gold" id="btn-submit-product">
-            <span>✨</span>
+            <span></span>
             <span id="btn-submit-product-label">Save & Publish to Website</span>
           </button>
         </div>
@@ -922,14 +922,14 @@
     <div class="modal-window" style="max-width: 480px;">
       <div class="modal-header-bar">
         <div class="modal-title-text" style="color: #F87171;">
-          <span>🗑️</span>
+          <span>�</span>
           <span>Remove Product from Website</span>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeDeleteProductModal()">&times;</button>
       </div>
 
       <div class="delete-confirm-box">
-        <div class="delete-warn-icon">⚠️</div>
+        <div class="delete-warn-icon">⚠</div>
         <h4 style="color: #FFF; font-size: 1.15rem; font-weight: 800;">Confirm Product Removal</h4>
         <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
           Are you sure you want to remove this fragrance from the store? It will be immediately unpublished from all customer category pages.
@@ -943,7 +943,7 @@
       <div class="modal-footer-bar" style="justify-content: flex-end; gap: 10px;">
         <button type="button" class="btn-secondary-action" onclick="closeDeleteProductModal()">Cancel</button>
         <button type="button" class="btn-primary-action" style="background: #EF4444; border-color: #F87171;" onclick="executeDeleteProduct()">
-          <span>🗑️</span>
+          <span>�</span>
           <span>Yes, Remove Product</span>
         </button>
       </div>
@@ -955,8 +955,8 @@
        =================================================================== -->
   <div class="modal-overlay-bg" id="admin-login-gate" style="display: none; z-index: 99999; background: rgba(5, 5, 8, 0.94); backdrop-filter: blur(20px);">
     <div class="modal-window" style="max-width: 440px; text-align: center; padding: 36px 28px; border: 1px solid var(--gold-border); box-shadow: 0 16px 64px rgba(0, 0, 0, 0.8), var(--gold-glow);">
-      <div style="font-size: 3rem; margin-bottom: 12px;">👑</div>
-      <h3 style="color: #FFF; font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; margin-bottom: 6px;">ATYAB Royal Admin Hub</h3>
+      <div style="font-size: 3rem; margin-bottom: 12px;"></div>
+      <h3 style="color: #FFF; font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; margin-bottom: 6px;">ATYAB Signature Admin Hub</h3>
       <p style="color: var(--text-secondary); font-size: 0.84rem; line-height: 1.6; margin-bottom: 24px;">
         Authorized Super Admin Access • Sign in with the Firebase Email/Password administrator account to unlock live order analytics and manage store products.
       </p>
@@ -972,7 +972,7 @@
         </div>
         <div id="gate-error-msg" style="color: #F87171; font-size: 0.82rem; margin-bottom: 14px; display: none;"></div>
         <button type="submit" class="btn-primary-action btn-header-gold" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.95rem;">
-          <span>👑 Unlock Executive Dashboard</span>
+          <span> Unlock Executive Dashboard</span>
         </button>
       </form>
     </div>
@@ -987,3 +987,5 @@
   <script src="js/admin.js"></script>
 </body>
 </html>
+
+

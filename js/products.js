@@ -1,4 +1,4 @@
-/**
+﻿/**
  * أطياب للعطور - بيانات المنتجات الرسمية المحدثة (النسخة العربية والإنجليزية - طراز أحمد المغربي)
  * ATYAB PERFUMES - Official Enriched Product Catalog (Arabic & English)
  * All images preserve the authentic company bottles, logos, labels, and calligraphy.
@@ -17,26 +17,25 @@ const BASE_ATYAB_PRODUCTS = [
     family: "عود شرقي أصيل فائق الثبات",
     familyEn: "Authentic Oriental Oud with Legendary Sillage",
     priceSAR: 40,
-    originalPriceSAR: 60,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 285,
     badge: "فوحان أسطوري",
     badgeEn: "Legendary Sillage",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/tiger_oud.jpg",
     gallery: [
       {
         src: "assets/images/tiger_oud.jpg",
         titleAr: "الواجهة الرسمية للزجاجة",
         titleEn: "Official Bottle Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/tiger_oud_cap.jpg",
-        titleAr: "الغطاء الملكي المذهب والمرش",
-        titleEn: "Royal Ornate Cap & Atomizer",
+        titleAr: "الغطاء الفاخر المذهب والمرش",
+        titleEn: "Signature Ornate Cap & Atomizer",
         badgeAr: "زاوية علوية",
         badgeEn: "Top Angle"
       },
@@ -48,8 +47,8 @@ const BASE_ATYAB_PRODUCTS = [
         badgeEn: "Emblem Macro"
       }
     ],
-    sizes: ["قارورة 50 مل (إصدار السفر)", "قارورة 110 مل (الحجم الرسمي)", "صندوق الملوك الملكي 150 مل + ميني"],
-    sizesEn: ["50ml Bottle (Travel Edition)", "110ml Bottle (Official Signature)", "Royal Kings Box 150ml + Mini"],
+    sizes: ["قارورة 50 مل (إصدار السفر)", "قارورة 110 مل (الحجم الرسمي)", "صندوق الملوك الفاخر 150 مل + ميني"],
+    sizesEn: ["50ml Bottle (Travel Edition)", "110ml Bottle (Official Signature)", "Signature Kings Box 150ml + Mini"],
     defaultSize: "قارورة 110 مل (الحجم الرسمي)",
     defaultSizeEn: "110ml Bottle (Official Signature)",
     sizeVariants: [
@@ -57,7 +56,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل (إصدار السفر)",
         sizeEn: "50ml Bottle (Travel Edition)",
         priceSAR: 40,
-        originalPriceSAR: 60,
         savePercent: "33%",
         sku: "AYT-TO-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -68,7 +66,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 110 مل (الحجم الرسمي)",
         sizeEn: "110ml Bottle (Official Signature)",
         priceSAR: 40,
-        originalPriceSAR: 60,
         savePercent: "33%",
         sku: "AYT-TO-110",
         stockNoteAr: "الأكثر طلباً بالمملكة - شحن فوري",
@@ -76,10 +73,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: true
       },
       {
-        size: "صندوق الملوك الملكي 150 مل + ميني",
-        sizeEn: "Royal Kings Box 150ml + Mini",
+        size: "صندوق الملوك الفاخر 150 مل + ميني",
+        sizeEn: "Signature Kings Box 150ml + Mini",
         priceSAR: 40,
-        originalPriceSAR: 60,
         savePercent: "32%",
         sku: "AYT-TO-150-BOX",
         stockNoteAr: "إصدار حصري في صندوق هدايا مخملي",
@@ -88,33 +84,33 @@ const BASE_ATYAB_PRODUCTS = [
       }
     ],
     concentration: "أو دو بارفان رويال (ثبات أسطوري)",
-    concentrationEn: "Eau De Parfum Royal (Immense Sillage)",
+    concentrationEn: "Eau De Parfum Signature (Immense Sillage)",
     gender: "للجنسين / هيبة وقوة",
     genderEn: "Unisex / Majestic Authority",
-    longevity: "18+ ساعة (ثبات هائل على الأقمشة)",
-    longevityEn: "18+ Hours (Immense Sillage on Fabrics)",
+    longevity: "ثبات عالي / High Longevity",
+    longevityEn: "ثبات عالي / High Longevity",
     sillage: "أثر ملكي عميق يملأ القاعات",
     sillageEn: "Deep, Commanding & Room-Filling",
     season: "الخريف، الشتاء والمناسبات الرسمية الكبرى",
     seasonEn: "Autumn, Winter & Grand Receptions",
     timeOfDay: "المساء والأمسيات الفاخرة",
     timeOfDayEn: "Evenings & Grand Nights",
-    description: "شجاعة وفخامة لا مثيل لهما. تايقر عود يجسد القوة والشموخ المستمدين من غابات العود العريقة في آسيا. يبدأ باشتعال الزعفران الفارسي الفاخر مع رشة من جوزة الطيب، ليمتزج بقلب من العود الكمبودي البري النقي واللابدانوم والجلد المدبوغ، مع قاعدة راسخة من دهن العود المعتق والعنبر الملكي والمسك الأسود. معبأ في قارورة ذات نقوش رخامية بيضاء مذهبة متوجة بغطاء ملكي أندلسي.",
-    descriptionEn: "Unmatched bravery and opulence. Tiger Oud epitomizes commanding stature derived from ancient wild agarwood groves. Igniting with red Persian saffron and crushed nutmeg, converging with wild Cambodian agarwood, resinous labdanum, and burnished leather, resting upon aged Indian oud oil, ambergris, and black royal musk. Housed in a gilded white-marble bottle crowned with an ornate Andalusian crest.",
-    story: "وُلد عطر 'تايقر عود' ليمنح حضورك بصمة أسطورية لا تمحى. تم تقطير قطرات العود الكمبودي النادرة على الطريقة التراثية البطيئة لضمان استخلاص أعمق جزيئات الخشب المشبع بالراتنجات الطبيعية، قبل تعتيقه في أوانٍ نحاسية محكمة لسنوات عديدة ليظهر بهذا العمق المهيب.",
+    description: "شجاعة وفخامة لا مثيل لهما. تايقر عود يجسد القوة والشموخ المستمدين من غابات العود العريقة في آسيا. يبدأ باشتعال الزعفران الفارسي الفاخر مع رشة من جوزة الطيب، ليمتزج بقلب من العود الكمبودي البري النقي واللابدانوم والجلد المدبوغ، مع قاعدة راسخة من دهن العود المعتق والعنبر الفاخر والمسك الأسود. معبأ في قارورة ذات نقوش رخامية بيضاء مذهبة متوجة بغطاء ملكي أندلسي.",
+    descriptionEn: "Unmatched bravery and opulence. Tiger Oud epitomizes commanding stature derived from ancient wild agarwood groves. Igniting with red Persian saffron and crushed nutmeg, converging with wild Cambodian agarwood, resinous labdanum, and burnished leather, resting upon aged Indian oud oil, ambergris, and black Signature musk. Housed in a gilded white-marble bottle crowned with an ornate Andalusian crest.",
+    story: "وُلد عطر 'تايقر عود' ليمنح حضورك بصمة أسطورية لا تمحى. تم تقطير قطرات العود الكمبودي النادرة على الطريقة التراثية البطيئة لضمان استخلاص أعمق جزيئات الخشب المشبع بالراتنجات الPremiumة، قبل تعتيقه في أوانٍ نحاسية محكمة لسنوات عديدة ليظهر بهذا العمق المهيب.",
     storyEn: "Tiger Oud was forged to grant your aura an indelible, legendary presence. Rare wild Cambodian agarwood drops were slow-distilled using heritage methods to extract the deepest resinous timber molecules, then aged for years in sealed copper vessels to produce this majestic depth.",
-    ritual: "رشتان إلى ثلاث رشات على الثوب أو المشلح عند ياقة العنق والمعصمين كافية لتمنحك هيبة تستمر طوال اليوم. يُنصح بتبخير الثياب مسبقاً ببخور أطياب الملكي لتحقيق أرقى تناغم عِطري شرقي.",
-    ritualEn: "Two to three sprays upon the bisht, thobe collar, or suit cuffs suffice for all-day commanding authority. For the ultimate royal sillage, layer over garments pre-scented with Atyab Royal Bakhoor.",
+    ritual: "رشتان إلى ثلاث رشات على الثوب أو المشلح عند ياقة العنق والمعصمين كافية لتمنحك هيبة تستمر طوال اليوم. يُنصح بتبخير الثياب مسبقاً ببخور أطياب الفاخر لتحقيق أرقى تناغم عِطري شرقي.",
+    ritualEn: "Two to three sprays upon the bisht, thobe collar, or suit cuffs suffice for all-day commanding authority. For the ultimate Signature sillage, layer over garments pre-scented with Atyab Signature Bakhoor.",
     accords: [
       { name: "عود كمبودي عتيق", nameEn: "Aged Cambodian Oud", pct: 95, color: "#8C6220" },
-      { name: "عنبر ملكي دافئ", nameEn: "Warm Royal Amber", pct: 88, color: "#C59B27" },
+      { name: "عنبر ملكي دافئ", nameEn: "Warm Signature Amber", pct: 88, color: "#C59B27" },
       { name: "توابل وزعفران قائنات", nameEn: "Persian Saffron & Spices", pct: 82, color: "#B9621E" },
       { name: "جلود مدبوغة فاخرة", nameEn: "Artisanal Leather", pct: 75, color: "#5C3A21" },
       { name: "بخور ودخان الأخشاب", nameEn: "Smoky Incense Woods", pct: 70, color: "#3A2E2B" }
     ],
     notes: {
       top: ["زعفران فارسي أحمر سوبر نقيل", "فلفل أسود مجروش", "جوزة الطيب السيلانية", "لبان حوجري عماني"],
-      heart: ["عود كمبودي بري مقطر", "لابدانوم صمغي دافئ", "أوراق الباتشولي الداكنة", "جلد طبيعي مدخن"],
+      heart: ["عود كمبودي بري مقطر", "لابدانوم صمغي دافئ", "أوراق الباتشولي الداكنة", "جلد Premium مدخن"],
       base: ["دهن عود هندي معتق 25 عاماً", "عنبر رمادي أصيل", "خشب أرز الأطلس المدخن", "مسك الملوك الأسود"]
     },
     notesEn: {
@@ -123,7 +119,7 @@ const BASE_ATYAB_PRODUCTS = [
       base: ["25-Year Aged Indian Oud Oil", "Authentic Ambergris", "Smoked Atlas Cedar", "Musk of Kings"]
     },
     mood: ["مناسبات كبرى", "أجواء الشتاء", "توقيع شخصي لا يُنسى", "هيبة ملكية"],
-    moodEn: ["Grand Occasions", "Winter Elegance", "Unforgettable Signature", "Royal Authority"],
+    moodEn: ["Grand Occasions", "Winter Elegance", "Unforgettable Signature", "Signature Authority"],
     reviews: [
       {
         author: "سلطان القحطاني",
@@ -163,28 +159,27 @@ const BASE_ATYAB_PRODUCTS = [
     subtitleEn: "Noble Forest Woods, Green Cardamom & Smoked Leather",
     category: "perfumes",
     family: "خشبي حار شرقي ملكي",
-    familyEn: "Spicy Woody Royal Oriental",
+    familyEn: "Spicy Woody Signature Oriental",
     priceSAR: 50,
-    originalPriceSAR: 75,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 245,
     badge: "صُنِعَ للمتميزين",
     badgeEn: "Made for Distinction",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/nader.jpg",
     gallery: [
       {
         src: "assets/images/nader.jpg",
         titleAr: "الواجهة الزمردية الرسمية",
         titleEn: "Official Emerald Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/nader_cap.jpg",
-        titleAr: "التاج الملكي المرصع والغطاء",
-        titleEn: "Crowned Royal Cap & Collar",
+        titleAr: "التاج الفاخر المرصع والغطاء",
+        titleEn: "Crowned Signature Cap & Collar",
         badgeAr: "زاوية علوية",
         badgeEn: "Top Angle"
       },
@@ -196,8 +191,8 @@ const BASE_ATYAB_PRODUCTS = [
         badgeEn: "Emblem Macro"
       }
     ],
-    sizes: ["قارورة 50 مل (أنيقة وعملية)", "قارورة 100 مل (الحجم الرسمي المعتمد)", "طقم الإهداء الملكي 100 مل + دهن نادر"],
-    sizesEn: ["50ml Bottle (Sleek Pocket)", "100ml Bottle (Official Signature)", "Royal Gift Set 100ml + Nader Dehn"],
+    sizes: ["قارورة 50 مل (أنيقة وعملية)", "قارورة 100 مل (الحجم الرسمي المعتمد)", "طقم الإهداء الفاخر 100 مل + دهن نادر"],
+    sizesEn: ["50ml Bottle (Sleek Pocket)", "100ml Bottle (Official Signature)", "Signature Gift Set 100ml + Nader Dehn"],
     defaultSize: "قارورة 100 مل (الحجم الرسمي المعتمد)",
     defaultSizeEn: "100ml Bottle (Official Signature)",
     sizeVariants: [
@@ -205,7 +200,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل (أنيقة وعملية)",
         sizeEn: "50ml Bottle (Sleek Pocket)",
         priceSAR: 50,
-        originalPriceSAR: 75,
         savePercent: "30%",
         sku: "AYT-ND-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -216,7 +210,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي المعتمد)",
         sizeEn: "100ml Bottle (Official Signature)",
         priceSAR: 50,
-        originalPriceSAR: 75,
         savePercent: "33%",
         sku: "AYT-ND-100",
         stockNoteAr: "الأعلى تقييماً 5 نجوم - شحن سريع",
@@ -224,10 +217,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: true
       },
       {
-        size: "طقم الإهداء الملكي 100 مل + دهن نادر",
-        sizeEn: "Royal Gift Set 100ml + Nader Dehn",
+        size: "طقم الإهداء الفاخر 100 مل + دهن نادر",
+        sizeEn: "Signature Gift Set 100ml + Nader Dehn",
         priceSAR: 50,
-        originalPriceSAR: 75,
         savePercent: "29%",
         sku: "AYT-ND-SET",
         stockNoteAr: "صندوق زمردي فاخر مبطن بالحرير",
@@ -248,26 +240,26 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDay: "الصباح الرسمي والمساء الأنيق",
     timeOfDayEn: "Executive Morning & Elegant Evening",
     description: "اسمٌ على مسمى، 'نادر' هو جوهرة الزمرد في عالم العطور العربية الأصيلة. صُمم لمن يتقنون فنّ الأناقة والظهور الاستثنائي، حيث يمتزج عبير الأخشاب العميقة مع الهيل الأخضر الفاخر والبخور المدخن، محاطاً ببتلات الورد الطائفي والجلد الفاخر. يتألق في زجاجة خضراء زمردية ساحرة متوجة بغطاء ملكي ذهبي على شكل تاج ملكي مرصع.",
-    descriptionEn: "True to its name ('Rare'), Nader is an emerald treasure in authentic Arabian perfumery. Designed for connoisseurs of distinguished poise, marrying deep woods with royal green cardamom and smoked incense, wrapped in Taif rose petals and artisanal leather. Crowned with an ornate royal golden imperial crest.",
-    story: "استلهم صانع العطور 'نادر' من خضرة واحات الجزيرة العربية في مواسم المطر حين تلتقي برودة النسيم مع دفء الأخشاب والتوابل الشرقية المنعشة. اختيار الهيل الأخضر الملكي مع البخور الطائفي خلق بصمة عطرية تمثل الهيبة السعودية الأصيلة.",
-    storyEn: "Inspired by the lush emerald oases of Arabia after rain, where cool breezes mingle with warm noble woods and spices. Blending royal green cardamom with Taif incense creates an olfactory signature of authentic authority.",
+    descriptionEn: "True to its name ('Rare'), Nader is an emerald treasure in authentic Arabian perfumery. Designed for connoisseurs of distinguished poise, marrying deep woods with Signature green cardamom and smoked incense, wrapped in Taif rose petals and artisanal leather. Crowned with an ornate Signature golden imperial crest.",
+    story: "استلهم صانع العطور 'نادر' من خضرة واحات الجزيرة العربية في مواسم المطر حين تلتقي برودة النسيم مع دفء الأخشاب والتوابل الشرقية المنعشة. اختيار الهيل الأخضر الفاخر مع البخور الطائفي خلق بصمة عطرية تمثل الهيبة السعودية الأصيلة.",
+    storyEn: "Inspired by the lush emerald oases of Arabia after rain, where cool breezes mingle with warm noble woods and spices. Blending Signature green cardamom with Taif incense creates an olfactory signature of authentic authority.",
     ritual: "رشة واحدة على كل جانب من العنق ورشة على المعصمين تمنحك هالة قيادية مريحة للحواس تدوم طيلة يوم العمل والاجتماعات الهامة.",
     ritualEn: "One spray on each neck pulse and one on the inner wrists grant a calm, commanding leadership aura throughout meetings and daily affairs.",
     accords: [
-      { name: "هيل أخضر ملكي وتوابل", nameEn: "Royal Green Cardamom", pct: 92, color: "#2E7D32" },
+      { name: "هيل أخضر ملكي وتوابل", nameEn: "Signature Green Cardamom", pct: 92, color: "#2E7D32" },
       { name: "أخشاب نبيلة وأرز الأطلس", nameEn: "Noble Woods & Cedar", pct: 88, color: "#5D4037" },
       { name: "بخور طائفي مدخن", nameEn: "Smoked Taif Incense", pct: 78, color: "#8D6E63" },
-      { name: "جلد طبيعي ناعم", nameEn: "Supple Leather", pct: 74, color: "#4E342E" },
+      { name: "جلد Premium ناعم", nameEn: "Supple Leather", pct: 74, color: "#4E342E" },
       { name: "عنبر ونجيل الهند الهايتي", nameEn: "Ambergris & Vetiver", pct: 68, color: "#C59B27" }
     ],
     notes: {
       top: ["هيل أخضر ملكي منتقى باليد", "فلفل وردي مدغشقري", "جريب فروت صقلي مشرق", "كزبرة عطرية"],
-      heart: ["راتنجات البخور الملكي", "ورد طائفي ندي", "خشب الغاياك العطري", "قرفة مدخنة ناعمة"],
-      base: ["عود داكن معتق", "عنبر رمادي مدخن", "نجيل الهند الهايتي الصافي", "جلد طبيعي ناعم مصقول"]
+      heart: ["راتنجات البخور الفاخر", "ورد طائفي ندي", "خشب الغاياك العطري", "قرفة مدخنة ناعمة"],
+      base: ["عود داكن معتق", "عنبر رمادي مدخن", "نجيل الهند الهايتي الصافي", "جلد Premium ناعم مصقول"]
     },
     notesEn: {
-      top: ["Hand-Selected Royal Green Cardamom", "Madagascar Pink Peppercorn", "Bright Sicilian Grapefruit", "Coriander"],
-      heart: ["Royal Incense Resins", "Dewy Taif Rose", "Aromatic Guaiac Wood", "Soft Smoked Cinnamon"],
+      top: ["Hand-Selected Signature Green Cardamom", "Madagascar Pink Peppercorn", "Bright Sicilian Grapefruit", "Coriander"],
+      heart: ["Signature Incense Resins", "Dewy Taif Rose", "Aromatic Guaiac Wood", "Soft Smoked Cinnamon"],
       base: ["Aged Dark Oud", "Smoked Ambergris", "Pure Haitian Vetiver", "Supple Polished Leather"]
     },
     mood: ["أمسيات فاخرة", "حفلات رسمية", "توقيع شخصي مميز", "حضور دائم"],
@@ -283,7 +275,7 @@ const BASE_ATYAB_PRODUCTS = [
         dateEn: "3 weeks ago",
         title: "عطر نادر اسم على مسمى للدوام والاجتماعات",
         titleEn: "True to its Name: Rare, Refined & Executive",
-        comment: "عطر نادر جمع بين الهيل والأخشاب الملكية بدون أي إزعاج، فوحانه هادئ وفخم جداً للدوام والاجتماعات المهمة. صراحة سعر 50 ريال عليه فرصة ذهبية مقارنة بجودته العالية وثباته الفائق.",
+        comment: "عطر نادر جمع بين الهيل والأخشاب الفاخرة بدون أي إزعاج، فوحانه هادئ وفخم جداً للدوام والاجتماعات المهمة. صراحة سعر 50 ريال عليه فرصة ذهبية مقارنة بجودته العالية وثباته الفائق.",
         commentEn: "Pairs cardamom and noble woods without any sharp edges. Calm, aristocratic projection for executive offices. Incredible value at this high quality."
       }
     ]
@@ -295,12 +287,11 @@ const BASE_ATYAB_PRODUCTS = [
     englishName: "Atyab A.555",
     nameEn: "Atyab A.555",
     subtitle: "نسيم البحر المنعش، برغموت صقلي، وعنبر ملكي",
-    subtitleEn: "Invigorating Sea Breeze, Sicilian Bergamot & Royal Amber",
+    subtitleEn: "Invigorating Sea Breeze, Sicilian Bergamot & Signature Amber",
     category: "perfumes",
     family: "عطور شرقية منعشة (أكواتيك فاخر)",
     familyEn: "Fresh Oriental Aquatic Luxury",
     priceSAR: 35,
-    originalPriceSAR: 50,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 184,
@@ -311,10 +302,10 @@ const BASE_ATYAB_PRODUCTS = [
     gallery: [
       {
         src: "assets/images/a555.jpg",
-        titleAr: "الواجهة الزرقاء الملكية الرسمية",
-        titleEn: "Official Royal Blue Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "الواجهة الزرقاء الفاخرة الرسمية",
+        titleEn: "Official Signature Blue Front View",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/a555_cap.jpg",
@@ -340,7 +331,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل (حجم يومي)",
         sizeEn: "50ml Bottle (Daily Fresh)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "34%",
         sku: "AYT-A555-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -351,7 +341,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 110 مل (الحجم الرسمي المعتمد)",
         sizeEn: "110ml Bottle (Official Signature)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "30%",
         sku: "AYT-A555-110",
         stockNoteAr: "الأكثر مبيعاً للدوام والصيف",
@@ -362,11 +351,10 @@ const BASE_ATYAB_PRODUCTS = [
         size: "طقم الإهداء 110 مل + عينة بخور",
         sizeEn: "Gift Set 110ml + Bakhoor Sample",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "29%",
         sku: "AYT-A555-SET",
         stockNoteAr: "صندوق كحلي مذهب جاهز للإهداء",
-        stockNoteEn: "Royal Navy & Gold Ready-to-Gift Box",
+        stockNoteEn: "Signature Navy & Gold Ready-to-Gift Box",
         isPopular: false
       }
     ],
@@ -382,16 +370,16 @@ const BASE_ATYAB_PRODUCTS = [
     seasonEn: "Spring, Summer & Daily Executive Wear",
     timeOfDay: "الصباح والظهيرة وطوال اليوم",
     timeOfDayEn: "Morning, Midday & All Day Long",
-    description: "تحفة عطرية نابضة بالحياة تستحضر نسيم المحيط العليل تحت أشعة الشمس الذهبية. يفتتح العطر بنفحات البرغموت الصقلي والأكورد البحري النقي، ليتدرج بانسيابية نحو قلب عطري من اللافندر والميرمية، قبل أن يستقر على قاعدة نبيلة من خشب الأرز الأبيض والعنبر الملكي النادر. معبأ في زجاجة ملكية زرقاء داكنة بتفاصيل رخامية ذهبية.",
-    descriptionEn: "A vibrant olfactory creation capturing the cool ocean breeze kissed by golden sunlight. Opening with sparkling Sicilian bergamot and crisp marine accords, flowing smoothly into an aromatic heart of lavender and clary sage, resting upon a noble base of white cedarwood and rare royal amber. Bottled in deep royal blue with gilded marble motifs.",
-    story: "صيغ عطر أ. 555 لمحبي الروائح المنعشة الفواحة التي تبعث على الطاقة والحيوية دون التنازل عن الأصالة الشرقية، حيث جرى تثبيت النوتات البحرية الحساسة بعنبر الحوت الملكي وخشب الصندل الصافي ليدوم طويلاً حتى في درجات الحرارة المرتفعة.",
-    storyEn: "Engineered for connoisseurs who seek ocean freshness without losing oriental longevity. By anchoring crisp marine accords with pure royal ambergris and white cedar, A.555 sustains crisp radiance even in desert heat.",
+    description: "تحفة عطرية نابضة بالحياة تستحضر نسيم المحيط العليل تحت أشعة الشمس الذهبية. يفتتح العطر بنفحات البرغموت الصقلي والأكورد البحري النقي، ليتدرج بانسيابية نحو قلب عطري من اللافندر والميرمية، قبل أن يستقر على قاعدة نبيلة من خشب الأرز الأبيض والعنبر الفاخر النادر. معبأ في زجاجة ملكية زرقاء داكنة بتفاصيل رخامية ذهبية.",
+    descriptionEn: "A vibrant olfactory creation capturing the cool ocean breeze kissed by golden sunlight. Opening with sparkling Sicilian bergamot and crisp marine accords, flowing smoothly into an aromatic heart of lavender and clary sage, resting upon a noble base of white cedarwood and rare Signature amber. Bottled in deep Signature blue with gilded marble motifs.",
+    story: "صيغ عطر أ. 555 لمحبي الروائح المنعشة الفواحة التي تبعث على الطاقة والحيوية دون التنازل عن الأصالة الشرقية، حيث جرى تثبيت النوتات البحرية الحساسة بعنبر الحوت الفاخر وخشب الصندل الصافي ليدوم طويلاً حتى في درجات الحرارة المرتفعة.",
+    storyEn: "Engineered for connoisseurs who seek ocean freshness without losing oriental longevity. By anchoring crisp marine accords with pure Signature ambergris and white cedar, A.555 sustains crisp radiance even in desert heat.",
     ritual: "رش على المعصمين، الرقبة، وأكتاف الثوب الأبيض ليبث حولك هالة نقاء منعشة تستمر طوال ساعات العمل.",
     ritualEn: "Mist across wrists, neck, and shoulders of clean garments to radiate a crisp, sparkling aura all day.",
     accords: [
       { name: "نسيم البحر وأكواتيك نقي", nameEn: "Pure Marine & Aquatic", pct: 94, color: "#1976D2" },
       { name: "برغموت صقلي وحمضيات", nameEn: "Sicilian Bergamot Citrus", pct: 86, color: "#FBC02D" },
-      { name: "عنبر ملكي ومسك أبيض", nameEn: "Royal Amber & White Musk", pct: 80, color: "#C59B27" },
+      { name: "عنبر ملكي ومسك أبيض", nameEn: "Signature Amber & White Musk", pct: 80, color: "#C59B27" },
       { name: "لافندر بري وميرمية", nameEn: "Aromatic Lavender & Sage", pct: 75, color: "#7B1FA2" },
       { name: "خشب الأرز الأبيض", nameEn: "White Cedarwood", pct: 70, color: "#8D6E63" }
     ],
@@ -403,7 +391,7 @@ const BASE_ATYAB_PRODUCTS = [
     notesEn: {
       top: ["Cold-Pressed Calabrian Bergamot", "Crisp Sea Breeze Accord", "Crunchy Green Apple", "French Lavender"],
       heart: ["Oceanic Waves", "Warm Clary Sage", "Light Nutmeg", "White Lily Petals"],
-      base: ["Bright Royal Amber", "Noble White Cedarwood", "Crystal White Musk", "Sultani Sandalwood"]
+      base: ["Bright Signature Amber", "Noble White Cedarwood", "Crystal White Musk", "Sultani Sandalwood"]
     },
     mood: ["انتعاش يومي", "مناسب للعمل", "صيف مفعم بالحيوية", "أناقة عصرية"],
     moodEn: ["Daily Freshness", "Executive Work", "Vibrant Summer", "Modern Poise"],
@@ -435,7 +423,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "زهري شرقي دافئ رومانسي",
     familyEn: "Warm Floral Oriental Romance",
     priceSAR: 55,
-    originalPriceSAR: 80,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 198,
@@ -448,8 +435,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/mashair.jpg",
         titleAr: "الواجهة العنابية الياقوتية الرسمية",
         titleEn: "Official Ruby Velvet Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/mashair_cap.jpg",
@@ -461,7 +448,7 @@ const BASE_ATYAB_PRODUCTS = [
       {
         src: "assets/images/angles/mashair_label.jpg",
         titleAr: "تفاصيل الزجاج الياقوتي والشعار",
-        titleEn: "Ruby Glass & Royal Crest",
+        titleEn: "Ruby Glass & Signature Crest",
         badgeAr: "تفاصيل الشعار",
         badgeEn: "Emblem Macro"
       }
@@ -475,7 +462,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل (إصدار ناعم)",
         sizeEn: "50ml Bottle (Delicate Size)",
         priceSAR: 55,
-        originalPriceSAR: 80,
         savePercent: "31%",
         sku: "AYT-MSH-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -486,7 +472,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي المعتمد)",
         sizeEn: "100ml Bottle (Official Signature)",
         priceSAR: 55,
-        originalPriceSAR: 80,
         savePercent: "31%",
         sku: "AYT-MSH-100",
         stockNoteAr: "الأكثر طلباً للهدايا والأعراس",
@@ -497,7 +482,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "طقم مشاعر الفاخر 100 مل + لوشن عطري",
         sizeEn: "Luxury Mashair Set 100ml + Perfumed Lotion",
         priceSAR: 55,
-        originalPriceSAR: 80,
         savePercent: "30%",
         sku: "AYT-MSH-SET",
         stockNoteAr: "صندوق إهداء رومانسي عنابي مذهب",
@@ -519,7 +503,7 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDayEn: "Evenings, Weddings & Intimate Nights",
     description: "تجسيد حقيقي لأرقى الأحاسيس والمشاعر النبيلة. ينبض عطر مشاعر بدفء جذاب يبدأ بعبير التوت البري المنعش والمندرين المحلى، ليتفتح قلبه في باقة آسرة من الورد الجوري والياسمين، ويستقر برقة على قاعدة غنية بفانيليا البوربون المدغشقرية وخشب الصندل والعنبر الذهبي. زجاجة عنابية متدرجة بفخامة ملكية متناهية.",
     descriptionEn: "A genuine embodiment of refined romance and affection. Mashair pulsates with comforting warmth opening with wild berries and candied mandarin, blooming into Damascene rose and French jasmine sambac, grounded gracefully on Madagascar bourbon vanilla, creamy sandalwood, and warm amber.",
-    story: "ابتُكر 'مشاعر' ليكون قصيدة عشق تُروى عبر أنقى قطرات الورد والياسمين. جرى قطف بتلات الورد في الصباح الباكر لتبقى محتفظة بعبير الندى الطبيعي، ثم أُضيفت فانيليا البوربون لتمنحه ملمساً كشميرياً دافئاً يلامس الوجدان.",
+    story: "ابتُكر 'مشاعر' ليكون قصيدة عشق تُروى عبر أنقى قطرات الورد والياسمين. جرى قطف بتلات الورد في الصباح الباكر لتبقى محتفظة بعبير الندى الPremium، ثم أُضيفت فانيليا البوربون لتمنحه ملمساً كشميرياً دافئاً يلامس الوجدان.",
     storyEn: "Crafted as an ode to noble affection through dewy roses and velvety vanilla. Hand-harvested rose petals preserved with dawn moisture meet warm bourbon vanilla for an irresistible cashmere embrace.",
     ritual: "رشتان على أماكن النبض خلف الأذنين والمعصمين؛ يترك أثراً مخملياً دافئاً كلما اقتربت.",
     ritualEn: "Mist behind earlobes and pulse points; leaves an intoxicating velvety presence whenever you move.",
@@ -570,21 +554,20 @@ const BASE_ATYAB_PRODUCTS = [
     family: "زهري ندي مضيء راقٍ",
     familyEn: "Luminous Dewy Floral Elegance",
     priceSAR: 80,
-    originalPriceSAR: 115,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 220,
     badge: "إصدار النخبة",
     badgeEn: "Elite Edition",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/moon_flower.jpg",
     gallery: [
       {
         src: "assets/images/moon_flower.jpg",
         titleAr: "الواجهة الكريستالية المضيئة الرسمية",
         titleEn: "Official Luminous Crystal Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/moon_flower_cap.jpg",
@@ -601,8 +584,8 @@ const BASE_ATYAB_PRODUCTS = [
         badgeEn: "Emblem Macro"
       }
     ],
-    sizes: ["قارورة 50 مل (إصدار راقٍ)", "قارورة 100 مل (الحجم الرسمي المعتمد)", "صندوق النخبة الملكي 100 مل + معطر شعر"],
-    sizesEn: ["50ml Bottle (Prestige Size)", "100ml Bottle (Official Signature)", "Elite Royal Box 100ml + Hair Mist"],
+    sizes: ["قارورة 50 مل (إصدار راقٍ)", "قارورة 100 مل (الحجم الرسمي المعتمد)", "صندوق النخبة الفاخر 100 مل + معطر شعر"],
+    sizesEn: ["50ml Bottle (Prestige Size)", "100ml Bottle (Official Signature)", "Elite Signature Box 100ml + Hair Mist"],
     defaultSize: "قارورة 100 مل (الحجم الرسمي المعتمد)",
     defaultSizeEn: "100ml Bottle (Official Signature)",
     sizeVariants: [
@@ -610,7 +593,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل (إصدار راقٍ)",
         sizeEn: "50ml Bottle (Prestige Size)",
         priceSAR: 80,
-        originalPriceSAR: 115,
         savePercent: "27%",
         sku: "AYT-MF-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -621,7 +603,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي المعتمد)",
         sizeEn: "100ml Bottle (Official Signature)",
         priceSAR: 80,
-        originalPriceSAR: 115,
         savePercent: "30%",
         sku: "AYT-MF-100",
         stockNoteAr: "إصدار النخبة الأعلى طلباً بالمملكة",
@@ -629,10 +610,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: true
       },
       {
-        size: "صندوق النخبة الملكي 100 مل + معطر شعر",
-        sizeEn: "Elite Royal Box 100ml + Hair Mist",
+        size: "صندوق النخبة الفاخر 100 مل + معطر شعر",
+        sizeEn: "Elite Signature Box 100ml + Hair Mist",
         priceSAR: 80,
-        originalPriceSAR: 115,
         savePercent: "27%",
         sku: "AYT-MF-BOX",
         stockNoteAr: "علبة فاخرة بيضاء بلمسات ذهبية",
@@ -643,14 +623,14 @@ const BASE_ATYAB_PRODUCTS = [
     concentration: "أو دو بارفان انتنس (نقاء فائق)",
     concentrationEn: "Eau De Parfum Intense (Supreme Purity)",
     gender: "للجنسين / نضارة ملكية جذابة",
-    genderEn: "Unisex / Royal Radiance",
+    genderEn: "Unisex / Signature Radiance",
     longevity: "14+ ساعة (إشراقة مستمرة)",
     longevityEn: "14+ Hours (Continuous Radiance)",
     sillage: "إشعاع زهري بهيج ينتشر بلطف",
     sillageEn: "Radiant, Uplifting & Elegant",
     season: "جميع فصول السنة، متألق في ليالي الصيف والربيع",
     seasonEn: "All Seasons, Radiant on Summer & Spring Nights",
-    timeOfDay: "الصباح الفاخر والأمسيات الملكية",
+    timeOfDay: "الصباح الفاخر والأمسيات الفاخرة",
     timeOfDayEn: "Aristocratic Morning & Gala Evenings",
     description: "مستوحى من الزهور النادرة التي تفتح بتلاتها الفاتنة تحت ضوء القمر الفضي في ليالي الصحراء الصافية. تناغم سماوي يجمع بين النيرولي المتلألئ وزهر القمر الليلي والياسمين الندي، ترفعه خضرة أوراق الشجر الندية ويحتضنه خشب الأرز النقي والعنبر الأبيض الحريري. عطر النقاء والأناقة العالية في زجاجة شفافة تعكس لون الإشراق والجمال.",
     descriptionEn: "Inspired by nocturnal flowers that unfurl under silver moonlight across calm desert nights. A celestial accord pairing sparkling Tunisian neroli and night-blooming moonflower with dewy jasmine petals, lifted by fresh green foliage and embraced by atlas cedar and silk white amber.",
@@ -668,12 +648,12 @@ const BASE_ATYAB_PRODUCTS = [
     notes: {
       top: ["نيرولي تونسي فاخر مقطر", "أوراق خضراء نديّة فجرية", "كمثرى بيضاء بلورية", "حمضيات صقلية مشمسة"],
       heart: ["زهرة القمر الليلية النادرة", "ياسمين أبيض نقي ملكي", "بتلات الغاردينيا المخملية", "ماغنوليا صيفية"],
-      base: ["عنبر أبيض شفاف نادر", "خشب أرز الأطلس الطبيعي", "مسك قطني نقي فائق النقاء", "كشميران حريري ناعم"]
+      base: ["عنبر أبيض شفاف نادر", "خشب أرز الأطلس الPremium", "مسك قطني نقي فائق النقاء", "كشميران حريري ناعم"]
     },
     notesEn: {
       top: ["Distilled Tunisian Neroli", "Dewy Morning Green Leaves", "Crystal White Pear", "Sunlit Citrus Accords"],
-      heart: ["Rare Night-Blooming Moonflower", "Royal White Jasmine", "Gardenia Petals", "Summer Magnolia"],
-      base: ["Rare Crystal White Amber", "Natural Atlas Cedarwood", "Ultra-Clean Cotton Musk", "Silk Cashmeran"]
+      heart: ["Rare Night-Blooming Moonflower", "Signature White Jasmine", "Gardenia Petals", "Summer Magnolia"],
+      base: ["Rare Crystal White Amber", "Premium Atlas Cedarwood", "Ultra-Clean Cotton Musk", "Silk Cashmeran"]
     },
     mood: ["أناقة راقية", "سهرات صيفية", "إشراقة صباحية", "تميز لافت"],
     moodEn: ["Sophisticated Poise", "Summer Evenings", "Morning Radiance", "Effortless Elegance"],
@@ -696,16 +676,15 @@ const BASE_ATYAB_PRODUCTS = [
   {
     id: "atyab-backhoor",
     slug: "backhoor",
-    name: "بخور أطياب الملكي",
-    englishName: "Atyab Royal Bakhoor",
-    nameEn: "Atyab Royal Bakhoor",
+    name: "بخور أطياب الفاخر",
+    englishName: "Atyab Signature Bakhoor",
+    nameEn: "Atyab Signature Bakhoor",
     subtitle: "رقائق خشب العود المعتقة المشبعة بالورد الطائفي والعنبر",
     subtitleEn: "Aged Agarwood Chips Infused with Taif Rose & Amber",
     category: "bakhoor",
     family: "بخور عربي ودخون فاخر للمجالس",
-    familyEn: "Arabian Incense & Royal Dakhoon for Majlis",
+    familyEn: "Arabian Incense & Signature Dakhoon for Majlis",
     priceSAR: 30,
-    originalPriceSAR: 45,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 312,
@@ -716,10 +695,10 @@ const BASE_ATYAB_PRODUCTS = [
     gallery: [
       {
         src: "assets/images/backhoor.jpg",
-        titleAr: "العبوة الملكية الرسمية للبخور",
-        titleEn: "Official Royal Bakhoor Pack View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "العبوة الفاخرة الرسمية للبخور",
+        titleEn: "Official Signature Bakhoor Pack View",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       },
       {
         src: "assets/images/angles/backhoor_jar.jpg",
@@ -736,16 +715,15 @@ const BASE_ATYAB_PRODUCTS = [
         badgeEn: "Oud Chips"
       }
     ],
-    sizes: ["عبوة فاخرة 50 جم (للتجربة)", "عبوة ملكية 100 جم (الحجم الرسمي)", "صندوق الضيافة الملكي 250 جم + مبخرة فاخرة"],
-    sizesEn: ["Luxury Pouch 50g (Trial)", "Royal Official Pack 100g", "Majlis Hospitality Box 250g + Burner"],
+    sizes: ["عبوة فاخرة 50 جم (للتجربة)", "عبوة ملكية 100 جم (الحجم الرسمي)", "صندوق الضيافة الفاخر 250 جم + مبخرة فاخرة"],
+    sizesEn: ["Luxury Pouch 50g (Trial)", "Signature Official Pack 100g", "Majlis Hospitality Box 250g + Burner"],
     defaultSize: "عبوة ملكية 100 جم (الحجم الرسمي)",
-    defaultSizeEn: "Royal Official Pack 100g",
+    defaultSizeEn: "Signature Official Pack 100g",
     sizeVariants: [
       {
         size: "عبوة فاخرة 50 جم (للتجربة)",
         sizeEn: "Luxury Pouch 50g (Trial)",
         priceSAR: 30,
-        originalPriceSAR: 45,
         savePercent: "33%",
         sku: "AYT-BKH-50",
         stockNoteAr: "متوفر بالمستودع - الرياض",
@@ -754,9 +732,8 @@ const BASE_ATYAB_PRODUCTS = [
       },
       {
         size: "عبوة ملكية 100 جم (الحجم الرسمي)",
-        sizeEn: "Royal Official Pack 100g",
+        sizeEn: "Signature Official Pack 100g",
         priceSAR: 30,
-        originalPriceSAR: 45,
         savePercent: "33%",
         sku: "AYT-BKH-100",
         stockNoteAr: "الأكثر طلباً للضيافة ويوم الجمعة",
@@ -764,10 +741,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: true
       },
       {
-        size: "صندوق الضيافة الملكي 250 جم + مبخرة فاخرة",
+        size: "صندوق الضيافة الفاخر 250 جم + مبخرة فاخرة",
         sizeEn: "Majlis Hospitality Box 250g + Burner",
         priceSAR: 30,
-        originalPriceSAR: 45,
         savePercent: "31%",
         sku: "AYT-BKH-250-SET",
         stockNoteAr: "صندوق إهداء خشبي فاخر يشمل مبخرة",
@@ -779,18 +755,18 @@ const BASE_ATYAB_PRODUCTS = [
     concentrationEn: "Handcrafted Incense Tablets with Pure Oils",
     gender: "للمنازل، المجالس، قصور الضيافة والمناسبات",
     genderEn: "Homes, Majlis, Palaces & Celebrations",
-    longevity: "تدوم الرائحة في الأرجاء والمفروشات حتى 48 ساعة",
-    longevityEn: "Fragrance lingers in atmosphere for up to 48 Hours",
+    longevity: "تدوم الرائحة في الأرجاء لفترة طويلة",
+    longevityEn: "Fragrance lingers in atmosphere for a long time",
     sillage: "سحابة عطرية غنية ودافئة تملأ المكان بالسكينة",
     sillageEn: "Rich & Warm Aromatic Cloud",
     season: "طوال العام، أساسي في أيام الجمع والأعياد والمناسبات",
     seasonEn: "All Year, Essential for Fridays, Eids & Galas",
     timeOfDay: "الصباح بعد الفجر، استقبال الضيوف والمساء",
     timeOfDayEn: "Dawn, Welcoming Guests & Evening Gatherings",
-    description: "انقل منزلك ومجلسك إلى أجواء القصور الملكية مع كرم الضيافة العربية الأصيلة. يُصنع بخور أطياب الملكي يدوياً من أجود رقائق العود الطبيعي المعتق، المنقوعة لأشهر في دهن الورد الطائفي الصافي والعنبر السائل ودهن العود. يحترق بنقاء فائق على الفحم أو المباخر الكهربائية ليعم المكان بالسكينة والدفء.",
-    descriptionEn: "Infuse your home and majlis with the atmosphere of Arabian royal palaces and hospitality. Handcrafted from natural aged agarwood chips steeped in Taif rose attar, liquid golden amber, and Cambodian oud oil. Burns cleanly on charcoal or electronic burners to fill rooms with warmth and tranquility.",
-    story: "توارثت عائلة أطياب سر خلطة الدخون الملكي منذ عقود؛ حيث تُختار رقائق عود آسام والمروكي الطبيعي وتُترك لتتشرب دهن العنبر والمسك والورد في جرار فخارية معتقة لتضمن احتراقاً متواصلاً بدون أي رائحة احتراق مزعجة.",
-    storyEn: "The secret recipe for this royal dakhoon has been preserved for generations. Hand-selected Assam and Moroki agarwood chips soak in pure ambergris, musk, and Taif rose attar in aged clay jars to ensure clean, smoke-pure burning.",
+    description: "انقل منزلك ومجلسك إلى أجواء القصور الفاخرة مع كرم الضيافة العربية الأصيلة. يُصنع بخور أطياب الفاخر يدوياً من أجود رقائق العود الPremium المعتق، المنقوعة لأشهر في دهن الورد الطائفي الصافي والعنبر السائل ودهن العود. يحترق بنقاء فائق على الفحم أو المباخر الكهربائية ليعم المكان بالسكينة والدفء.",
+    descriptionEn: "Infuse your home and majlis with the atmosphere of Arabian Signature palaces and hospitality. Handcrafted from Premium aged agarwood chips steeped in Taif rose attar, liquid golden amber, and Cambodian oud oil. Burns cleanly on charcoal or electronic burners to fill rooms with warmth and tranquility.",
+    story: "توارثت عائلة أطياب سر خلطة الدخون الفاخر منذ عقود؛ حيث تُختار رقائق عود آسام والمروكي الPremium وتُترك لتتشرب دهن العنبر والمسك والورد في جرار فخارية معتقة لتضمن احتراقاً متواصلاً بدون أي رائحة احتراق مزعجة.",
+    storyEn: "The secret recipe for this Signature dakhoon has been preserved for generations. Hand-selected Assam and Moroki agarwood chips soak in pure ambergris, musk, and Taif rose attar in aged clay jars to ensure clean, smoke-pure burning.",
     ritual: "ضع قرصاً صغيراً أو قطعة من الرقائق على جمرة هادئة ومغطاة بطبقة رماد خفيفة (أو على مبخرة كهربائية بدرجة حرارة 180°)، واستمتع بانتشار سحابة الدخون العطري في أرجاء البيت والمجلس.",
     ritualEn: "Place a small chip on mild charcoal covered with a thin layer of ash (or on an electronic burner at 180°C) to release smooth, long-lingering plumes.",
     accords: [
@@ -803,12 +779,12 @@ const BASE_ATYAB_PRODUCTS = [
     notes: {
       top: ["رذاذ زهري ندي منعش", "ماء الزعفران الصافي", "لمسات برغموت خفيفة لفتح العبير"],
       heart: ["خلاصة الورد الطائفي الجبلي", "راتنجات مكرملة فاخرة", "دهن العنبر السائل الذهبي"],
-      base: ["رقائق عود مروكي وآسام طبيعي", "مسحوق خشب الصندل الصافي", "جوهر مسك الغزال الأصيل"]
+      base: ["رقائق عود مروكي وآسام Premium", "مسحوق خشب الصندل الصافي", "جوهر مسك الغزال الأصيل"]
     },
     notesEn: {
       top: ["Dewy Floral Mist", "Pure Saffron Water", "Light Bergamot Accents"],
       heart: ["Taif Mountain Rose Essence", "Caramelized Resins", "Liquid Golden Ambergris"],
-      base: ["Natural Assam & Moroki Agarwood Chips", "Pure Sandalwood Powder", "Imperial Musk Accord"]
+      base: ["Premium Assam & Moroki Agarwood Chips", "Pure Sandalwood Powder", "Imperial Musk Accord"]
     },
     mood: ["ضيافة كريمة", "استقبال الضيوف", "أجواء يوم الجمعة", "سكينة وطمأنينة"],
     moodEn: ["Generous Hospitality", "Welcoming Guests", "Friday Blessings", "Tranquil Peace"],
@@ -840,7 +816,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "كريم معطر للجسم فائق النعومة والترطيب",
     familyEn: "Luxurious Perfumed Body Cream with 24H Silk Hydration",
     priceSAR: 35,
-    originalPriceSAR: 50,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 312,
@@ -851,22 +826,21 @@ const BASE_ATYAB_PRODUCTS = [
     gallery: [
       {
         src: "assets/images/cream_oud_roses.jpg",
-        titleAr: "مرطبان كريم عود وورد الملكي",
-        titleEn: "Royal Oud & Roses Cream Jar",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "مرطبان كريم عود وورد الفاخر",
+        titleEn: "Signature Oud & Roses Cream Jar",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
-    sizes: ["عبوة 50 جم (إصدار حقيبة اليد)", "مرطبان 150 جم (الحجم الملكي)", "صندوق الدلال 250 جم + ملعقة ذهبية"],
-    sizesEn: ["50g Jar (Handbag Edition)", "150g Jar (Royal Size)", "Indulgence Set 250g + Gold Spatula"],
-    defaultSize: "مرطبان 150 جم (الحجم الملكي)",
-    defaultSizeEn: "150g Jar (Royal Size)",
+    sizes: ["عبوة 50 جم (إصدار حقيبة اليد)", "مرطبان 150 جم (الحجم الفاخر)", "صندوق الدلال 250 جم + ملعقة ذهبية"],
+    sizesEn: ["50g Jar (Handbag Edition)", "150g Jar (Signature Size)", "Indulgence Set 250g + Gold Spatula"],
+    defaultSize: "مرطبان 150 جم (الحجم الفاخر)",
+    defaultSizeEn: "150g Jar (Signature Size)",
     sizeVariants: [
       {
         size: "عبوة 50 جم (إصدار حقيبة اليد)",
         sizeEn: "50g Jar (Handbag Edition)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "28%",
         sku: "AYT-CRM-OR-50",
         stockNoteAr: "متوفر بالمستودع - شحن فوري",
@@ -874,10 +848,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: false
       },
       {
-        size: "مرطبان 150 جم (الحجم الملكي)",
-        sizeEn: "150g Jar (Royal Size)",
+        size: "مرطبان 150 جم (الحجم الفاخر)",
+        sizeEn: "150g Jar (Signature Size)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "30%",
         sku: "AYT-CRM-OR-150",
         stockNoteAr: "الأكثر طلباً بالمملكة",
@@ -888,7 +861,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق الدلال 250 جم + ملعقة ذهبية",
         sizeEn: "Indulgence Set 250g + Gold Spatula",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "27%",
         sku: "AYT-CRM-OR-250",
         stockNoteAr: "إصدار هدايا فاخر",
@@ -899,7 +871,7 @@ const BASE_ATYAB_PRODUCTS = [
     concentration: "كريم حريري مركز فائق النعومة والترطيب 24 ساعة",
     concentrationEn: "Intense Silk Cream with 24-Hour Deep Hydration",
     gender: "للجنسين / عناية ملكية",
-    genderEn: "Unisex / Royal Body Care",
+    genderEn: "Unisex / Signature Body Care",
     longevity: "تستمر الرائحة على البشرة لأكثر من 24 ساعة",
     longevityEn: "Fragrance clings to skin for over 24 Hours",
     sillage: "فوحان مخملي ناعم وأنيق يحيط بالجسم",
@@ -909,7 +881,7 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDay: "الصباح والمساء وكل لحظة دلال",
     timeOfDayEn: "Morning & Night",
     description: "انغمسي في تجربة ترطيب ملكية استثنائية. يجمع كريم عود وورد بين زبدة الشيا النقية وزيت اللوز الحلو مع قطرات الورد الطائفي النادر ونفحات العود المعتق الناعم. يذوب فور ملامسته للجلد دون أي ملمس دهني، ليمنحك نعومة الحرير وفوحاناً راقياً يرافقك طوال اليوم.",
-    descriptionEn: "Surrender to an extraordinary royal hydration ritual. Oud & Roses Cream harmonizes pure shea butter, sweet almond oil, and dew-kissed Taif rose nectar with a whisper of vintage agarwood. It melts instantaneously into the skin with zero greasiness, leaving a velvety silk finish and an enduring royal sillage.",
+    descriptionEn: "Surrender to an extraordinary Signature hydration ritual. Oud & Roses Cream harmonizes pure shea butter, sweet almond oil, and dew-kissed Taif rose nectar with a whisper of vintage agarwood. It melts instantaneously into the skin with zero greasiness, leaving a velvety silk finish and an enduring Signature sillage.",
     story: "ابتكر خبراء أطياب هذا الكريم المعطر ليكون الامتداد المثالي لعطر عود وورد الأيقوني؛ حيث يعمل الكريم كطبقة أساسية مغذية للبشرة تضاعف ثبات وفوحان العطر لساعات طويلة.",
     storyEn: "Crafted by Atyab artisans to serve as the ultimate foundation for the iconic Oud & Roses fragrance, locking in moisture and intensifying your personal scent trail all day.",
     ritual: "دلكي كمية سخية بحركات دائرية على بشرة نظيفة بعد الاستحمام، خاصة عند مواضع النبض والرقبة واليدين. للحصول على أقصى فوحان، رشي عطر عود وورد فوقه مباشرة.",
@@ -954,39 +926,37 @@ const BASE_ATYAB_PRODUCTS = [
     name: "كريم بن شيخ المخملي للجسم",
     englishName: "Atyab Bin Shaikh Velvet Body Cream",
     nameEn: "Atyab Bin Shaikh Velvet Body Cream",
-    subtitle: "زبدة ترطيب غنية بعبير دهن العود المعتق، البخور، والزعفران الملكي",
-    subtitleEn: "Rich Nourishing Butter Infused with Aged Oud, Incense & Royal Saffron",
+    subtitle: "زبدة ترطيب غنية بعبير دهن العود المعتق، البخور، والزعفران الفاخر",
+    subtitleEn: "Rich Nourishing Butter Infused with Aged Oud, Incense & Signature Saffron",
     category: "cream",
     family: "زبدة ترطيب شرقية مكثفة",
     familyEn: "Intense Oriental Body Butter with Lasting Sillage",
     priceSAR: 38,
-    originalPriceSAR: 55,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 248,
     badge: "هيبة وفخامة",
-    badgeEn: "Royal Presence",
-    badgeType: "royal",
+    badgeEn: "Signature Presence",
+    badgeType: "Signature",
     image: "assets/images/cream_bin_shaikh.jpg",
     gallery: [
       {
         src: "assets/images/cream_bin_shaikh.jpg",
-        titleAr: "مرطبان بن شيخ الذهبي الملكي",
-        titleEn: "Royal Bin Shaikh Cream Jar",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "مرطبان بن شيخ الذهبي الفاخر",
+        titleEn: "Signature Bin Shaikh Cream Jar",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
-    sizes: ["عبوة 50 جم (عملية وسريعة)", "مرطبان 150 جم (الحجم الملكي)", "صندوق الملوك 250 جم"],
-    sizesEn: ["50g Jar (Travel Size)", "150g Jar (Royal Size)", "Kings Set 250g"],
-    defaultSize: "مرطبان 150 جم (الحجم الملكي)",
-    defaultSizeEn: "150g Jar (Royal Size)",
+    sizes: ["عبوة 50 جم (عملية وسريعة)", "مرطبان 150 جم (الحجم الفاخر)", "صندوق الملوك 250 جم"],
+    sizesEn: ["50g Jar (Travel Size)", "150g Jar (Signature Size)", "Kings Set 250g"],
+    defaultSize: "مرطبان 150 جم (الحجم الفاخر)",
+    defaultSizeEn: "150g Jar (Signature Size)",
     sizeVariants: [
       {
         size: "عبوة 50 جم (عملية وسريعة)",
         sizeEn: "50g Jar (Travel Size)",
         priceSAR: 38,
-        originalPriceSAR: 55,
         savePercent: "30%",
         sku: "AYT-CRM-BS-50",
         stockNoteAr: "متوفر بالمستودع",
@@ -994,10 +964,9 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: false
       },
       {
-        size: "مرطبان 150 جم (الحجم الملكي)",
-        sizeEn: "150g Jar (Royal Size)",
+        size: "مرطبان 150 جم (الحجم الفاخر)",
+        sizeEn: "150g Jar (Signature Size)",
         priceSAR: 38,
-        originalPriceSAR: 55,
         savePercent: "31%",
         sku: "AYT-CRM-BS-150",
         stockNoteAr: "الأكثر طلباً للرجال والنساء",
@@ -1008,7 +977,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق الملوك 250 جم",
         sizeEn: "Kings Set 250g",
         priceSAR: 38,
-        originalPriceSAR: 55,
         savePercent: "30%",
         sku: "AYT-CRM-BS-250",
         stockNoteAr: "كمية محدودة",
@@ -1029,7 +997,7 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDay: "المساء والأمسيات الفاخرة",
     timeOfDayEn: "Evenings & Special Gatherings",
     description: "رمز الفخامة والوقار. كريم بن شيخ للجسم يجمع بين القوة والدلال؛ صُمم بتركيبة غنية بزبدة الكاكاو والزيوت العطرية النقية لدهن العود والزعفران والبخور الفاخر ليمد الجلد بتغذية عميقة وفوحان يفرض حضوره في أرقى المجالس.",
-    descriptionEn: "The pinnacle of prestige. Bin Shaikh Velvet Cream marries deep nourishment with commanding luxury. Infused with pure cocoa butter, vintage Indian oud oils, saffron, and royal bakhoor, it deeply conditions the skin while releasing an opulent oriental aura.",
+    descriptionEn: "The pinnacle of prestige. Bin Shaikh Velvet Cream marries deep nourishment with commanding luxury. Infused with pure cocoa butter, vintage Indian oud oils, saffron, and Signature bakhoor, it deeply conditions the skin while releasing an opulent oriental aura.",
     story: "صيغ كريم بن شيخ خصيصاً لأصحاب الشخصيات القيادية الذين يبحثون عن تميز متكامل في إطلالتهم وعنايتهم اليومية.",
     storyEn: "Engineered specifically for distinguished leaders who demand uncompromised excellence in grooming and fragrance layering.",
     ritual: "وزع كمية مناسبة على الصدر والذراعين والمعصمين لتهيئة البشرة قبل رش عطر بن شيخ الرسمي.",
@@ -1038,7 +1006,7 @@ const BASE_ATYAB_PRODUCTS = [
       { name: "دهن عود هندي أصيل", nameEn: "Pure Indian Oud Oil", pct: 95, color: "#5C3A21" },
       { name: "زعفران قائنات أحمر", nameEn: "Persian Saffron", pct: 88, color: "#C59B27" },
       { name: "بخور مروكي مدخن", nameEn: "Smoked Moroki Bakhoor", pct: 84, color: "#3A2E2B" },
-      { name: "عنبر ملكي دافئ", nameEn: "Warm Royal Amber", pct: 78, color: "#8C6220" }
+      { name: "عنبر ملكي دافئ", nameEn: "Warm Signature Amber", pct: 78, color: "#8C6220" }
     ],
     notes: {
       top: ["زعفران ملكي أحمر", "هيل أخضر مطحون"],
@@ -1046,7 +1014,7 @@ const BASE_ATYAB_PRODUCTS = [
       base: ["دهن عود هندي معتق", "عنبر دافئ", "أخشاب الصندل"]
     },
     notesEn: {
-      top: ["Royal Red Saffron", "Crushed Green Cardamom"],
+      top: ["Signature Red Saffron", "Crushed Green Cardamom"],
       heart: ["Smoked Atyab Incense", "Warm Labdanum"],
       base: ["Vintage Indian Agarwood", "Warm Amber", "Mysore Sandalwood"]
     },
@@ -1080,7 +1048,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "كريم مسك بودري ناعم فائق الامتصاص",
     familyEn: "Powdery Clean Cotton Musk Soufflé",
     priceSAR: 32,
-    originalPriceSAR: 48,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 276,
@@ -1093,8 +1060,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/cream_musk_silk.jpg",
         titleAr: "مرطبان مسك الحرير اللؤلؤي",
         titleEn: "Pearlescent Musk Silk Jar",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["عبوة 50 جم", "مرطبان 150 جم (الأكثر طلباً)", "مرطبان 200 جم عائلي"],
@@ -1106,7 +1073,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "عبوة 50 جم",
         sizeEn: "50g Jar",
         priceSAR: 32,
-        originalPriceSAR: 48,
         savePercent: "37%",
         sku: "AYT-CRM-MS-50",
         stockNoteAr: "متوفر",
@@ -1117,7 +1083,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "مرطبان 150 جم (الأكثر طلباً)",
         sizeEn: "150g Jar (Most Popular)",
         priceSAR: 32,
-        originalPriceSAR: 48,
         savePercent: "33%",
         sku: "AYT-CRM-MS-150",
         stockNoteAr: "الأكثر طلباً - انتعاش يومي",
@@ -1128,7 +1093,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "مرطبان 200 جم عائلي",
         sizeEn: "200g Family Jar",
         priceSAR: 32,
-        originalPriceSAR: 48,
         savePercent: "30%",
         sku: "AYT-CRM-MS-200",
         stockNoteAr: "حجم توفيري",
@@ -1140,8 +1104,8 @@ const BASE_ATYAB_PRODUCTS = [
     concentrationEn: "Ultra-Light Whipped Musk Soufflé",
     gender: "للجنسين والنساء",
     genderEn: "Unisex & Women",
-    longevity: "18+ ساعة من النظافة والانتعاش",
-    longevityEn: "18+ Hours Clean Crisp Freshness",
+    longevity: "ثبات عالي / High Longevity",
+    longevityEn: "ثبات عالي / High Longevity",
     sillage: "هالة ناعمة من النقاء والبودر",
     sillageEn: "Soft Powdery Clean Aura",
     season: "كافة الفصول والطقس الحار",
@@ -1194,13 +1158,12 @@ const BASE_ATYAB_PRODUCTS = [
     name: "كريم مرج المرطب الفاخر للجسم",
     englishName: "Atyab Marj Golden Body Hydrating Cream",
     nameEn: "Atyab Marj Golden Body Hydrating Cream",
-    subtitle: "انتعاش الفواكه الملكية والزهور المخملية مع لمسة ذهبية مرطبة للبشرة",
+    subtitle: "انتعاش الفواكه الفاخرة والزهور المخملية مع لمسة ذهبية مرطبة للبشرة",
     subtitleEn: "Vibrant Exotic Fruits & Velvet Florals with Radiant Golden Glow",
     category: "cream",
     family: "كريم مرطب ومنعش بلمعان مخملي",
     familyEn: "Hydrating Velvet Body Cream with Subtle Glow",
     priceSAR: 36,
-    originalPriceSAR: 52,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 198,
@@ -1213,8 +1176,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/cream_marj_gold.jpg",
         titleAr: "مرطبان كريم مرج الزمردي والمذهب",
         titleEn: "Emerald & Gold Marj Cream Jar",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["عبوة 50 جم", "مرطبان 150 جم", "صندوق إهداء 250 جم"],
@@ -1226,7 +1189,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "عبوة 50 جم",
         sizeEn: "50g Jar",
         priceSAR: 36,
-        originalPriceSAR: 52,
         savePercent: "31%",
         sku: "AYT-CRM-MJ-50",
         stockNoteAr: "متوفر",
@@ -1237,7 +1199,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "مرطبان 150 جم",
         sizeEn: "150g Jar",
         priceSAR: 36,
-        originalPriceSAR: 52,
         savePercent: "30%",
         sku: "AYT-CRM-MJ-150",
         stockNoteAr: "متوفر بالمستودع",
@@ -1248,7 +1209,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق إهداء 250 جم",
         sizeEn: "Gift Box 250g",
         priceSAR: 36,
-        originalPriceSAR: 52,
         savePercent: "27%",
         sku: "AYT-CRM-MJ-250",
         stockNoteAr: "إصدار هدايا",
@@ -1270,8 +1230,8 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDayEn: "Day & Evening",
     description: "بهجة الحياة وإشراقة الطبيعة. كريم مرج يمنح بشرتك ترطيباً مكثفاً ولمعاناً صحياً جذاباً بفضل تركيبته الحريرية الغنية برائحة الزعفران والتوت البري والزهور الدمشقية مع قاعدة ناعمة من خشب الصندل والعنبر.",
     descriptionEn: "Joyous vibrance for radiant skin. Marj Hydrating Body Cream drenches your body in supple moisture, infusing every contour with red berries, pink blossoms, saffron, and a glowing foundation of golden sandalwood and amber.",
-    story: "تم استلهام كريم مرج من البساتين الملكية المزهرة ليمنح المرأة والرجل إحساساً بالحيوية والجاذبية طوال النهار.",
-    storyEn: "Inspired by blooming royal gardens, Marj was forged to instill boundless vitality and allure.",
+    story: "تم استلهام كريم مرج من البساتين الفاخرة المزهرة ليمنح المرأة والرجل إحساساً بالحيوية والجاذبية طوال النهار.",
+    storyEn: "Inspired by blooming Signature gardens, Marj was forged to instill boundless vitality and allure.",
     ritual: "وزعيه بسخاء على الذراعين والكتفين والساقين لترطيب عميق ومظهر متوهج.",
     ritualEn: "Apply generously over arms, shoulders, and legs for deep moisture and a healthy glow.",
     accords: [
@@ -1310,30 +1270,29 @@ const BASE_ATYAB_PRODUCTS = [
   {
     id: "atyab-marj",
     slug: "marj",
-    name: "عطر أطياب مرج الملكي",
-    englishName: "Atyab Marj Royal Perfume",
-    nameEn: "Atyab Marj Royal Perfume",
+    name: "عطر أطياب مرج الفاخر",
+    englishName: "Atyab Marj Signature Perfume",
+    nameEn: "Atyab Marj Signature Perfume",
     subtitle: "تناغم ساحر بين الزعفران والتوت البري مع قلب الورد والعود المدخن",
     subtitleEn: "Harmonious Blend of Saffron, Wild Berries, Rose & Smoked Agarwood",
     category: "perfumes",
     family: "شرقي فاكهي خشبي أسطوري",
     familyEn: "Legendary Fruity Woody Oriental",
     priceSAR: 45,
-    originalPriceSAR: 65,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 388,
     badge: "محبوب الملايين",
     badgeEn: "Adored by Millions",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/marj.jpg",
     gallery: [
       {
         src: "assets/images/marj.jpg",
         titleAr: "الواجهة الرسمية لعطر مرج",
         titleEn: "Official Marj Bottle Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["قارورة 50 مل", "قارورة 100 مل (الحجم الرسمي)", "طقم الملوك 100 مل + لوشن معطر"],
@@ -1345,7 +1304,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "33%",
         sku: "AYT-MRJ-50",
         stockNoteAr: "متوفر بالمستودع",
@@ -1356,7 +1314,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي)",
         sizeEn: "100ml Bottle (Official)",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "30%",
         sku: "AYT-MRJ-100",
         stockNoteAr: "الأكثر طلباً بالمملكة",
@@ -1367,7 +1324,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "طقم الملوك 100 مل + لوشن معطر",
         sizeEn: "Kings Set 100ml + Scented Lotion",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "30%",
         sku: "AYT-MRJ-SET",
         stockNoteAr: "صندوق إهداء",
@@ -1376,7 +1332,7 @@ const BASE_ATYAB_PRODUCTS = [
       }
     ],
     concentration: "أو دو بارفان رويال مكثف",
-    concentrationEn: "Eau De Parfum Royal Intense",
+    concentrationEn: "Eau De Parfum Signature Intense",
     gender: "للجنسين / جاذبية استثنائية",
     genderEn: "Unisex / Exceptional Magnetic Allure",
     longevity: "20+ ساعة من الثبات الأسطوري",
@@ -1387,8 +1343,8 @@ const BASE_ATYAB_PRODUCTS = [
     seasonEn: "All Seasons & Grand Events",
     timeOfDay: "المساء والصباح",
     timeOfDayEn: "Day & Evening",
-    description: "العطر الأكثر تميزاً وجاذبية في التشكيلة الملكية. يبدأ باشتعال منعش من البرغموت والتوت البري مع لمسة الزعفران الفاخر، ليتعمق سريعاً في قلب من الورد الجوري والياسمين وخشب العود المدخن، مع قاعدة من العنبر الدافئ والمسك والجلد المدبوغ.",
-    descriptionEn: "The crowning glory of oriental perfumery. Marj captivates instantly with vibrant bergamot, crimson wild berries, and saffron, surging into an opulent heart of Damask rose, jasmine, and smoked agarwood, anchored by ambergris, leather, and royal musk.",
+    description: "العطر الأكثر تميزاً وجاذبية في التشكيلة الفاخرة. يبدأ باشتعال منعش من البرغموت والتوت البري مع لمسة الزعفران الفاخر، ليتعمق سريعاً في قلب من الورد الجوري والياسمين وخشب العود المدخن، مع قاعدة من العنبر الدافئ والمسك والجلد المدبوغ.",
+    descriptionEn: "The crowning glory of oriental perfumery. Marj captivates instantly with vibrant bergamot, crimson wild berries, and saffron, surging into an opulent heart of Damask rose, jasmine, and smoked agarwood, anchored by ambergris, leather, and Signature musk.",
     story: "صُمم عطر مرج ليكون التوقيع العطري الذي لا ينسى، حيث يجمع بين عذوبة الفواكه وجبروت العود في تركيبة متجانسة بامتياز.",
     storyEn: "Engineered to deliver an indelible impression, weaving together sweet berry freshness with the majestic weight of agarwood.",
     ritual: "رشتان عند ياقة العنق والمعصمين كافيتان لفرض هيبتك وجاذبيتك طوال اليوم.",
@@ -1407,10 +1363,10 @@ const BASE_ATYAB_PRODUCTS = [
     notesEn: {
       top: ["Red Saffron", "Wild Berries", "Bergamot"],
       heart: ["Velvet Damask Rose", "Cambodian Oud", "Labdanum"],
-      base: ["Royal Ambergris", "Black Musk", "Sandalwood", "Tanned Leather"]
+      base: ["Signature Ambergris", "Black Musk", "Sandalwood", "Tanned Leather"]
     },
     mood: ["حضور طاغٍ", "مناسبات ملكية", "ثبات لا يضاهى"],
-    moodEn: ["Commanding Stature", "Royal Gala", "Unmatched Longevity"],
+    moodEn: ["Commanding Stature", "Signature Gala", "Unmatched Longevity"],
     reviews: [
       {
         author: "فيصل الشريف",
@@ -1433,27 +1389,26 @@ const BASE_ATYAB_PRODUCTS = [
     name: "عطر أطياب بن شيخ الأسطوري",
     englishName: "Atyab Bin Shaikh Signature Perfume",
     nameEn: "Atyab Bin Shaikh Signature Perfume",
-    subtitle: "رمز الهيبة والوقار الخليجي: مزيج دهن العود الهندي، البخور الملكي، والزعفران",
-    subtitleEn: "Iconic Arabian Authority: Pure Indian Oud, Royal Bakhoor & Persian Saffron",
+    subtitle: "رمز الهيبة والوقار الخليجي: مزيج دهن العود الهندي، البخور الفاخر، والزعفران",
+    subtitleEn: "Iconic Arabian Authority: Pure Indian Oud, Signature Bakhoor & Persian Saffron",
     category: "perfumes",
     family: "عود شرقي حار مكثف",
     familyEn: "Intense Oriental Spicy Agarwood",
     priceSAR: 48,
-    originalPriceSAR: 70,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 420,
     badge: "توقيع الملوك",
     badgeEn: "Kings Signature",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/bin_shaikh.jpg",
     gallery: [
       {
         src: "assets/images/bin_shaikh.jpg",
         titleAr: "الواجهة الرسمية لعطر بن شيخ",
         titleEn: "Official Bin Shaikh Bottle Front View",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["قارورة 50 مل", "قارورة 100 مل (الحجم الرسمي)", "صندوق بن شيخ الفاخر + تولة دهن عود"],
@@ -1465,7 +1420,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
         priceSAR: 48,
-        originalPriceSAR: 70,
         savePercent: "32%",
         sku: "AYT-BS-50",
         stockNoteAr: "متوفر",
@@ -1476,7 +1430,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي)",
         sizeEn: "100ml Bottle (Official)",
         priceSAR: 48,
-        originalPriceSAR: 70,
         savePercent: "31%",
         sku: "AYT-BS-100",
         stockNoteAr: "أعلى تقييم بالمملكة",
@@ -1487,7 +1440,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق بن شيخ الفاخر + تولة دهن عود",
         sizeEn: "Bin Shaikh VIP Box + Oud Oil",
         priceSAR: 48,
-        originalPriceSAR: 70,
         savePercent: "29%",
         sku: "AYT-BS-VIP",
         stockNoteAr: "صندوق مخملي فاخر",
@@ -1496,28 +1448,28 @@ const BASE_ATYAB_PRODUCTS = [
       }
     ],
     concentration: "أو دو بارفان رويال إنتنس",
-    concentrationEn: "Eau De Parfum Royal Intense",
+    concentrationEn: "Eau De Parfum Signature Intense",
     gender: "للجنسين / هيبة الملوك",
     genderEn: "Unisex / Majestic Stature",
     longevity: "24+ ساعة ثبات هائل على الأقمشة",
     longevityEn: "24+ Hours Immense Sillage",
     sillage: "أثر ملكي عميق يملأ القاعات والمجالس",
-    sillageEn: "Room-Commanding Royal Aura",
+    sillageEn: "Room-Commanding Signature Aura",
     season: "الخريف، الشتاء والمناسبات الكبرى",
     seasonEn: "Autumn, Winter & Grand Galas",
     timeOfDay: "المساء",
     timeOfDayEn: "Evenings",
     description: "عطر بن شيخ هو التجسيد الحقيقي للشهامة والرجولة والأصالة الخليجية. يفتتح بعبير الزعفران وقشر الليمون وجوزة الطيب، ليتألق في قلبه عبير البخور والدخون والورد الطائفي، مستقراً على قاعدة خالدة من دهن العود الهندي المعتق وخشب الصندل والعنبر والمسك.",
-    descriptionEn: "The undisputed monarch of Gulf fragrance majesty. Igniting with Persian saffron, cracked nutmeg, and citrus zest, flowing intoTaif rose and royal bakhoor smoke, grounded upon ancient Indian agarwood, ambergris, and patchouli.",
+    descriptionEn: "The undisputed monarch of Gulf fragrance majesty. Igniting with Persian saffron, cracked nutmeg, and citrus zest, flowing intoTaif rose and Signature bakhoor smoke, grounded upon ancient Indian agarwood, ambergris, and patchouli.",
     story: "توليفة متوارثة تم تطويرها لتعكس هيبة الشيوخ والأعيان في مناسباتهم الرسمية وحفلات الاستقبال الكبرى.",
     storyEn: "A legacy blend crafted to honor nobility, commanding deference at state dinners and grand celebrations.",
-    ritual: "يُرش على المشلح أو الثوب بعد تبخيره بالدخون الملكي لأرقى تناغم عِطري خليجي.",
-    ritualEn: "Spray over garments pre-scented with Royal Dakhoon for the zenith of Gulf fragrance layering.",
+    ritual: "يُرش على المشلح أو الثوب بعد تبخيره بالدخون الفاخر لأرقى تناغم عِطري خليجي.",
+    ritualEn: "Spray over garments pre-scented with Signature Dakhoon for the zenith of Gulf fragrance layering.",
     accords: [
       { name: "دهن عود هندي أصيل", nameEn: "Aged Indian Oud", pct: 96, color: "#5C3A21" },
       { name: "زعفران قائنات أحمر", nameEn: "Persian Saffron", pct: 90, color: "#B9621E" },
       { name: "بخور ودخان الأخشاب", nameEn: "Majlis Incense Smoke", pct: 86, color: "#3A2E2B" },
-      { name: "عنبر ملكي دافئ", nameEn: "Warm Royal Amber", pct: 80, color: "#C59B27" }
+      { name: "عنبر ملكي دافئ", nameEn: "Warm Signature Amber", pct: 80, color: "#C59B27" }
     ],
     notes: {
       top: ["زعفران قائنات", "قشر الليمون", "جوزة الطيب"],
@@ -1526,11 +1478,11 @@ const BASE_ATYAB_PRODUCTS = [
     },
     notesEn: {
       top: ["Persian Saffron", "Lemon Zest", "Nutmeg"],
-      heart: ["Royal Incense Smoke", "Taif Rose", "Labdanum"],
+      heart: ["Signature Incense Smoke", "Taif Rose", "Labdanum"],
       base: ["Indian Oud Oil", "Grey Ambergris", "Sandalwood", "Musk"]
     },
     mood: ["هيبة ووقار", "حفلات الزفاف", "مجالس الشيوخ"],
-    moodEn: ["Majestic Dignity", "Weddings", "Royal Majlis"],
+    moodEn: ["Majestic Dignity", "Weddings", "Signature Majlis"],
     reviews: [
       {
         author: "سعد بن ناصر الدوسري",
@@ -1559,7 +1511,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "زهري شرقي عود مخملي",
     familyEn: "Velvet Floral Oriental Oud",
     priceSAR: 45,
-    originalPriceSAR: 65,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 395,
@@ -1572,8 +1523,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/oud_roses.jpg",
         titleAr: "الواجهة الرسمية لزجاجة عود وورد",
         titleEn: "Official Oud & Roses Bottle",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["قارورة 50 مل", "قارورة 100 مل (الحجم الرسمي)", "صندوق عود وورد + لوشن + كريم"],
@@ -1585,7 +1536,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "33%",
         sku: "AYT-OR-50",
         stockNoteAr: "متوفر",
@@ -1596,7 +1546,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي)",
         sizeEn: "100ml Bottle (Official)",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "30%",
         sku: "AYT-OR-100",
         stockNoteAr: "طلب قياسي يومياً",
@@ -1607,7 +1556,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق عود وورد + لوشن + كريم",
         sizeEn: "Oud & Roses Indulgence Box",
         priceSAR: 45,
-        originalPriceSAR: 65,
         savePercent: "28%",
         sku: "AYT-OR-BOX",
         stockNoteAr: "صندوق إهداء متكامل",
@@ -1616,18 +1564,18 @@ const BASE_ATYAB_PRODUCTS = [
       }
     ],
     concentration: "أو دو بارفان ملكي",
-    concentrationEn: "Eau De Parfum Royal",
+    concentrationEn: "Eau De Parfum Signature",
     gender: "للجنسين / رومانسية وأناقة",
     genderEn: "Unisex / Romantic Elegance",
-    longevity: "18+ ساعة فوحان مستمر",
-    longevityEn: "18+ Hours Persistent Projection",
+    longevity: "ثبات عالي / High Longevity",
+    longevityEn: "ثبات عالي / High Longevity",
     sillage: "هالة مخملية آسرة تأسر القلوب",
     sillageEn: "Captivating Velvet Sillage",
     season: "طوال العام، ومثالي للأمسيات",
     seasonEn: "All Year & Special Evenings",
     timeOfDay: "المساء والنهار",
     timeOfDayEn: "Day & Evening",
-    description: "الأيقونة الخالدة التي حصدت إعجاب الملايين. يجمع عطر عود وورد بين نعومة الورد الجوري والتركي مع ثراء العود الطبيعي المعتق، معززاً بلمسات الكراميل الدافئ والعنبر الأبيض والمسك النقي ليمنحك شعوراً بالفخامة والجاذبية التي لا تقاوم.",
+    description: "الأيقونة الخالدة التي حصدت إعجاب الملايين. يجمع عطر عود وورد بين نعومة الورد الجوري والتركي مع ثراء العود الPremium المعتق، معززاً بلمسات الكراميل الدافئ والعنبر الأبيض والمسك النقي ليمنحك شعوراً بالفخامة والجاذبية التي لا تقاوم.",
     descriptionEn: "The undisputed global icon adored by millions. Oud & Roses weaves luscious Turkish rose and blooming peony with refined Cambodian agarwood, sweetened with warm caramel, luminous amber, and soft musk.",
     story: "وُلدت هذه الرائحة لتحقق المعادلة الصعبة: التوازن المثالي بين أنوثة الورد وعنفوان العود العربي الأصيل.",
     storyEn: "Engineered to attain supreme harmony between delicate floral romanticism and noble agarwood power.",
@@ -1635,7 +1583,7 @@ const BASE_ATYAB_PRODUCTS = [
     ritualEn: "Apply two sprays to pulse points and lapels for effortless charm.",
     accords: [
       { name: "ورد تركي وجوري ندي", nameEn: "Turkish & Damask Rose", pct: 95, color: "#C2185B" },
-      { name: "عود طبيعي معتق", nameEn: "Aged Agarwood", pct: 85, color: "#8C6220" },
+      { name: "عود Premium معتق", nameEn: "Aged Agarwood", pct: 85, color: "#8C6220" },
       { name: "عنبر وكراميل دافئ", nameEn: "Warm Amber & Caramel", pct: 82, color: "#FFA000" },
       { name: "مسك أبيض حريري", nameEn: "White Silk Musk", pct: 78, color: "#E0E0E0" }
     ],
@@ -1669,35 +1617,34 @@ const BASE_ATYAB_PRODUCTS = [
   },
   {
     id: "atyab-oil-dehn-oud",
-    slug: "dehn-al-oud-royal",
+    slug: "dehn-al-oud-Signature",
     name: "دهن عود قديم ملكي معتق (تولة)",
-    englishName: "Atyab Royal Vintage Dehn Al Oud Oil",
-    nameEn: "Atyab Royal Vintage Dehn Al Oud Oil",
-    subtitle: "تقطير تراثي نقي 100% من غابات كمبوديا العريقة، معتق 25 عاماً في قوارير بلورية",
-    subtitleEn: "100% Pure Heritage Distillation from Ancient Cambodian Groves, Aged 25 Years",
+    englishName: "Atyab Signature Vintage Dehn Al Oud Oil",
+    nameEn: "Atyab Signature Vintage Dehn Al Oud Oil",
+    subtitle: "تقطير تراثي نقي Premium من غابات كمبوديا العريقة، معتق 25 عاماً في قوارير بلورية",
+    subtitleEn: "Premium Pure Heritage Distillation from Ancient Cambodian Groves, Aged 25 Years",
     category: "oil",
     family: "دهن عود نقي أصيل فائق التعليق",
-    familyEn: "Pure Concentrated Royal Agarwood Oil (Attar)",
+    familyEn: "Pure Concentrated Signature Agarwood Oil (Attar)",
     priceSAR: 75,
-    originalPriceSAR: 110,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 342,
-    badge: "نقاء 100%",
-    badgeEn: "100% Pure",
-    badgeType: "royal",
+    badge: "نقاء Premium",
+    badgeEn: "Premium Pure",
+    badgeType: "Signature",
     image: "assets/images/oil_dehn_oud.jpg",
     gallery: [
       {
         src: "assets/images/oil_dehn_oud.jpg",
-        titleAr: "تولة دهن العود القديم الملكي",
-        titleEn: "Royal Dehn Al Oud Crystal Tola",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "تولة دهن العود القديم الفاخر",
+        titleEn: "Signature Dehn Al Oud Crystal Tola",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["ربع تولة (3 مل)", "نصف تولة (6 مل)", "تولة كاملة ملكية في صندوق خشبي (12 مل)"],
-    sizesEn: ["Quarter Tola (3ml)", "Half Tola (6ml)", "Full Royal Tola in Velvet Box (12ml)"],
+    sizesEn: ["Quarter Tola (3ml)", "Half Tola (6ml)", "Full Signature Tola in Velvet Box (12ml)"],
     defaultSize: "نصف تولة (6 مل)",
     defaultSizeEn: "Half Tola (6ml)",
     sizeVariants: [
@@ -1705,7 +1652,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "ربع تولة (3 مل)",
         sizeEn: "Quarter Tola (3ml)",
         priceSAR: 75,
-        originalPriceSAR: 110,
         savePercent: "30%",
         sku: "AYT-OIL-DO-3",
         stockNoteAr: "متوفر",
@@ -1716,7 +1662,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "نصف تولة (6 مل)",
         sizeEn: "Half Tola (6ml)",
         priceSAR: 75,
-        originalPriceSAR: 110,
         savePercent: "32%",
         sku: "AYT-OIL-DO-6",
         stockNoteAr: "الأكثر طلباً لأهل الذوق الرفيع",
@@ -1725,18 +1670,17 @@ const BASE_ATYAB_PRODUCTS = [
       },
       {
         size: "تولة كاملة ملكية في صندوق خشبي (12 مل)",
-        sizeEn: "Full Royal Tola in Velvet Box (12ml)",
+        sizeEn: "Full Signature Tola in Velvet Box (12ml)",
         priceSAR: 75,
-        originalPriceSAR: 110,
         savePercent: "29%",
         sku: "AYT-OIL-DO-12",
-        stockNoteAr: "إصدار الإهداء الملكي",
-        stockNoteEn: "Royal Gift Edition",
+        stockNoteAr: "إصدار الإهداء الفاخر",
+        stockNoteEn: "Signature Gift Edition",
         isPopular: false
       }
     ],
-    concentration: "دهن عود بيور نقي 100% غير مخلوط",
-    concentrationEn: "100% Pure Undiluted Wild Agarwood Attar",
+    concentration: "دهن عود بيور نقي Premium غير مخلوط",
+    concentrationEn: "Premium Pure Undiluted Wild Agarwood Attar",
     gender: "للجنسين / هيبة الملوك والأعيان",
     genderEn: "Unisex / Imperial Connoisseur",
     longevity: "ثبات هائل يدوم لأيام على الأقمشة والشماغ",
@@ -1750,13 +1694,13 @@ const BASE_ATYAB_PRODUCTS = [
     description: "جوهرة العطور العربية وأصل الفخامة. قطرات دهن العود القديم المعتق مستخلصة من أندر أشجار العود المعمرة في كمبوديا وبورما. يبدأ بنفحات خشبية غنية تتبعها حلاوة راتنجية دافئة تدوم لأيام على المعصم والشماغ.",
     descriptionEn: "The undisputed jewel of authentic Arabian perfumery. Hand-distilled drops of aged Cambodian and Burmese wild agarwood. Ignites with rich balsamic wood notes evolving into sweet resinous warmth that lingers on skin and shemagh for days.",
     story: "عُتق هذا الدهن في براميل نحاسية محكمة لأكثر من ربع قرن ليتحول إلى إكسير نقي خالٍ تماماً من أي روائح احتراق حادة.",
-    storyEn: "Slowly aged in sealed copper vessels for over 25 years to mature into a velvet, non-pungent royal nectar.",
+    storyEn: "Slowly aged in sealed copper vessels for over 25 years to mature into a velvet, non-pungent Signature nectar.",
     ritual: "مسحة واحدة بواسطة المرواد على المعصمين وخلف شحمتي الأذن وعند ثنية الشماغ تكفي ليومين كاملين.",
-    ritualEn: "A single glass-wand touch on wrists, behind ears, or shemagh collar grants 48-hour regal aura.",
+    ritualEn: "A single glass-wand touch on wrists, behind ears, or shemagh collar grants a lasting regal aura.",
     accords: [
       { name: "دهن عود كمبودي معتق 25 سنة", nameEn: "25-Yr Aged Cambodian Oud", pct: 98, color: "#5C3A21" },
       { name: "راتنجات خشبية بلسمية", nameEn: "Balsamic Wood Resins", pct: 90, color: "#8C6220" },
-      { name: "عنبر مدخن طبيعي", nameEn: "Natural Smoked Amber", pct: 85, color: "#C59B27" }
+      { name: "عنبر مدخن Premium", nameEn: "Premium Smoked Amber", pct: 85, color: "#C59B27" }
     ],
     notes: {
       top: ["خشب العود الخام", "لمسة بخورية ناعمة"],
@@ -1779,8 +1723,8 @@ const BASE_ATYAB_PRODUCTS = [
         rating: 5,
         date: "منذ 6 أيام",
         dateEn: "6 days ago",
-        title: "دهن عود أصيل 100% وريحته تفتح النفس",
-        titleEn: "100% Genuine Agarwood, Uplifting & Pure",
+        title: "دهن عود أصيل Premium وريحته تفتح النفس",
+        titleEn: "Premium Genuine Agarwood, Uplifting & Pure",
         comment: "نادر جداً تلقى دهن عود بهذا النقاء والتعريق بسعر معقول. مسحة على الشماغ تجلس 3 أيام بدون ما تتغير ريحته. بيض الله وجوهكم.",
         commentEn: "Extremely rare to find such pure, well-aged dehn al oud at this price. A single touch on my shemagh lasts 3 days without turning sour."
       }
@@ -1790,29 +1734,28 @@ const BASE_ATYAB_PRODUCTS = [
     id: "atyab-dakhoon-molook",
     slug: "dakhoon-al-molook",
     name: "دخون الملوك الفاخر المعتق",
-    englishName: "Atyab Dakhoon Al-Molook Royal Incense",
-    nameEn: "Atyab Dakhoon Al-Molook Royal Incense",
+    englishName: "Atyab Dakhoon Al-Molook Signature Incense",
+    nameEn: "Atyab Dakhoon Al-Molook Signature Incense",
     subtitle: "أقراص دخون معجونة بدهن الورد الجبلي والعنبر والمسك ودهن العود القديم",
     subtitleEn: "Precious Incense Tablets Infused with Mountain Rose Attar & Ambergris",
     category: "bakhoor",
     family: "دخون عربي أصيل فاخر",
     familyEn: "Authentic Imperial Arabic Dakhoon",
     priceSAR: 35,
-    originalPriceSAR: 50,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 188,
     badge: "ضيافة القصور",
     badgeEn: "Palace Hospitality",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/dakhoon.jpg",
     gallery: [
       {
         src: "assets/images/dakhoon.jpg",
-        titleAr: "عبوة دخون الملوك الملكية",
-        titleEn: "Official Royal Dakhoon Pack",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "عبوة دخون الملوك الفاخرة",
+        titleEn: "Official Signature Dakhoon Pack",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["عبوة 70 جم", "عبوة 150 جم", "صندوق الضيافة 250 جم"],
@@ -1824,7 +1767,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "عبوة 70 جم",
         sizeEn: "70g Pack",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "34%",
         sku: "AYT-DKH-70",
         stockNoteAr: "متوفر بالمستودع",
@@ -1835,7 +1777,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "عبوة 150 جم",
         sizeEn: "150g Pack",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "30%",
         sku: "AYT-DKH-150",
         stockNoteAr: "الأكثر طلباً للمجالس",
@@ -1846,7 +1787,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "صندوق الضيافة 250 جم",
         sizeEn: "250g Majlis Box",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "29%",
         sku: "AYT-DKH-250",
         stockNoteAr: "صندوق فاخر مع ملقط ذهبي",
@@ -1858,8 +1798,8 @@ const BASE_ATYAB_PRODUCTS = [
     concentrationEn: "Hand-blended Dakhoon with Rose Attar & Amber",
     gender: "للمنازل والقصور والمجالس",
     genderEn: "Homes, Palaces & Majlis",
-    longevity: "تدوم الرائحة في الأرجاء لأكثر من 48 ساعة",
-    longevityEn: "Lingers in Atmosphere for 48+ Hours",
+    longevity: "تدوم الرائحة في الأرجاء لفترة طويلة",
+    longevityEn: "Lingers in Atmosphere for a long time",
     sillage: "دخان عطري كثيف وأصيل يبعث السكينة",
     sillageEn: "Dense Aromatic Smoke Spreading Serenity",
     season: "طوال العام، أساسي في المناسبات والأعياد",
@@ -1867,13 +1807,13 @@ const BASE_ATYAB_PRODUCTS = [
     timeOfDay: "الصباح والمساء واستقبال الضيوف",
     timeOfDayEn: "Morning, Evenings & Guest Reception",
     description: "دخون الملوك الفاخر يحول بيتك ومجلسك إلى واحة من السكينة والكرم العربي الأصيل. تُعجن الأقراص يدوياً من مسحوق رقائق العود المروكي مع دهن الورد الجبلي والعنبر والمسك النقي، لتعطي دخاناً طيباً وبارداً لا يسبب أي كتمة في الصدر.",
-    descriptionEn: "Dakhoon Al-Molook infuses your residence with warmth and royal hospitality. Hand-kneaded from crushed Moroki agarwood, mountain rose attar, amber, and pure musk, producing aromatic, cool smoke that delights all guests.",
-    story: "سر الخلطة الملكية الموروثة لضيافة كبار الزوار في المجالس الخليجية.",
+    descriptionEn: "Dakhoon Al-Molook infuses your residence with warmth and Signature hospitality. Hand-kneaded from crushed Moroki agarwood, mountain rose attar, amber, and pure musk, producing aromatic, cool smoke that delights all guests.",
+    story: "سر الخلطة الفاخرة الموروثة لضيافة كبار الزوار في المجالس الخليجية.",
     storyEn: "A heritage recipe perfected for welcoming esteemed guests in Gulf receptions.",
     ritual: "ضع قرصاً على جمرة هادئة مغطاة بطبقة رماد واستمتع بانتشار عبير العود الفاخر.",
-    ritualEn: "Place a tablet over mild charcoal covered with a thin ash layer to experience royal fragrance plumes.",
+    ritualEn: "Place a tablet over mild charcoal covered with a thin ash layer to experience Signature fragrance plumes.",
     accords: [
-      { name: "رقائق عود مروكي طبيعي", nameEn: "Moroki Agarwood Chips", pct: 94, color: "#5D4037" },
+      { name: "رقائق عود مروكي Premium", nameEn: "Moroki Agarwood Chips", pct: 94, color: "#5D4037" },
       { name: "دهن الورد الجبلي", nameEn: "Mountain Rose Attar", pct: 88, color: "#AD1457" },
       { name: "عنبر سائل ومسك", nameEn: "Liquid Amber & Musk", pct: 82, color: "#C59B27" }
     ],
@@ -1906,53 +1846,51 @@ const BASE_ATYAB_PRODUCTS = [
     ]
   },
   {
-    id: "atyab-gift-set-royal",
-    slug: "royal-kings-gift-set",
-    name: "صندوق الإهداء الملكي الفاخر (VIP)",
-    englishName: "Royal Kings VIP Presentation Gift Box",
-    nameEn: "Royal Kings VIP Presentation Gift Box",
+    id: "atyab-gift-set-Signature",
+    slug: "Signature-kings-gift-set",
+    name: "صندوق الإهداء الفاخر الفاخر (VIP)",
+    englishName: "Signature Kings VIP Presentation Gift Box",
+    nameEn: "Signature Kings VIP Presentation Gift Box",
     subtitle: "صندوق هدايا جلدي مبطن بالمخمل يشمل عطر تايقر عود، تولة دهن عود، ومبخرة كريستالية",
     subtitleEn: "Velvet-Lined Leather Chest with Tiger Oud, Pure Dehn Al Oud & Crystal Burner",
     category: "giftset",
     family: "أطقم هدايا ملكية فاخرة",
     familyEn: "Imperial VIP Luxury Gift Box",
     priceSAR: 95,
-    originalPriceSAR: 145,
     isMinPrice: true,
     rating: 5.0,
     reviewsCount: 165,
     badge: "إهداء الملوك",
     badgeEn: "Gift of Kings",
-    badgeType: "royal",
+    badgeType: "Signature",
     image: "assets/images/gift_set.jpg",
     gallery: [
       {
         src: "assets/images/gift_set.jpg",
-        titleAr: "صندوق الإهداء الملكي الكامل",
-        titleEn: "Complete Royal VIP Gift Set",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "صندوق الإهداء الفاخر الكامل",
+        titleEn: "Complete Signature VIP Gift Set",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
-    sizes: ["صندوق الهدايا الملكي الكامل"],
-    sizesEn: ["Complete Royal Gift Box"],
-    defaultSize: "صندوق الهدايا الملكي الكامل",
-    defaultSizeEn: "Complete Royal Gift Box",
+    sizes: ["صندوق الهدايا الفاخر الكامل"],
+    sizesEn: ["Complete Signature Gift Box"],
+    defaultSize: "صندوق الهدايا الفاخر الكامل",
+    defaultSizeEn: "Complete Signature Gift Box",
     sizeVariants: [
       {
-        size: "صندوق الهدايا الملكي الكامل",
-        sizeEn: "Complete Royal Gift Box",
+        size: "صندوق الهدايا الفاخر الكامل",
+        sizeEn: "Complete Signature Gift Box",
         priceSAR: 95,
-        originalPriceSAR: 145,
         savePercent: "34%",
-        sku: "AYT-GFT-ROYAL",
+        sku: "AYT-GFT-Signature",
         stockNoteAr: "تغليف هدايا ملكي مجاني مع بطاقة تهنئة",
-        stockNoteEn: "Free Royal Ribbon Wrapping & Card",
+        stockNoteEn: "Free Signature Ribbon Wrapping & Card",
         isPopular: true
       }
     ],
     concentration: "مجموعة هدايا متكاملة تشمل عطور ودهون وبخور فاخر",
-    concentrationEn: "Complete Royal Gift Casket: Perfume, Attar & Incense",
+    concentrationEn: "Complete Signature Gift Casket: Perfume, Attar & Incense",
     gender: "للجنسين / إهداء فاخر للوجهاء",
     genderEn: "Unisex / VIP Presentation for Dignitaries",
     longevity: "هدية تخلد أثرك في الذاكرة",
@@ -1963,8 +1901,8 @@ const BASE_ATYAB_PRODUCTS = [
     seasonEn: "Eids, Weddings, Honors & Grand Celebrations",
     timeOfDay: "كافة الأوقات",
     timeOfDayEn: "All Times",
-    description: "الهدية الأرقى التي تعبر عن أسمى معاني التقدير والوفاء. صُمم صندوق الإهداء الملكي من الجلد الطبيعي المحفور بالشعار الذهبي والمبطن بالمخمل الملكي. يحتوي على قارورة عطر تايقر عود الرسمي (110 مل)، وتولة دهن عود معتق، ومرطبان بخور أطياب الملكي، ومبخرة كريستالية مذهبة، مع كيس إهداء فاخر وبطاقة تهنئة مخصصة.",
-    descriptionEn: "The quintessential luxury presentation to express highest esteem. Bound in gold-stamped fine leather and lined in velvet. Encases a 110ml Tiger Oud bottle, a crystal tola of aged agarwood attar, Royal Bakhoor, and a gilded crystal burner, complete with VIP gift bag and personalized calligraphy greeting card.",
+    description: "الهدية الأرقى التي تعبر عن أسمى معاني التقدير والوفاء. صُمم صندوق الإهداء الفاخر من الجلد الPremium المحفور بالشعار الذهبي والمبطن بالمخمل الفاخر. يحتوي على قارورة عطر تايقر عود الرسمي (110 مل)، وتولة دهن عود معتق، ومرطبان بخور أطياب الفاخر، ومبخرة كريستالية مذهبة، مع كيس إهداء فاخر وبطاقة تهنئة مخصصة.",
+    descriptionEn: "The quintessential luxury presentation to express highest esteem. Bound in gold-stamped fine leather and lined in velvet. Encases a 110ml Tiger Oud bottle, a crystal tola of aged agarwood attar, Signature Bakhoor, and a gilded crystal burner, complete with VIP gift bag and personalized calligraphy greeting card.",
     story: "أُعد هذا الصندوق ليكون الخيار الأول لكبار الشخصيات عند الرغبة في تقديم هدية تليق بأصحاب المقام الرفيع.",
     storyEn: "Crafted specifically for dignitaries seeking a presentation that commands admiration and remembrance.",
     ritual: "جاهز تماماً للإهداء الفوري مع تغليف شريطي ذهبي وبطاقة تهنئة راقية.",
@@ -1981,7 +1919,7 @@ const BASE_ATYAB_PRODUCTS = [
     },
     notesEn: {
       top: ["Persian Saffron", "Bergamot", "Rosewater"],
-      heart: ["Cambodian Oud", "Taif Rose", "Royal Incense"],
+      heart: ["Cambodian Oud", "Taif Rose", "Signature Incense"],
       base: ["Indian Oud Attar", "Ambergris", "Kings Musk"]
     },
     mood: ["إهداء فاخر", "حفلات الزواج", "مناسبات التكريم والأعياد"],
@@ -2016,7 +1954,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "أروماتيك بحري منعش صيفي",
     familyEn: "Aromatic Marine Fresh Summer Sillage",
     priceSAR: 42,
-    originalPriceSAR: 60,
     isMinPrice: true,
     rating: 4.8,
     reviewsCount: 310,
@@ -2029,8 +1966,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/kaaf.jpg",
         titleAr: "الواجهة الرسمية لعطر كاف",
         titleEn: "Official Kaaf Bottle",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["قارورة 50 مل", "قارورة 100 مل (الحجم الرسمي)"],
@@ -2042,7 +1979,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
         priceSAR: 30,
-        originalPriceSAR: 45,
         savePercent: "33%",
         sku: "AYT-KF-50",
         stockNoteAr: "متوفر",
@@ -2053,7 +1989,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي)",
         sizeEn: "100ml Bottle (Official)",
         priceSAR: 42,
-        originalPriceSAR: 60,
         savePercent: "30%",
         sku: "AYT-KF-100",
         stockNoteAr: "الأكثر مبيعاً لفصل الصيف",
@@ -2124,7 +2059,6 @@ const BASE_ATYAB_PRODUCTS = [
     family: "عود صيفي مشرق منعش",
     familyEn: "Bright Luminous Summer Agarwood",
     priceSAR: 44,
-    originalPriceSAR: 62,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 220,
@@ -2137,8 +2071,8 @@ const BASE_ATYAB_PRODUCTS = [
         src: "assets/images/summer_oud.jpg",
         titleAr: "الواجهة الرسمية لسمر عود",
         titleEn: "Summer Oud Official Bottle",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["قارورة 50 مل", "قارورة 100 مل (الحجم الرسمي)"],
@@ -2150,7 +2084,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 50 مل",
         sizeEn: "50ml Bottle",
         priceSAR: 44,
-        originalPriceSAR: 62,
         savePercent: "30%",
         sku: "AYT-SO-50",
         stockNoteAr: "متوفر",
@@ -2161,7 +2094,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "قارورة 100 مل (الحجم الرسمي)",
         sizeEn: "100ml Bottle (Official)",
         priceSAR: 44,
-        originalPriceSAR: 62,
         savePercent: "29%",
         sku: "AYT-SO-100",
         stockNoteAr: "الأكثر مبيعاً للطقس الحار",
@@ -2173,8 +2105,8 @@ const BASE_ATYAB_PRODUCTS = [
     concentrationEn: "Eau De Parfum Summer Edition",
     gender: "للجنسين",
     genderEn: "Unisex",
-    longevity: "18+ ساعة ثبات وفوحان",
-    longevityEn: "18+ Hours Projection",
+    longevity: "ثبات عالي / High Longevity",
+    longevityEn: "ثبات عالي / High Longevity",
     sillage: "فوحان راقٍ خفيف على النفس",
     sillageEn: "Refined Non-Heavy Projection",
     season: "الصيف والربيع والخريف",
@@ -2222,17 +2154,16 @@ const BASE_ATYAB_PRODUCTS = [
   },
   {
     id: "atyab-oil-white-musk",
-    slug: "royal-white-musk-oil",
-    name: "مسك أطياب الأبيض الملكي النقي (تولة)",
-    englishName: "Atyab Royal White Musk Concentrated Oil",
-    nameEn: "Atyab Royal White Musk Concentrated Oil",
+    slug: "Signature-white-musk-oil",
+    name: "مسك أطياب الأبيض الفاخر النقي (تولة)",
+    englishName: "Atyab Signature White Musk Concentrated Oil",
+    nameEn: "Atyab Signature White Musk Concentrated Oil",
     subtitle: "قطرات المسك الصافي الحريري، ثبات لا يُضاهى ونقاء يناسب كافة الأوقات",
     subtitleEn: "Pure Liquid Silk Musk, Unmatched Long-lasting Cleanliness",
     category: "oil",
     family: "مسك أبيض مركز نقي",
     familyEn: "Pure Concentrated White Musk Attar",
     priceSAR: 35,
-    originalPriceSAR: 50,
     isMinPrice: true,
     rating: 4.9,
     reviewsCount: 290,
@@ -2243,10 +2174,10 @@ const BASE_ATYAB_PRODUCTS = [
     gallery: [
       {
         src: "assets/images/white_musk.jpg",
-        titleAr: "تولة المسك الأبيض الملكي",
-        titleEn: "Royal White Musk Tola",
-        badgeAr: "الأصلية 100%",
-        badgeEn: "100% Authentic"
+        titleAr: "تولة المسك الأبيض الفاخر",
+        titleEn: "Signature White Musk Tola",
+        badgeAr: "الأصلية Premium",
+        badgeEn: "Premium Authentic"
       }
     ],
     sizes: ["ربع تولة (3 مل)", "نصف تولة (6 مل)", "تولة كاملة (12 مل)"],
@@ -2258,7 +2189,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "ربع تولة (3 مل)",
         sizeEn: "Quarter Tola (3ml)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "31%",
         sku: "AYT-OIL-WM-3",
         stockNoteAr: "متوفر",
@@ -2269,7 +2199,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "نصف تولة (6 مل)",
         sizeEn: "Half Tola (6ml)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "30%",
         sku: "AYT-OIL-WM-6",
         stockNoteAr: "الأكثر مبيعاً بعد الاستحمام",
@@ -2280,7 +2209,6 @@ const BASE_ATYAB_PRODUCTS = [
         size: "تولة كاملة (12 مل)",
         sizeEn: "Full Tola (12ml)",
         priceSAR: 35,
-        originalPriceSAR: 50,
         savePercent: "29%",
         sku: "AYT-OIL-WM-12",
         stockNoteAr: "حجم اقتصادي",
@@ -2288,8 +2216,8 @@ const BASE_ATYAB_PRODUCTS = [
         isPopular: false
       }
     ],
-    concentration: "زيت مسك مركز 100% خالٍ من الكحول",
-    concentrationEn: "100% Alcohol-Free Concentrated Musk Oil",
+    concentration: "زيت مسك مركز Premium خالٍ من الكحول",
+    concentrationEn: "Premium Alcohol-Free Concentrated Musk Oil",
     gender: "للجنسين والأطفال والنساء",
     genderEn: "Unisex, Women & Children",
     longevity: "24+ ساعة من النظافة والهدوء",
@@ -2677,3 +2605,6 @@ if (typeof window !== "undefined") {
     }
   });
 }
+
+
+

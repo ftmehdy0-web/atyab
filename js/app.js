@@ -1,4 +1,4 @@
-/**
+﻿/**
  * أطياب للعطور - منطق المتجر الإلكتروني وإدارة الحالة
  * متجر العطور الفاخر ثنائي اللغة (العربية / English)
  * ATYAB PERFUMES - Luxury Multilingual E-Commerce Logic & State Management
@@ -289,11 +289,11 @@ function getOrderStatusBadgeText(status) {
     case "delivered":
       return isEn ? "Delivered ✅" : "تم التوصيل ✅";
     case "shipped":
-      return isEn ? "Shipped 🚚" : "قيد الشحن 🚚";
+      return isEn ? "Shipped " : "قيد الشحن ";
     case "processing":
-      return isEn ? "Packaging 📦" : "قيد التجهيز 📦";
+      return isEn ? "Packaging " : "قيد التجهيز ";
     case "confirmed":
-      return isEn ? "Confirmed ✨" : "تم التأكيد ✨";
+      return isEn ? "Confirmed " : "تم التأكيد ";
     case "pending":
     default:
       return isEn ? "Pending ⏳" : "قيد الانتظار ⏳";
@@ -310,7 +310,7 @@ function renderTrackModalContent(forceGuest = false) {
   if (!state.account && !forceGuest) {
     body.innerHTML = `
       <div class="track-login-prompt-box">
-        <span style="font-size: 2.8rem; display: block; margin-bottom: 10px;">🔒</span>
+        <span style="font-size: 2.8rem; display: block; margin-bottom: 10px;">�</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; font-weight: 800; color: #111; margin-bottom: 8px;" data-i18n="track_login_prompt_title">
           ${t("track_login_prompt_title")}
         </h3>
@@ -319,10 +319,10 @@ function renderTrackModalContent(forceGuest = false) {
         </p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-primary" onclick="closeTrackOrderModal(); openAccountModal(); setAccountMode('login');" style="padding: 12px 26px;">
-            🔑 <span data-i18n="track_login_btn">${t("track_login_btn")}</span>
+            � <span data-i18n="track_login_btn">${t("track_login_btn")}</span>
           </button>
           <button class="btn btn-secondary" onclick="renderTrackModalContent(true)" style="padding: 12px 20px;">
-            🔍 <span data-i18n="track_guest_lookup_btn">${t("track_guest_lookup_btn")}</span>
+            � <span data-i18n="track_guest_lookup_btn">${t("track_guest_lookup_btn")}</span>
           </button>
         </div>
       </div>
@@ -335,13 +335,13 @@ function renderTrackModalContent(forceGuest = false) {
     body.innerHTML = `
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.4rem;">📦</span>
+          <span style="font-size: 1.4rem;"></span>
           <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800;" data-i18n="track_order_title">
             ${t("track_order_title")}
           </h3>
         </div>
         <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(false)" style="font-size: 0.78rem; padding: 4px 10px;">
-          🔒 ${t("track_login_btn")}
+          � ${t("track_login_btn")}
         </button>
       </div>
       <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;" data-i18n="track_order_desc">
@@ -372,7 +372,7 @@ function renderTrackModalContent(forceGuest = false) {
   if (userOrders.length === 0) {
     body.innerHTML = `
       <div style="text-align: center; padding: 28px 12px;">
-        <span style="font-size: 3rem; display: block; margin-bottom: 10px;">📦</span>
+        <span style="font-size: 3rem; display: block; margin-bottom: 10px;"></span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.3rem; font-weight: 800; color: #111; margin-bottom: 8px;" data-i18n="track_no_orders_title">
           ${t("track_no_orders_title")}
         </h3>
@@ -380,11 +380,11 @@ function renderTrackModalContent(forceGuest = false) {
           ${t("track_no_orders_desc")}
         </p>
         <button class="btn btn-primary" onclick="closeTrackOrderModal(); window.location.href='#catalog';" style="padding: 11px 24px;">
-          🛍️ <span data-i18n="track_no_orders_shop_btn">${t("track_no_orders_shop_btn")}</span>
+          � <span data-i18n="track_no_orders_shop_btn">${t("track_no_orders_shop_btn")}</span>
         </button>
         <div style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-light);">
           <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(true)" style="font-size: 0.8rem;">
-            🔍 ${t("track_guest_lookup_btn")}
+            � ${t("track_guest_lookup_btn")}
           </button>
         </div>
       </div>
@@ -396,7 +396,7 @@ function renderTrackModalContent(forceGuest = false) {
   body.innerHTML = `
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 1.4rem;">👑</span>
+        <span style="font-size: 1.4rem;"></span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800;" data-i18n="track_order_title">
           ${t("track_order_title")}
         </h3>
@@ -418,7 +418,7 @@ function renderTrackModalContent(forceGuest = false) {
     <div id="track-order-result" class="track-status-box" style="display: block;"></div>
     <div style="margin-top: 16px; text-align: center;">
       <button type="button" class="btn btn-sm btn-outline" onclick="renderTrackModalContent(true)" style="font-size: 0.78rem;">
-        🔍 ${isEn ? "Search Another Order Number" : "البحث برقم طلب آخر"}
+        � ${isEn ? "Search Another Order Number" : "البحث برقم طلب آخر"}
       </button>
     </div>
   `;
@@ -477,7 +477,7 @@ function renderTrackOrderResult(trackingNum) {
   } else if (status === "delivered") {
     statusBadgeHtml = `
       <span style="font-size: 0.78rem; background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
-        ${isEn ? "Delivered 🎉" : "تم التوصيل بنجاح 🎉"}
+        ${isEn ? "Delivered �" : "تم التوصيل بنجاح �"}
       </span>
     `;
   } else if (status === "shipped") {
@@ -489,13 +489,13 @@ function renderTrackOrderResult(trackingNum) {
   } else if (status === "processing") {
     statusBadgeHtml = `
       <span style="font-size: 0.78rem; background: #FEF3C7; color: #B45309; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
-        ${isEn ? "Packaging 📦" : "جاري التجهيز والتغليف 📦"}
+        ${isEn ? "Packaging " : "جاري التجهيز والتغليف "}
       </span>
     `;
   } else if (status === "confirmed") {
     statusBadgeHtml = `
       <span style="font-size: 0.78rem; background: #EDE9FE; color: #6D28D9; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
-        ${isEn ? "Confirmed ✨" : "تم التأكيد الملكي ✨"}
+        ${isEn ? "Confirmed " : "تم التأكيد الفاخر "}
       </span>
     `;
   } else {
@@ -512,7 +512,7 @@ function renderTrackOrderResult(trackingNum) {
     cancellationNoticeHtml = `
       <div class="track-cancelled-notice-box">
         <div style="font-weight: 800; font-size: 0.92rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-          <span>⚠️</span>
+          <span>⚠</span>
           <span>${isEn ? "Order Cancelled by Store Administration" : "تم إلغاء هذا الطلب من قِبل إدارة المتجر"}</span>
         </div>
         <p style="margin: 0; font-size: 0.84rem; line-height: 1.6;">${t("track_cancelled_notice")}</p>
@@ -587,7 +587,7 @@ function renderTrackOrderResult(trackingNum) {
     itemsHtml = `
       <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(184, 138, 40, 0.2);">
         <div style="font-size: 0.8rem; font-weight: 700; color: var(--gold-deep); margin-bottom: 6px;">
-          ${isEn ? "Order Fragrances:" : "عطور ومقتنيات الطلب الملكي:"}
+          ${isEn ? "Order Fragrances:" : "عطور ومقتنيات الطلب الفاخر:"}
         </div>
         ${order.items.map(item => `
           <div class="track-order-item-chip">
@@ -635,13 +635,13 @@ function submitTrackOrder() {
   const val = input?.value?.trim();
   const resultBox = document.getElementById("track-order-result");
   if (!val) {
-    showToast(t("track_error_empty"), "", "⚠️");
+    showToast(t("track_error_empty"), "", "⚠");
     return;
   }
   state.lastTrackedNumber = val;
   if (resultBox) {
     renderTrackOrderResult(val);
-    showToast(`${t("track_searching")} ${val}`, "", "📦");
+    showToast(`${t("track_searching")} ${val}`, "", "");
   }
 }
 
@@ -910,7 +910,7 @@ function switchLanguage(lang, notify = true, updateUrl = true) {
   }
 
   if (notify) {
-    showToast(t("toast_lang_title") || "اللغة", t("toast_lang_msg") || (lang === "en" ? "Switched to English" : "تم التبديل إلى العربية"), "🌐");
+    showToast(t("toast_lang_title") || "اللغة", t("toast_lang_msg") || (lang === "en" ? "Switched to English" : "تم التبديل إلى العربية"), "�");
   }
 }
 
@@ -1294,7 +1294,7 @@ function renderShowcase() {
     const lp = getProductLocalized(p, state.language);
     const isEn = state.language === "en";
     const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
-    const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
+    const pdpUrl = `product-p.id.htmlisEn ? '&lang=en' : ''`;
 
     return `
       <div class="cherished-card" data-product-id="${p.id}">
@@ -1315,7 +1315,7 @@ function renderShowcase() {
           </div>
           <div class="cherished-actions">
             <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" title="${t("cherished_add_cart") || "Add to Bag"}">
-              <span>🛍️</span> <span>${t("cherished_add_cart") || "أضف للسلة"}</span>
+              <span>�</span> <span>${t("cherished_add_cart") || "أضف للسلة"}</span>
             </button>
             <a href="${pdpUrl}" class="btn-cherished-view" title="${lp.displayName}">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1356,7 +1356,7 @@ function renderCreamsSpotlight() {
     const isEn = state.language === "en";
     const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
 
-    const pdpUrl = `product.html?id=${p.id}${isEn ? '&lang=en' : ''}`;
+    const pdpUrl = `product-p.id.htmlisEn ? '&lang=en' : ''`;
     return `
       <div class="cherished-card" data-product-id="${p.id}">
         <div class="cherished-card-media">
@@ -1375,7 +1375,7 @@ function renderCreamsSpotlight() {
             ${p.originalPriceSAR && p.originalPriceSAR > p.priceSAR ? `<span class="cherished-old-price">${formatPrice(p.originalPriceSAR)}</span>` : ""}
           </div>
           <button type="button" class="btn-cherished-cart" onclick="addToCart('${p.id}', '${defaultSize}', 1)" style="width: 100%;">
-            <span>🛍️</span> <span>${t("cream_add_cart_btn") || t("cherished_add_cart") || "أضف للسلة الآن"}</span>
+            <span>�</span> <span>${t("cream_add_cart_btn") || t("cherished_add_cart") || "أضف للسلة الآن"}</span>
           </button>
         </div>
       </div>
@@ -1441,7 +1441,7 @@ function renderProducts() {
   if (filtered.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-        <span style="font-size: 2.5rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">⚜️</span>
+        <span style="font-size: 2.5rem; color: var(--gold-primary); display: block; margin-bottom: 12px;"></span>
         <h3 style="font-size: 1.4rem;">${t("no_products_title")}</h3>
         <p style="color: var(--text-muted); margin-top: 6px;">${t("no_products_desc")}</p>
         <button class="btn btn-secondary" onclick="resetFilters()" style="margin-top: 16px;">${t("reset_filters_btn")}</button>
@@ -1473,11 +1473,11 @@ function renderProducts() {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
-          <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}">
+          <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''">
             <img src="${product.image}" alt="${lp.displayName}" loading="lazy" />
           </a>
           <div class="quick-view-overlay">
-            <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
+            <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
               ${t("pdp_view_product_btn") || "تفاصيل العطر"}
             </a>
             <button class="btn-quick-view" onclick="openQuickView('${product.id}')" style="background: rgba(0,0,0,0.7); font-size: 0.75rem; padding: 6px 12px;">
@@ -1489,7 +1489,7 @@ function renderProducts() {
         <div class="product-details">
           <div class="product-arabic-title">${lp.displayFamily}</div>
           <h3 class="product-title">
-            <a href="product.html?id=${product.id}${state.language === 'en' ? '&lang=en' : ''}">${lp.displayName}</a>
+            <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''">${lp.displayName}</a>
           </h3>
           <p class="product-subtitle">${lp.displaySubtitle}</p>
           <p class="product-stock-label ${isInStock ? "in-stock" : "out-of-stock"}">${stockLabel}</p>
@@ -1578,9 +1578,9 @@ function addToCart(productId, size, quantity = 1) {
 
   openCartDrawer();
   showToast(
-    state.language === "en" ? "Added to Royal Bag" : "تمت الإضافة إلى السلة الملكية",
-    state.language === "en" ? `${lp.displayName} has been added.` : `تمت إضافة ${lp.displayName} بنجاح ✨`,
-    "🛍️"
+    state.language === "en" ? "Added to Bag" : "تمت الإضافة إلى السلة",
+    state.language === "en" ? `${lp.displayName} has been added.` : `تمت إضافة ${lp.displayName} بنجاح `,
+    "�"
   );
 }
 
@@ -1634,7 +1634,7 @@ function formatItemSize(size, lang = state.language) {
     .replace(/مل/g, "ml")
     .replace(/جرام/g, "g")
     .replace(/\(الحجم الرسمي\)/g, "(Official Volume)")
-    .replace(/\(الحجم الملكي\)/g, "(Royal Volume)")
+    .replace(/\(الحجم الفاخر\)/g, "(Signature Volume)")
     .replace(/\(الأكثر طلباً\)/g, "(Most Popular)")
     .replace(/\(الحجم الكلاسيكي\)/g, "(Classic Volume)")
     .replace(/\(حجم السفر\)/g, "(Travel Size)")
@@ -1663,11 +1663,11 @@ function updateCartUI() {
     if (cartBody) {
       cartBody.innerHTML = `
         <div style="text-align: center; padding: 48px 18px;">
-          <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">🛍️</span>
+          <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">�</span>
           <h4 style="font-size: 1.25rem; font-weight: 800; color: #000; margin-bottom: 8px;">${t("cart_empty_title")}</h4>
           <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 auto 22px; line-height: 1.6; max-width: 320px;">${t("cart_empty_desc")}</p>
           <a class="btn btn-primary" href="index.html#catalog" onclick="closeCartDrawer();" style="padding: 12px 24px; display: inline-flex; align-items: center; gap: 8px;">
-            ✨ ${t("cart_empty_cta")}
+             ${t("cart_empty_cta")}
           </a>
         </div>
       `;
@@ -1718,7 +1718,7 @@ function updateCartUI() {
   if (state.cart.length === 0) {
     cartBody.innerHTML = `
       <div style="text-align: center; padding: 50px 20px;">
-        <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">⚜️</span>
+        <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;"></span>
         <h4 style="font-size: 1.25rem;">${t("cart_empty_title")}</h4>
         <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 8px 0 24px;">${t("cart_empty_desc")}</p>
         <button class="btn btn-primary" onclick="closeCartDrawer(); window.location.href='#catalog';">
@@ -1850,7 +1850,7 @@ function toggleWishlist(productId) {
     showToast(t("toast_wishlist_removed"), lp ? lp.displayName : "");
   } else {
     state.wishlist.push(productId);
-    showToast(t("toast_wishlist_added"), lp ? lp.displayName : "", "❤️");
+    showToast(t("toast_wishlist_added"), lp ? lp.displayName : "", "❤");
   }
 
   localStorage.setItem("atyab_wishlist", JSON.stringify(state.wishlist));
@@ -2109,7 +2109,7 @@ async function handleAccountLogin(event) {
   }
 
   setAccountMode("signed-in");
-  showToast(t("account_login_success_title"), t("account_login_success_msg", { name: userProfile.name }), "👋");
+  showToast(t("account_login_success_title"), t("account_login_success_msg", { name: userProfile.name }), "�");
 }
 
 async function handleAccountSignup(event) {
@@ -2162,7 +2162,7 @@ async function handleAccountSignup(event) {
 
   document.getElementById("account-signup-form")?.reset();
   setAccountMode("signed-in");
-  showToast(t("account_signup_success_title"), t("account_signup_success_msg", { name }), "✨");
+  showToast(t("account_signup_success_title"), t("account_signup_success_msg", { name }), "");
 }
 
 /**
@@ -2230,7 +2230,7 @@ async function handleGoogleSignIn() {
       showToast(
         t("account_login_success_title") || (state.language === "en" ? "Welcome!" : "أهلاً بك"),
         t("account_login_success_msg", { name: userProfile.name }) || `Welcome ${userProfile.name}`,
-        "👑"
+        ""
       );
     } else if (res && res.error) {
       showAccountMessage(res.error);
@@ -2335,7 +2335,7 @@ async function handlePhoneOtpVerify() {
     showToast(
       state.language === "en" ? "Mobile verified" : "تم توثيق الجوال",
       state.language === "en" ? "You are now signed in with your Saudi mobile number." : "تم تسجيل دخولك برقم جوالك السعودي.",
-      "📱"
+      "�"
     );
   } catch (error) {
     console.error("Firebase Phone OTP verification error:", error);
@@ -2405,7 +2405,7 @@ function logoutAccount() {
   showToast(
     state.language === "en" ? "Logged Out" : "تم تسجيل الخروج",
     state.language === "en" ? "Storefront reset to guest mode. Your cart and details have been cleared." : "تم تفريغ الجلسة والسلة بنجاح وعاد المتجر للوضع الطبيعي.",
-    "👋"
+    "�"
   );
 }
 
@@ -2468,8 +2468,8 @@ function openQuickView(productId) {
 
         <!-- القياسات -->
         <div style="display: flex; gap: 24px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px;">
-          <div>⏱️ <strong>${t("qv_longevity")}</strong> ${lp.displayLongevity}</div>
-          <div>👑 <strong>${t("qv_sillage")}</strong> ${lp.displaySillage}</div>
+          <div>⏱ <strong>${t("qv_longevity")}</strong> ${lp.displayLongevity}</div>
+          <div> <strong>${t("qv_sillage")}</strong> ${lp.displaySillage}</div>
         </div>
 
         <!-- المقاس والإضافة إلى السلة -->
@@ -2532,27 +2532,27 @@ function renderQuizStep() {
       
       <div class="quiz-options-grid">
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'aquatic')">
-          <span class="emoji">🌊</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o1")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'rose')">
-          <span class="emoji">🌹</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o2")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'oud')">
-          <span class="emoji">🐅</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o3")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'woody')">
-          <span class="emoji">🌲</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o4")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'moon')">
-          <span class="emoji">🌙</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o5")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('vibe', 'bakhoor')">
-          <span class="emoji">💨</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q1_o6")}</span>
         </button>
       </div>
@@ -2569,19 +2569,19 @@ function renderQuizStep() {
       
       <div class="quiz-options-grid">
         <button class="quiz-option-btn" onclick="selectQuizOption('occasion', 'daily')">
-          <span class="emoji">☀️</span>
+          <span class="emoji">☀</span>
           <span>${t("quiz_q2_o1")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('occasion', 'evening')">
-          <span class="emoji">🌙</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q2_o2")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('occasion', 'wedding')">
-          <span class="emoji">💍</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q2_o3")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('occasion', 'home')">
-          <span class="emoji">🕌</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q2_o4")}</span>
         </button>
       </div>
@@ -2602,15 +2602,15 @@ function renderQuizStep() {
           <span>${t("quiz_q3_o1")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('notes', 'rose')">
-          <span class="emoji">🌹</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q3_o2")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('notes', 'marine')">
-          <span class="emoji">🌊</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q3_o3")}</span>
         </button>
         <button class="quiz-option-btn" onclick="selectQuizOption('notes', 'white-floral')">
-          <span class="emoji">🌸</span>
+          <span class="emoji">�</span>
           <span>${t("quiz_q3_o4")}</span>
         </button>
       </div>
@@ -2638,7 +2638,7 @@ function renderQuizStep() {
 
     container.innerHTML = `
       <div style="text-align: center; padding: 10px 0;">
-        <span style="font-size: 2.5rem; display: block; margin-bottom: 6px;">⚜️</span>
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 6px;"></span>
         <span style="font-size: 0.85rem; color: var(--gold-primary); font-weight: 800;">${t("quiz_res_label")}</span>
         <h3 style="font-size: 1.8rem; color: #000; margin: 4px 0 16px;">
           ${lp.displayName}
@@ -2663,7 +2663,7 @@ function renderQuizStep() {
           <button class="btn btn-primary" onclick="addToCart('${matchedProduct.id}', '${matchedProduct.defaultSize}', 1); closeScentQuiz();">
             ${t("quiz_res_add_btn")}
           </button>
-          <button class="btn btn-secondary" onclick="window.location.href='product.html?id=${matchedProduct.id}'; closeScentQuiz();">
+          <button class="btn btn-secondary" onclick="window.location.href='product-matchedProduct.id.html'; closeScentQuiz();">
             ${t("quiz_res_details_btn")}
           </button>
         </div>
@@ -2677,7 +2677,7 @@ function renderQuizStep() {
 // ===================================================================
 function openCheckoutModal() {
   if (!state.account) {
-    showToast(t("cart_login_prompt_title"), t("cart_login_required"), "🔒");
+    showToast(t("cart_login_prompt_title"), t("cart_login_required"), "�");
     openAccountModal();
     setAccountMode("login");
     showAccountMessage(t("cart_login_required"), "error");
@@ -2737,7 +2737,7 @@ function closeCheckoutModal() {
 
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
-  const name = document.getElementById("co-name")?.value.trim() || (state.language === "en" ? "Royal Customer" : "عميل أطياب الملكي");
+  const name = document.getElementById("co-name")?.value.trim() || (state.language === "en" ? "Signature Customer" : "عميل أطياب الفاخر");
   const email = document.getElementById("co-email")?.value.trim() || "";
   const phone = document.getElementById("co-phone")?.value.trim() || "";
   const city = document.getElementById("co-city")?.value || (state.language === "en" ? "Riyadh" : "الرياض");
@@ -2801,7 +2801,7 @@ async function handleCheckoutSubmit(e) {
     },
     notes: [
       {
-        author: "النظام الملكي",
+        author: "النظام الفاخر",
         text: "تم إنشاء الطلب بنجاح عبر المتجر الإلكتروني بانتظار التأكيد",
         date: new Date().toISOString()
       }
@@ -2836,7 +2836,7 @@ async function handleCheckoutSubmit(e) {
         showToast(
           state.language === "en" ? "Cloud Sync Needs Attention" : "تحتاج المزامنة السحابية إلى مراجعة",
           state.language === "en" ? "Your order is saved locally, but Firebase could not confirm the live sync." : "تم حفظ طلبك محلياً، لكن تعذر تأكيد المزامنة المباشرة مع Firebase.",
-          "⚠️"
+          "⚠"
         );
       }
     } catch (err) {
@@ -2844,7 +2844,7 @@ async function handleCheckoutSubmit(e) {
       showToast(
         state.language === "en" ? "Cloud Sync Needs Attention" : "تحتاج المزامنة السحابية إلى مراجعة",
         state.language === "en" ? "Your order is saved locally, but Firebase could not confirm the live sync." : "تم حفظ طلبك محلياً، لكن تعذر تأكيد المزامنة المباشرة مع Firebase.",
-        "⚠️"
+        "⚠"
       );
     }
   }
@@ -2856,13 +2856,13 @@ async function handleCheckoutSubmit(e) {
 
   closeCheckoutModal();
 
-  // تأكيد الطلب الملكي
+  // تأكيد الطلب الفاخر
   const confModal = document.getElementById("confirmation-modal");
   const confBody = document.getElementById("confirmation-body");
   if (confModal && confBody) {
     confBody.innerHTML = `
       <div style="text-align: center; padding: 24px 12px;">
-        <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;">👑</span>
+        <span style="font-size: 3rem; color: var(--gold-primary); display: block; margin-bottom: 12px;"></span>
         <span style="font-size: 0.85rem; color: var(--gold-deep); font-weight: 800;">${t("order_conf_pill")}</span>
         <h2 style="font-size: 1.85rem; margin: 8px 0 14px; color: #000;">${t("order_conf_title", { name })}</h2>
         <p style="font-size: 0.95rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto 20px; line-height: 1.7;">
@@ -2947,7 +2947,7 @@ function handleSearchInput(e) {
       <div style="display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s;"
            onmouseover="this.style.background='var(--bg-ivory)'"
            onmouseout="this.style.background='transparent'"
-           onclick="window.location.href='product.html?id=${p.id}'; closeSearchModal();">
+           onclick="window.location.href='product-p.id.html'; closeSearchModal();">
         <img src="${p.image}" alt="${lp.displayName}" style="width: 54px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);" />
         <div style="flex: 1;">
           <h4 style="font-size: 0.98rem; font-weight: 700; color: #000;">${lp.displayName}</h4>
@@ -2965,7 +2965,7 @@ function handleSearchInput(e) {
 // ===================================================================
 // التنبيهات المنبثقة (TOAST NOTIFICATIONS)
 // ===================================================================
-function showToast(title, message, icon = "⚜️") {
+function showToast(title, message, icon = "") {
   const container = document.getElementById("toast-container");
   if (!container) return;
 
@@ -3087,3 +3087,6 @@ function setupEventListeners() {
     });
   }
 }
+
+
+

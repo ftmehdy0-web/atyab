@@ -1,4 +1,4 @@
-/* Shared storefront configuration: use this as the single source for common
+﻿/* Shared storefront configuration: use this as the single source for common
  * storefront content. Header navigation, footer data and checkout options are
  * intentionally rendered from this object on every interactive storefront. */
 (function () {
@@ -21,8 +21,8 @@
     hoursAr: "يومياً: 9:00 ص – 11:00 م",
     hoursEn: "Daily: 9:00 AM – 11:00 PM",
     // Do not invent a street address. Replace this once the business confirms it.
-    addressAr: "الرياض، المملكة العربية السعودية — يرجى التواصل معنا قبل الزيارة",
-    addressEn: "Riyadh, Saudi Arabia — please contact us before visiting",
+    addressAr: "طريق الملك فهد، حي العقيق، الرياض 13511، المملكة العربية السعودية",
+    addressEn: "King Fahd Road, Al Aqiq, Riyadh 13511, Saudi Arabia",
     cities: [
       ["الرياض", "Riyadh"], ["جدة", "Jeddah"], ["مكة المكرمة", "Makkah"],
       ["المدينة المنورة", "Madinah"], ["الدمام", "Dammam"], ["الخبر", "Khobar"],
@@ -145,7 +145,7 @@
       if (!parent || /SCRIPT|STYLE|NOSCRIPT/.test(parent.tagName)) return;
       let value = node.nodeValue;
       value = value.replace(/\bRoyal\b/gi, "Signature").replace(/\broyal\b/gi, "signature");
-      value = value.replace(/الملكية/g, "الفاخرة").replace(/الملكي/g, "الفاخر");
+      value = value.replace(/الفاخرة/g, "الفاخرة").replace(/الفاخر/g, "الفاخر");
       value = value.replace(/(?:more than|over|up to)\s*48\s*hours?/gi, "without a stated duration");
       value = value.replace(/(?:أكثر من |حتى )?48\s*ساعة/g, "دون تحديد مدة");
       value = value.replace(/18\+?\s*Hours?/gi, "No stated duration").replace(/18\+?\s*ساعة/g, "دون تحديد مدة");
@@ -191,3 +191,5 @@
     observer.observe(document.body, { childList: true, subtree: true });
   });
 })();
+
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * أطياب للعطور - منطق صفحة المنتج المستقلة والتفاعلية
  * ATYAB PERFUMES - Luxury Individual Product Page Logic & State
  * Handles multi-angle gallery, interactive size selector with dynamic pricing,
@@ -56,16 +56,16 @@ function initProductPage() {
     if (mainContainer) {
       mainContainer.innerHTML = `
         <div style="text-align: center; padding: 80px 20px; max-width: 600px; margin: 0 auto;">
-          <div style="font-size: 3.5rem; margin-bottom: 20px;">⚜️</div>
+          <div style="font-size: 3.5rem; margin-bottom: 20px;"></div>
           <h2 style="font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 12px;">
             ${isEn ? "Product Currently Unavailable" : "هذا المنتج غير متوفر حالياً"}
           </h2>
           <p style="font-size: 0.95rem; color: #666; line-height: 1.7; margin-bottom: 30px;">
-            ${isEn ? "This fragrance creation has been removed or is undergoing royal reformulation. Explore our complete catalogue of luxury fragrances." : "تم سحب هذا الابتكار العطري مؤقتاً أو إعادة صياغته. ندعوك لاستكشاف تشكيلتنا الملكية الفاخرة المتاحة."}
+            ${isEn ? "This fragrance creation has been removed or is undergoing reformulation. Explore our complete catalogue of luxury fragrances." : "تم سحب هذا الابتكار العطري مؤقتاً أو إعادة صياغته. ندعوك لاستكشاف تشكيلتنا الفاخرة المتاحة."}
           </p>
           <a href="perfumes.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; text-decoration: none;">
-            <span>🛍️</span>
-            <span>${isEn ? "Explore Royal Perfumes" : "تصفح جميع العطور الملكية"}</span>
+            <span>�</span>
+            <span>${isEn ? "Explore Perfumes" : "تصفح جميع العطور"}</span>
           </a>
         </div>
       `;
@@ -107,7 +107,7 @@ function updatePageSEO() {
   if (!currentProduct) return;
   const lp = getProductLocalized(currentProduct, state.language);
   const isEn = state.language === "en";
-  const brandName = isEn ? "Atyab Royal Perfumes KSA" : "أطياب للعطور الفاخرة بالمملكة";
+  const brandName = isEn ? "Atyab Signature Perfumes KSA" : "أطياب للعطور الفاخرة بالمملكة";
 
   document.title = `${lp.displayName} | ${lp.displaySubtitle || lp.displayFamily} - ${brandName}`;
 
@@ -297,7 +297,7 @@ function renderPurchaseBox(lp) {
 
     metaContainer.innerHTML = `
       <div class="pdp-top-meta">
-        <span class="pdp-family-badge">⚜️ ${lp.displayFamily || currentProduct.family}</span>
+        <span class="pdp-family-badge"> ${lp.displayFamily || currentProduct.family}</span>
         <div class="pdp-rating-strip">
           <span class="pdp-rating-stars">★★★★★</span>
           <span class="pdp-rating-number">5.0</span>
@@ -319,7 +319,7 @@ function renderPurchaseBox(lp) {
           ${oldPrice ? `<span class="pdp-old-price">${formatPrice(oldPrice * currentQty)}</span>` : ''}
           ${savePercent > 0 ? `<span class="pdp-save-badge">${isEn ? "Save" : "وفر"} ${savePercent}%</span>` : ''}
         </div>
-        <span class="pdp-concentration-pill">${lp.displayConcentration ? lp.displayConcentration.split("(")[0].trim() : (isEn ? "Eau De Parfum Royal" : "أو دو بارفان ملكي")}</span>
+        <span class="pdp-concentration-pill">${lp.displayConcentration ? lp.displayConcentration.split("(")[0].trim() : (isEn ? "Eau De Parfum Signature" : "أو دو بارفان ملكي")}</span>
       </div>
     `;
   }
@@ -335,10 +335,10 @@ function renderPurchaseBox(lp) {
         </div>
         <div class="pdp-signature-edition-pill" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border: 1.5px solid var(--gold-primary); border-radius: 8px; background: rgba(197, 155, 39, 0.05); margin-top: 10px;">
           <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 1.5rem;">💎</span>
+            <span style="font-size: 1.5rem;">�</span>
             <div>
               <div style="font-weight: 800; font-size: 0.98rem; color: #111;">${officialSize}</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted);">${isEn ? "100% Authentic Signature Royal Bottle" : "الإصدار الملكي الأصلي المعتمد"}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${isEn ? "100% Authentic Signature Signature Bottle" : "الإصدار الفاخر الأصلي المعتمد"}</div>
             </div>
           </div>
           <div style="text-align: end;">
@@ -403,15 +403,15 @@ function renderPurchaseBox(lp) {
 
       <div class="pdp-perks-card">
         <div class="pdp-perk-item">
-          <span>🚚</span>
+          <span></span>
           <span><strong>${t("pdp_fast_shipping_note")}</strong></span>
         </div>
         <div class="pdp-perk-item">
-          <span>👑</span>
+          <span></span>
           <span>${t("pdp_golden_guarantee")}</span>
         </div>
         <div class="pdp-perk-item">
-          <span>💳</span>
+          <span></span>
           <span>${t("pdp_pay_secure_badge")}</span>
         </div>
       </div>
@@ -500,7 +500,7 @@ function renderPyramid(lp) {
 
   pyramidContainer.innerHTML = `
     <div class="pdp-pyramid-card">
-      <span class="section-subtitle">⚜️ ${t("pdp_view_full_notes")}</span>
+      <span class="section-subtitle"> ${t("pdp_view_full_notes")}</span>
       <h2 style="font-family: var(--font-arabic-title); font-size: 1.8rem; font-weight: 800; margin: 6px 0;">${t("pdp_pyramid_title")}</h2>
       <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7;">${t("pdp_pyramid_subtitle")}</p>
 
@@ -509,7 +509,7 @@ function renderPyramid(lp) {
         <div class="pdp-tier-block">
           <div class="pdp-tier-header">
             <div class="pdp-tier-title">
-              <span>🌿</span>
+              <span></span>
               <span>${t("pdp_top_notes_title")}</span>
             </div>
             <span class="pdp-tier-duration">${t("pdp_tier1_duration")}</span>
@@ -524,7 +524,7 @@ function renderPyramid(lp) {
         <div class="pdp-tier-block" style="border-right-color: var(--gold-light);">
           <div class="pdp-tier-header">
             <div class="pdp-tier-title">
-              <span>🌹</span>
+              <span>�</span>
               <span>${t("pdp_heart_notes_title")}</span>
             </div>
             <span class="pdp-tier-duration">${t("pdp_tier2_duration")}</span>
@@ -566,7 +566,7 @@ function renderAccordsAndSpecs(lp) {
   accordsContainer.innerHTML = `
     <div class="pdp-accords-card">
       <div>
-        <span class="section-subtitle">📊 ${t("pdp_accords_eyebrow")}</span>
+        <span class="section-subtitle">� ${t("pdp_accords_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.35rem; font-weight: 800; margin: 4px 0 16px;">${t("pdp_accords_title")}</h3>
         ${accords.map(a => `
           <div class="pdp-accord-item">
@@ -590,11 +590,11 @@ function renderAccordsAndSpecs(lp) {
           </div>
           <div class="pdp-spec-box">
             <span class="pdp-spec-label">${t("pdp_spec_longevity")}</span>
-            <span class="pdp-spec-val">⏱️ ${lp.displayLongevity}</span>
+            <span class="pdp-spec-val">⏱ ${lp.displayLongevity}</span>
           </div>
           <div class="pdp-spec-box">
             <span class="pdp-spec-label">${t("pdp_spec_sillage")}</span>
-            <span class="pdp-spec-val">👑 ${lp.displaySillage}</span>
+            <span class="pdp-spec-val"> ${lp.displaySillage}</span>
           </div>
           <div class="pdp-spec-box">
             <span class="pdp-spec-label">${t("pdp_spec_gender")}</span>
@@ -620,17 +620,17 @@ function renderStoryAndRitual(lp) {
   container.innerHTML = `
     <div class="pdp-story-grid">
       <div class="pdp-story-box">
-        <span class="section-subtitle">⚜️ ${t("pdp_story_eyebrow")}</span>
+        <span class="section-subtitle"> ${t("pdp_story_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800; margin: 6px 0 14px; color: #000;">${t("pdp_story_title")}</h3>
         <p>${lp.displayStory || lp.displayDescription}</p>
       </div>
 
       <div class="pdp-story-box">
-        <span class="section-subtitle">👑 ${t("pdp_ritual_eyebrow")}</span>
+        <span class="section-subtitle"> ${t("pdp_ritual_eyebrow")}</span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.45rem; font-weight: 800; margin: 6px 0 14px; color: #000;">${t("pdp_ritual_title")}</h3>
         <p>${lp.displayRitual || t("pdp_ritual_fallback")}</p>
         <div style="margin-top: 16px; padding: 12px 16px; background: #FFF; border-radius: 6px; border: 1px dashed var(--gold-primary); font-size: 0.85rem; color: var(--gold-deep);">
-          💡 <strong>${t("pdp_tip_label")}</strong> ${t("pdp_golden_guarantee")}
+          � <strong>${t("pdp_tip_label")}</strong> ${t("pdp_golden_guarantee")}
         </div>
       </div>
     </div>
@@ -665,22 +665,22 @@ function renderReviewsSection(lp) {
           <span style="font-size: 0.9rem; color: var(--text-muted);">${isEn ? "No customer reviews yet" : "لا توجد تقييمات مسجلة حتى الآن"}</span>
         </div>
         <button class="btn btn-secondary" onclick="openReviewModal()">
-          ✍️ ${t("pdp_write_review_btn")}
+          ✍ ${t("pdp_write_review_btn")}
         </button>
       </div>
 
       <div style="text-align: center; padding: 48px 24px; background: #FFF; border-radius: 12px; border: 1.5px dashed rgba(197, 155, 39, 0.4); margin-top: 20px;">
-        <span style="font-size: 2.2rem; display: block; margin-bottom: 12px;">⚜️</span>
+        <span style="font-size: 2.2rem; display: block; margin-bottom: 12px;"></span>
         <h3 style="font-family: var(--font-arabic-title); font-size: 1.25rem; font-weight: 800; color: #111; margin-bottom: 8px;">
-          ${isEn ? "Be the First to Experience and Review" : "كن أول من يشارك تجربته مع هذا العطر الملكي"}
+          ${isEn ? "Be the First to Experience and Review" : "كن أول من يشارك تجربته مع هذا العطر الفاخر"}
         </h3>
         <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 20px; line-height: 1.7;">
           ${isEn 
-            ? "We only display authentic customer reviews. Share your impressions on scent longevity, sillage, and royal presence." 
-            : "نحرص على نشر تجارب العملاء الحقيقية فقط. شاركنا انطباعك ورأيك في ثبات وفوحان العطر بعد تجربتك الملكية."}
+            ? "We only display authentic customer reviews. Share your impressions on scent longevity, sillage, and Signature presence." 
+            : "نحرص على نشر تجارب العملاء الحقيقية فقط. شاركنا انطباعك ورأيك في ثبات وفوحان العطر بعد تجربتك الفاخرة."}
         </p>
         <button class="btn btn-primary" onclick="openReviewModal()" style="padding: 12px 24px;">
-          ✍️ ${t("pdp_write_review_btn")}
+          ✍ ${t("pdp_write_review_btn")}
         </button>
       </div>
     `;
@@ -695,7 +695,7 @@ function renderReviewsSection(lp) {
         <span style="font-size: 0.9rem; color: var(--text-muted);">${t("pdp_reviews_based_on", { count: userReviews.length })}</span>
       </div>
       <button class="btn btn-secondary" onclick="openReviewModal()">
-        ✍️ ${t("pdp_write_review_btn")}
+        ✍ ${t("pdp_write_review_btn")}
       </button>
     </div>
 
@@ -737,7 +737,7 @@ function renderRelatedPerfumes() {
   container.innerHTML = related.map(p => {
     const lp = getProductLocalized(p, state.language);
     return `
-      <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'" style="cursor: pointer;">
+      <div class="product-card" onclick="window.location.href='product-p.id.html'" style="cursor: pointer;">
         <div class="product-media">
           <span class="badge-tag ${p.badgeType}">${lp.displayBadge}</span>
           <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
@@ -748,7 +748,7 @@ function renderRelatedPerfumes() {
           <p class="product-subtitle">${lp.displaySubtitle}</p>
           <div class="product-footer" style="margin-top: 12px;">
             <div class="current-price">${formatPrice(p.priceSAR)}</div>
-            <a href="product.html?id=${p.id}" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
+            <a href="product-p.id.html" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
               ${t("pdp_view_product_btn")}
             </a>
           </div>
@@ -861,3 +861,8 @@ window.addEventListener("storage", (e) => {
     handlePdpLiveSync();
   }
 });
+
+
+
+
+

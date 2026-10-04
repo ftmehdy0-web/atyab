@@ -1,4 +1,4 @@
-/**
+﻿/**
  * أطياب للعطور - محرك صفحات الأقسام الفاخرة والشراء المباشر
  * ATYAB PERFUMES - Luxury Dedicated Category Engine & Instant Cart
  * Architecture inspired by Ahmed Al Maghribi KSA (Haute Parfumerie)
@@ -115,8 +115,8 @@ function updateCategoryPageHeader() {
   // Category title & meta configuration
   const config = {
     perfumes: {
-      pillAr: "⚜️ أفخر التوليفات الشرقية والفرنسية الملكية",
-      pillEn: "⚜️ Royal Oriental & French Haute Parfumerie",
+      pillAr: "أفخر التوليفات الشرقية والفرنسية",
+      pillEn: "Oriental & French Haute Parfumerie",
       titleAr: "العطور الفاخرة",
       titleEn: "LUXURY PERFUMES COLLECTION",
       accentAr: "أثرٌ خالد وفوحان يأسر الحواس",
@@ -134,8 +134,8 @@ function updateCategoryPageHeader() {
       ]
     },
     oil: {
-      pillAr: "💎 نقاء التراث العربي 100%",
-      pillEn: "💎 100% Pure Heritage Distillations",
+      pillAr: "� نقاء التراث العربي 100%",
+      pillEn: "� 100% Pure Heritage Distillations",
       titleAr: "دهن العود والمسك المركز",
       titleEn: "DEHN AL OUD & CONCENTRATED ATTARS",
       accentAr: "نقاء التراث وعراقة التولة",
@@ -151,19 +151,19 @@ function updateCategoryPageHeader() {
       ]
     },
     bakhoor: {
-      pillAr: "🕌 كرم الضيافة العربية وفخامة المجالس",
-      pillEn: "🕌 Arabian Hospitality & Royal Majlis",
+      pillAr: "� كرم الضيافة العربية وفخامة المجالس",
+      pillEn: "� Arabian Hospitality & Signature Majlis",
       titleAr: "بخور ودخون المجالس",
       titleEn: "BAKHOOR & DAKHOON",
       accentAr: "سحابة عطرية تملأ المكان بالسكينة",
       accentEn: "A Warm Aromatic Cloud of Tranquility",
       descAr: "رقائق عود مروكي وآسام طبيعية منقوعة في أصفى الزيوت الشرقية والورد الطائفي لتعطير البيوت والمجالس بأصالة تدوم طويلاً.",
-      descEn: "Natural Moroki and Assam agarwood chips soaked in golden amber, black musk, and Taif rose attar for royal home hospitality.",
+      descEn: "Natural Moroki and Assam agarwood chips soaked in golden amber, black musk, and Taif rose attar for Signature home hospitality.",
       crumbAr: "بخور",
       crumbEn: "Bakhoor & Incense",
       filters: [
         { id: "all", labelAr: "الكل", labelEn: "All" },
-        { id: "bakhoor", labelAr: "بخور ملكي", labelEn: "Royal Bakhoor" },
+        { id: "bakhoor", labelAr: "بخور ملكي", labelEn: "Signature Bakhoor" },
         { id: "chips", labelAr: "رقائق عود", labelEn: "Oud Chips" }
       ]
     },
@@ -332,7 +332,7 @@ function renderCategoryProducts() {
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="cat-empty-state">
-        <span class="cat-empty-icon">⚜️</span>
+        <span class="cat-empty-icon"></span>
         <h3>${isEn ? "No matching fragrances found" : "لا توجد عطور متطابقة مع هذا الفلتر"}</h3>
         <p>${isEn ? "Please explore all creations or reset your scent filters." : "تفضل بتصفح جميع العطور أو اختر تصنيفاً آخر لاستكشاف نفائس الدار."}</p>
         <button class="btn btn-primary" onclick="filterCategoryByTag('all')">
@@ -368,7 +368,7 @@ function renderCategoryProducts() {
     const inStock = product.inStock !== false;
     const stockText = isEn ? (inStock ? "In Stock" : "Out of Stock") : (inStock ? "متوفر" : "نفد من المخزون");
 
-    const pdpUrl = `product.html?id=${product.id}${isEn ? '&lang=en' : ''}`;
+    const pdpUrl = `product-product.id.htmlisEn ? '&lang=en' : ''`;
 
     return `
       <article class="cat-card-lux" 
@@ -446,7 +446,7 @@ function renderCategoryProducts() {
 
           ${keyNotesPreview ? `
             <div class="cat-card-notes-chips" title="${keyNotesPreview}">
-              <span class="notes-icon">✨</span>
+              <span class="notes-icon"></span>
               <span>${keyNotesPreview}</span>
             </div>
           ` : ""}
@@ -620,3 +620,6 @@ window.addEventListener("storage", (e) => {
     handleCategoryLiveSync();
   }
 });
+
+
+

@@ -1,4 +1,4 @@
-/* ===================================================================
+﻿/* ===================================================================
    أطياب للعطور - تصميم المتجر الإلكتروني الفاخر (طراز أحمد المغربي KSA)
    ATYAB PERFUME - ARABIC LUXURY DESIGN SYSTEM (AHMED AL MAGHRIBI THEME)
    =================================================================== */
@@ -52,8 +52,8 @@
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
-  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: all 0.2s ease-out;
+  --transition-smooth: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-fast: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* إعادة التعيين والأنماط الأساسية */
@@ -122,16 +122,7 @@ body {
   }
 }
 
-@keyframes luxurySlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(26px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@keyframes luxurySlideUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
 
 @keyframes luxurySlideDown {
   0% {
@@ -350,9 +341,7 @@ button {
   transition: box-shadow 0.25s ease;
 }
 
-.main-header.scrolled {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-}
+.main-header.scrolled { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 
 /* توسيع ترويسة الموقع وشريط الإعلانات لعرض فاخر وعريض مثل موقع أحمد المغربي (EXPANDED FLUID LUXURY WIDTH) */
 .main-header .container,
@@ -831,7 +820,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   background: #B88A28;
   transform: scaleX(0);
   transform-origin: center;
-  transition: transform 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .cat-nav-link:hover::after,
@@ -977,7 +966,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
   z-index: 1;
   will-change: opacity, visibility;
 }
@@ -998,7 +987,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   object-position: center;
   transform: scale(1) translateZ(0);
   backface-visibility: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .hero-slide.active .hero-slide-bg {
@@ -1057,7 +1046,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .hero-slide.active .hero-slide-pill {
-  animation: luxurySlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+  animation: luxurySlideDown 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.05s forwards;
 }
 
 .hero-slide-title {
@@ -1071,7 +1060,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .hero-slide.active .hero-slide-title {
-  animation: luxurySlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  animation: luxurySlideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.1s forwards;
 }
 
 .hero-slide-title .gold-accent {
@@ -1092,7 +1081,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .hero-slide.active .hero-slide-desc {
-  animation: luxurySlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.18s forwards;
+  animation: luxurySlideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.18s forwards;
 }
 
 .hero-slide-ctas {
@@ -1103,7 +1092,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .hero-slide.active .hero-slide-ctas {
-  animation: luxurySlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+  animation: luxurySlideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.25s forwards;
 }
 
 .btn-hero-primary {
@@ -1211,7 +1200,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.4);
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .hero-dot:hover {
@@ -1253,7 +1242,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   align-items: center;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .category-bubble-card:hover {
@@ -1385,7 +1374,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   justify-content: center;
   color: var(--gold-primary);
   flex-shrink: 0;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .trust-card:hover .trust-icon {
@@ -1468,7 +1457,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   border-radius: var(--radius-md);
   padding: 18px 16px;
   text-align: center;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform, box-shadow;
 }
 
@@ -1494,7 +1483,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .showcase-item:hover .showcase-media img {
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 
 .showcase-title {
@@ -1533,14 +1522,14 @@ html[dir="rtl"] .hdr-dropdown-menu {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
   display: flex;
   flex-direction: column;
   will-change: transform, box-shadow;
 }
 
 .chapter-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.02);
   box-shadow: 0 18px 40px rgba(166, 123, 48, 0.18), 0 4px 14px rgba(0, 0, 0, 0.06);
   border-color: var(--gold-primary);
 }
@@ -1710,7 +1699,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1718,7 +1707,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
 }
 
 .product-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.02);
   border-color: var(--gold-primary);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(166, 123, 48, 0.16);
 }
@@ -1737,11 +1726,11 @@ html[dir="rtl"] .hdr-dropdown-menu {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .product-card:hover .product-media img {
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 
 /* شارات المنتجات */
@@ -2245,7 +2234,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   transform: translateX(-100%);
   visibility: hidden;
   pointer-events: none;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.22s;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0.45s;
   will-change: transform;
   display: flex;
   flex-direction: column;
@@ -2255,7 +2244,7 @@ html[dir="rtl"] .hdr-dropdown-menu {
   transform: translateX(0);
   visibility: visible;
   pointer-events: auto;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0s;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0s;
 }
 
 .drawer-header {
@@ -2503,14 +2492,14 @@ html[dir="rtl"] .hdr-dropdown-menu {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.35s, backdrop-filter 0.35s ease;
+  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0.35s, backdrop-filter 0.35s ease;
 }
 
 .modal-overlay.active {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s, backdrop-filter 0.35s ease;
+  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0s, backdrop-filter 0.35s ease;
 }
 
 .modal-card {
@@ -2522,10 +2511,10 @@ html[dir="rtl"] .hdr-dropdown-menu {
   overflow-y: auto;
   padding: 36px;
   position: relative;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
-  transform: scale(0.92) translateY(16px);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0,0,0,0.2);
+  transform: scale(0.96) translateY(25px);
   opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
 }
 
 .modal-overlay.active .modal-card {
@@ -3354,7 +3343,7 @@ html[dir="ltr"] .whatsapp-tooltip {
   transform: translateX(100%);
   visibility: hidden;
   pointer-events: none;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.22s;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0.45s;
   will-change: transform;
   display: flex;
   flex-direction: column;
@@ -3365,7 +3354,7 @@ html[dir="ltr"] .whatsapp-tooltip {
   transform: translateX(0);
   visibility: visible;
   pointer-events: auto;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0s;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0s;
 }
 
 html[dir="ltr"] .mobile-nav-drawer {
@@ -3652,7 +3641,7 @@ html[dir="ltr"] .mobile-nav-list li a:active {
     transform: translateY(100%);
     visibility: hidden;
     pointer-events: none;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.4s;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0.4s;
     z-index: 95;
   }
 
@@ -3660,7 +3649,7 @@ html[dir="ltr"] .mobile-nav-list li a:active {
     transform: translateY(0);
     visibility: visible;
     pointer-events: auto;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0s;
   }
 
   body.has-mobile-bar {
@@ -4544,7 +4533,7 @@ html[dir="ltr"] .mobile-nav-list li a:active {
 
 .lang-chevron-icon {
   color: var(--text-muted);
-  transition: transform 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .lang-selector-dropdown.open .lang-chevron-icon {
@@ -4746,7 +4735,7 @@ html[dir="ltr"] .cart-drawer.active {
   transform: translateX(0);
   visibility: visible;
   pointer-events: auto;
-  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0s;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 0s;
 }
 
 /* زر الواتساب العائم في LTR */
@@ -4863,11 +4852,11 @@ html[dir="ltr"] .search-icon-inside {
   height: 100%;
   object-fit: contain;
   padding: 16px;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, filter 0.25s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease, filter 0.25s ease;
 }
 
 .pdp-main-viewport:hover .pdp-main-image {
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 
 .pdp-main-image.switching {
@@ -5330,7 +5319,7 @@ html[dir="ltr"] .pdp-size-popular-badge {
 }
 
 .pdp-btn-wishlist:hover {
-  transform: scale(1.08);
+  transform: scale(1.12);
   border-color: #E74C3C;
   color: #E74C3C;
   background: #FDF2E9;
@@ -5951,8 +5940,8 @@ html[dir="ltr"] .pdp-lightbox-close {
   position: relative;
 }
 .cherished-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 36px rgba(166, 123, 48, 0.16);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 60px -15px rgba(166, 123, 48, 0.25);
   border-color: rgba(197, 155, 39, 0.45);
 }
 
@@ -5969,10 +5958,10 @@ html[dir="ltr"] .pdp-lightbox-close {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cherished-card:hover .cherished-card-media img {
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 .cherished-badge {
   position: absolute;
@@ -6151,7 +6140,7 @@ html[dir="ltr"] .pdp-lightbox-close {
   transition: background 0.4s;
 }
 .lux-cat-card:hover .lux-cat-bg {
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 .lux-cat-card:hover .lux-cat-overlay {
   background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 45%, rgba(10,8,6,0.96) 100%);
@@ -6535,7 +6524,7 @@ html[dir="ltr"] .pdp-lightbox-close {
 }
 .cat-card-lux:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(166, 123, 48, 0.16);
+  box-shadow: 0 30px 60px -15px rgba(166, 123, 48, 0.25);
   border-color: rgba(197, 155, 39, 0.5);
 }
 .cat-card-media-box {
@@ -6551,7 +6540,7 @@ html[dir="ltr"] .pdp-lightbox-close {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cat-card-lux:hover .cat-card-img {
   transform: scale(1.07);
@@ -7551,3 +7540,36 @@ html[dir="ltr"] .cat-card-price-box {
 /* Legacy static cards cannot advertise unverified sale prices. */
 .cherished-old-price, .original-price, .pdp-old-price, .pdp-save-badge, .cat-card-price-old, .cat-price-save-tag { display: none !important; }
 @media (max-width: 560px) { .newsletter-controls { display: grid; grid-template-columns: 1fr; } .cat-filter-divider { display: none; } }
+
+
+/* Premium Body Fade In */
+body { animation: body-fade-in 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+@keyframes body-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+.btn:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
+
+/* Premium Staggered Fade In for Cards */
+.product-card, .cherished-card, .cat-item-card {
+    animation: luxurySlideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Stagger delay for cards */
+.product-card:nth-child(1) { animation-delay: 0.05s; }
+.product-card:nth-child(2) { animation-delay: 0.1s; }
+.product-card:nth-child(3) { animation-delay: 0.15s; }
+.product-card:nth-child(4) { animation-delay: 0.2s; }
+.product-card:nth-child(5) { animation-delay: 0.25s; }
+.product-card:nth-child(6) { animation-delay: 0.3s; }
+
+.cherished-card:nth-child(1) { animation-delay: 0.05s; }
+.cherished-card:nth-child(2) { animation-delay: 0.1s; }
+.cherished-card:nth-child(3) { animation-delay: 0.15s; }
+.cherished-card:nth-child(4) { animation-delay: 0.2s; }
+
+
+
+
+
+
+
