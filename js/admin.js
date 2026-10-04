@@ -2638,7 +2638,7 @@ async function handleRestoreDefaultCatalog() {
 }
 
 function viewProductInStore(productId) {
-  window.open(`product-productId.html`, "_blank");
+  window.open(`product-${productId}.html`, "_blank");
 }
 
 // Window bindings for all Product Management handlers
@@ -2683,6 +2683,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initDashboard();
   }
 });
+
 
 
 

@@ -368,7 +368,7 @@ function renderCategoryProducts() {
     const inStock = product.inStock !== false;
     const stockText = isEn ? (inStock ? "In Stock" : "Out of Stock") : (inStock ? "متوفر" : "نفد من المخزون");
 
-    const pdpUrl = `product-product.id.htmlisEn ? '&lang=en' : ''`;
+    const pdpUrl = `product-${product.id}.html${isEn ? '?lang=en' : ''}`;
 
     return `
       <article class="cat-card-lux" 
@@ -620,6 +620,7 @@ window.addEventListener("storage", (e) => {
     handleCategoryLiveSync();
   }
 });
+
 
 
 

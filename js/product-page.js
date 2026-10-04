@@ -737,7 +737,7 @@ function renderRelatedPerfumes() {
   container.innerHTML = related.map(p => {
     const lp = getProductLocalized(p, state.language);
     return `
-      <div class="product-card" onclick="window.location.href='product-p.id.html'" style="cursor: pointer;">
+      <div class="product-card" onclick="window.location.href=`product-${p.id}.html`" style="cursor: pointer;">
         <div class="product-media">
           <span class="badge-tag ${p.badgeType}">${lp.displayBadge}</span>
           <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />
@@ -748,7 +748,7 @@ function renderRelatedPerfumes() {
           <p class="product-subtitle">${lp.displaySubtitle}</p>
           <div class="product-footer" style="margin-top: 12px;">
             <div class="current-price">${formatPrice(p.priceSAR)}</div>
-            <a href="product-p.id.html" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
+            <a href="product-${p.id}.html" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
               ${t("pdp_view_product_btn")}
             </a>
           </div>
@@ -861,6 +861,8 @@ window.addEventListener("storage", (e) => {
     handlePdpLiveSync();
   }
 });
+
+
 
 
 

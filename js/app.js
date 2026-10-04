@@ -1294,7 +1294,7 @@ function renderShowcase() {
     const lp = getProductLocalized(p, state.language);
     const isEn = state.language === "en";
     const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
-    const pdpUrl = `product-p.id.htmlisEn ? '&lang=en' : ''`;
+    const pdpUrl = `product-${p.id}.html${isEn ? '?lang=en' : ''}`;
 
     return `
       <div class="cherished-card" data-product-id="${p.id}">
@@ -1356,7 +1356,7 @@ function renderCreamsSpotlight() {
     const isEn = state.language === "en";
     const defaultSize = isEn ? (p.defaultSizeEn || p.defaultSize) : p.defaultSize;
 
-    const pdpUrl = `product-p.id.htmlisEn ? '&lang=en' : ''`;
+    const pdpUrl = `product-${p.id}.html${isEn ? '?lang=en' : ''}`;
     return `
       <div class="cherished-card" data-product-id="${p.id}">
         <div class="cherished-card-media">
@@ -1473,11 +1473,11 @@ function renderProducts() {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
-          <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''">
+          <a href="product-${product.id}.html${state.language === 'en' ? '?lang=en' : ''}">
             <img src="${product.image}" alt="${lp.displayName}" loading="lazy" />
           </a>
           <div class="quick-view-overlay">
-            <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
+            <a href="product-${product.id}.html${state.language === 'en' ? '?lang=en' : ''}" class="btn-quick-view" style="margin-bottom: 6px; text-decoration: none;">
               ${t("pdp_view_product_btn") || "تفاصيل العطر"}
             </a>
             <button class="btn-quick-view" onclick="openQuickView('${product.id}')" style="background: rgba(0,0,0,0.7); font-size: 0.75rem; padding: 6px 12px;">
@@ -1489,7 +1489,7 @@ function renderProducts() {
         <div class="product-details">
           <div class="product-arabic-title">${lp.displayFamily}</div>
           <h3 class="product-title">
-            <a href="product-product.id.htmlstate.language === 'en' ? '&lang=en' : ''">${lp.displayName}</a>
+            <a href="product-${product.id}.html${state.language === 'en' ? '?lang=en' : ''}">${lp.displayName}</a>
           </h3>
           <p class="product-subtitle">${lp.displaySubtitle}</p>
           <p class="product-stock-label ${isInStock ? "in-stock" : "out-of-stock"}">${stockLabel}</p>
@@ -2663,7 +2663,7 @@ function renderQuizStep() {
           <button class="btn btn-primary" onclick="addToCart('${matchedProduct.id}', '${matchedProduct.defaultSize}', 1); closeScentQuiz();">
             ${t("quiz_res_add_btn")}
           </button>
-          <button class="btn btn-secondary" onclick="window.location.href='product-matchedProduct.id.html'; closeScentQuiz();">
+          <button class="btn btn-secondary" onclick="window.location.href=`product-${matchedProduct.id}.html`; closeScentQuiz();">
             ${t("quiz_res_details_btn")}
           </button>
         </div>
@@ -2947,7 +2947,7 @@ function handleSearchInput(e) {
       <div style="display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s;"
            onmouseover="this.style.background='var(--bg-ivory)'"
            onmouseout="this.style.background='transparent'"
-           onclick="window.location.href='product-p.id.html'; closeSearchModal();">
+           onclick="window.location.href=`product-${p.id}.html`; closeSearchModal();">
         <img src="${p.image}" alt="${lp.displayName}" style="width: 54px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);" />
         <div style="flex: 1;">
           <h4 style="font-size: 0.98rem; font-weight: 700; color: #000;">${lp.displayName}</h4>
@@ -3087,6 +3087,7 @@ function setupEventListeners() {
     });
   }
 }
+
 
 
 
