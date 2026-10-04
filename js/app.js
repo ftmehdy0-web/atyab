@@ -1,4 +1,4 @@
-﻿/**
+/**
  * أطياب للعطور - منطق المتجر الإلكتروني وإدارة الحالة
  * متجر العطور الفاخر ثنائي اللغة (العربية / English)
  * ATYAB PERFUMES - Luxury Multilingual E-Commerce Logic & State Management
@@ -2663,7 +2663,7 @@ function renderQuizStep() {
           <button class="btn btn-primary" onclick="addToCart('${matchedProduct.id}', '${matchedProduct.defaultSize}', 1); closeScentQuiz();">
             ${t("quiz_res_add_btn")}
           </button>
-          <button class="btn btn-secondary" onclick="window.location.href=`product-${matchedProduct.id}.html`; closeScentQuiz();">
+          <button class="btn btn-secondary" onclick="window.location.href='product-${matchedProduct.id}.html'; closeScentQuiz();">
             ${t("quiz_res_details_btn")}
           </button>
         </div>
@@ -2947,7 +2947,7 @@ function handleSearchInput(e) {
       <div style="display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s;"
            onmouseover="this.style.background='var(--bg-ivory)'"
            onmouseout="this.style.background='transparent'"
-           onclick="window.location.href=`product-${p.id}.html`; closeSearchModal();">
+           onclick="window.location.href='product-${p.id}.html'; closeSearchModal();">
         <img src="${p.image}" alt="${lp.displayName}" style="width: 54px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);" />
         <div style="flex: 1;">
           <h4 style="font-size: 0.98rem; font-weight: 700; color: #000;">${lp.displayName}</h4>

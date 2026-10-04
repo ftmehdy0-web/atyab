@@ -1,4 +1,4 @@
-﻿/**
+/**
  * أطياب للعطور - منطق صفحة المنتج المستقلة والتفاعلية
  * ATYAB PERFUMES - Luxury Individual Product Page Logic & State
  * Handles multi-angle gallery, interactive size selector with dynamic pricing,
@@ -20,25 +20,28 @@ if (document.readyState === "loading") {
 }
 
 function initProductPage() {
-  // 1. استخراج معرف العطر من الرابط
+  // 1. استخراج معرف العطر من الرابط أو المتغير العام
   const params = new URLSearchParams(window.location.search);
-  let productId = params.get("id");
+  let productId = window.PRODUCT_ID_OVERRIDE || params.get("id");
   let productSlug = params.get("slug");
 
+  const productList = typeof ATYAB_PRODUCTS !== "undefined" ? ATYAB_PRODUCTS : [];
+
   if (productSlug && !productId) {
-    const foundBySlug = ATYAB_PRODUCTS.find(p => p.slug === productSlug);
+    const foundBySlug = productList.find(p => p.slug === productSlug);
     if (foundBySlug) productId = foundBySlug.id;
   }
 
-  // Also auto-detect product from filename (e.g. product-backhoor.html)
+  // Auto-detect product from filename or path (e.g. product-atyab-marj.html or product-marj.html)
   if (!productId) {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes("backhoor") || path.includes("bakhoor")) productId = "atyab-backhoor";
-    else if (path.includes("tiger-oud")) productId = "atyab-tiger-oud";
-    else if (path.includes("nader")) productId = "atyab-nader";
-    else if (path.includes("moon-flower")) productId = "atyab-moon-flower";
-    else if (path.includes("mashair")) productId = "atyab-mashair";
-    else if (path.includes("a555")) productId = "atyab-a555";
+    const matched = productList.find(p => {
+      const idMatch = path.includes(p.id.toLowerCase());
+      const slugMatch = p.slug && path.includes(p.slug.toLowerCase());
+      const shortIdMatch = p.id.startsWith("atyab-") && path.includes(p.id.replace("atyab-", "").toLowerCase());
+      return idMatch || slugMatch || shortIdMatch;
+    });
+    if (matched) productId = matched.id;
   }
 
   // إذا تم حذف العطر من لوحة التحكم أو كان غير متوفر
@@ -737,7 +740,7 @@ function renderRelatedPerfumes() {
   container.innerHTML = related.map(p => {
     const lp = getProductLocalized(p, state.language);
     return `
-      <div class="product-card" onclick="window.location.href=`product-${p.id}.html`" style="cursor: pointer;">
+      <div class="product-card" onclick="window.location.href='product-${p.id}.html'" style="cursor: pointer;">
         <div class="product-media">
           <span class="badge-tag ${p.badgeType}">${lp.displayBadge}</span>
           <img src="${p.image}" alt="${lp.displayName}" loading="lazy" />

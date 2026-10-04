@@ -36,7 +36,8 @@ while ($listener.IsListening) {
 
         if (Test-Path $fullPath -PathType Leaf) {
             $bytes = [IO.File]::ReadAllBytes($fullPath)
-        } else {
+        }
+        else {
             $bytes = $null
         }
 
@@ -52,7 +53,8 @@ while ($listener.IsListening) {
             if ($request.HttpMethod -ne "HEAD") {
                 $response.OutputStream.Write($bytes, 0, $bytes.Length)
             }
-        } else {
+        }
+        else {
             $response.StatusCode = 404
             $err = [Text.Encoding]::UTF8.GetBytes("404 Not Found")
             $response.ContentLength64 = $err.Length
@@ -61,7 +63,8 @@ while ($listener.IsListening) {
             }
         }
         $response.Close()
-    } catch {
+    }
+    catch {
         # continue on client disconnect
     }
 }
